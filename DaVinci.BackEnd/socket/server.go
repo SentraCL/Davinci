@@ -81,7 +81,7 @@ func (sg *SocketServer) GetServer() *socketio.Server {
 		s.Emit("importResult", davinci.StringifyJSON(pid))
 	})
 
-	server.OnError("/", func(e error) {
+	server.OnError("/", func(s socketio.Conn, e error) {
 		log.Println("GET error")
 		//log.Println("[!] meet error:", e)
 	})
