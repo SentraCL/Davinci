@@ -80,12 +80,12 @@ func (sg *SocketServer) GetServer() *socketio.Server {
 		//TODO: Determinar si se actualizo o se creo invento.
 		s.Emit("importResult", davinci.StringifyJSON(pid))
 	})
-
-	server.OnError("/", func(s socketio.Conn, e error) {
-		log.Println("GET error")
-		//log.Println("[!] meet error:", e)
-	})
-
+	/*
+		server.OnError("/", func(s socketio.Conn, e error) {
+			log.Println("GET error")
+			//log.Println("[!] meet error:", e)
+		})
+	*/
 	server.OnDisconnect("/", func(s socketio.Conn, msg string) {
 		log.Println("GET closed")
 		log.Println("[!] closed", msg)
