@@ -14,14 +14,14 @@
             <center v-if="proItem.isNew && filterProject.length>1 ">
               <button class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
             </center>
-            
-            
-            
+
+
+
           </span>
         </project-item>
       </div>
       <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length<=1">
-        <project-form v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0"> 
+        <project-form v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
 
         </project-form>
       </div>
@@ -67,7 +67,7 @@
         ready: false,
         viewCreate: false,
         projects: [],
-
+        editProject: false
       }
     },
     watch: {
@@ -109,16 +109,24 @@
         var namesProjects = []
         if (fproject.length == 0) {
           //Agregar proyecto nuevo
-          if (this.isNameProjectUniq()){
+          if (this.isNameProjectUniq()) {
             var newProject = this.templateNewProject()
-            newProject.name=this.projectName;
+            newProject.name = this.projectName;
             fproject.push(newProject);
           }
           for (var p in this.projects) {
-            if (this.projects[p].name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1) {
-              this.projects[p].isNew = false;
-              fproject.push(this.projects[p]);
-              namesProjects.push(this.projects[p].name.toUpperCase())
+            if (!this.editProject) {
+              if (this.projects[p].name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1) {
+                this.projects[p].isNew = false;
+                fproject.push(this.projects[p]);
+                namesProjects.push(this.projects[p].name.toUpperCase())
+              }
+            }else{
+              if (this.projects[p].name == this.projectName) {
+                this.projects[p].isNew = false;
+                fproject.push(this.projects[p]);
+                namesProjects.push(this.projects[p].name.toUpperCase())
+              }
             }
           }
         }
@@ -133,12 +141,11 @@
       }
     },
     methods: {
-      isNameProjectUniq(){
-        var unique=true;
-        this.projects.forEach(project=>{
-          if (project.name==this.projectName)
-          {
-            unique =  false;
+      isNameProjectUniq() {
+        var unique = true;
+        this.projects.forEach(project => {
+          if (project.name == this.projectName) {
+            unique = false;
           }
         })
         return unique;
@@ -169,6 +176,7 @@
 
       selectProject(proItem) {
         this.projectName = proItem.name
+        this.editProject = true;
       },
       async notifySave() {
         await this.loadProjects();
@@ -177,6 +185,7 @@
 
       async reload() {
         this.projectName = "";
+        this.editProject = false;
         await this.loadProjects();
       },
 
