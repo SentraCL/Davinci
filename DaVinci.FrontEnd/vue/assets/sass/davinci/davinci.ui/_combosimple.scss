@@ -1,0 +1,75 @@
+ .input_field {
+     position: relative;
+     display: block;
+     padding: 0.15em;
+     width: 100%;
+     background: $davinci-white;
+     color: $davinci-dark;
+     -webkit-appearance: none;
+ }
+
+ .input_field:focus {
+     outline: none;
+ }
+
+ .input {
+
+     position: relative;
+     z-index: 1;
+     display: inline-block;
+     margin: 0.5em;
+     max-width: 400px;
+     width: calc(100% - 0.5em);
+     vertical-align: top;
+ }
+
+ /* davinci */
+ .input_field--davinci {
+     width: 100%;
+     border: 1px solid $davinci-dark;
+     border-radius: 4px;
+     -webkit-transition: background-color 0.2s, border-color 0.2s;
+     transition: background-color 0.2s, border-color 0.2s;
+ }
+
+ .input_label--davinci {
+     width: 100%;
+     text-align: left;
+     position: absolute;
+     bottom: 80%;
+     left: 0px;
+     pointer-events: none;
+     overflow: hidden;
+     padding: 0 0.4em;
+     -webkit-transform: translate3d(0em, 1.8em, 0em);
+     transform: translate3d(0em, 1.8em, 0em);
+     -webkit-transition: -webkit-transform 0.2s;
+     transition: transform 0.2s;
+ }
+
+ .input_label-content--davinci {
+     color: $davinci-dark;
+     padding: 0.25em 0;
+     -webkit-transition: -webkit-transform 0.2s;
+     transition: transform 0.2s;
+ }
+
+
+ .input_field--davinci:focus+.input_label--davinci,
+ .input--filled .input_label--davinci {
+     -webkit-transform: translate3d(0, 0, 0);
+     transform: translate3d(0, 0, 0);
+     font-size: 10px;
+ }
+
+ .input_field--davinci:focus+.input_label--davinci .input_label-content--davinci,
+ .input--filled .input_label-content--davinci {
+     -webkit-transform: translate3d(0, 100%, 0);
+     transform: translate3d(0, 100%, 0);
+ }
+
+ .input_field--davinci:focus+.input_field--davinci,
+ .input--filled .input_field--davinci {
+     background-color: $davinci-white;
+     border-color: $davinci-dark;
+ }

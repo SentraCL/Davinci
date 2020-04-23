@@ -1,0 +1,23 @@
+@import "davinci.ui/_verticaltab";
+@import "davinci.ui/_inputtext";
+@import "davinci.ui/_pagination";
+@import "davinci.ui/_findboxlist";
+@import "davinci.ui/_combosimple";
+@import "davinci.ui/_modal";
+
+body{
+        -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.route-name {
+    text-transform: uppercase;
+    color: $davinci-dark;
+    font-weight: bold
+}
+
+
+
+.click{
+    cursor:pointer;
+}

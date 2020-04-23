@@ -1,0 +1,113 @@
+    .pagination {
+        color: $davinci-white;
+        width: 100%;
+        min-height: 40px !important;
+        max-height: 40px !important;
+        display: -ms-flexbox;
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: .25rem;
+    }
+
+    .pagination li {
+        cursor: pointer;
+        color: $davinci-dark;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    .pagination li.active {
+        color: $davinci-white;
+        font-weight: bold;
+        background-color: $davinci-dark;
+    }
+
+    .pagination li:hover:not(.active) {
+        background-color: $davinci-soft;
+        color: $davinci-dark
+    }
+
+    .pagination li:first-child {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+
+
+    .pagination-page li.active {
+        font-weight: bold;
+    }
+
+    .pagination li:last-child {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .pagination-page {
+        white-space: nowrap;
+        text-align: center !important;
+        min-width: 40px !important;
+    }
+
+    .pagination li.pagination-page {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .pagination-page.ng-scope.active {
+        background-color: #28a745;
+    }
+
+    .pagination-page.ng-scope a {
+        color: #999;
+
+    }
+
+
+    .pagination-page.ng-scope.active a {
+        color: #FFF;
+        font-weight: bold;
+    }
+
+    .pagination li.pagination-prev {
+        padding: 10px;
+    }
+
+    .pagination li.pagination-prev a {
+        color: $davinci-dark;
+    }
+
+    .pagination li.pagination-next {
+        padding: 10px;
+    }
+
+    .pagination li.pagination-next a {
+        color: $davinci-dark;
+    }
+
+    .pagination li.pagination-first {
+        padding: 10;
+    }
+
+    .pagination li.pagination-first a {
+        color: $davinci-dark;
+    }
+
+
+    .pagination li.pagination-last {
+        padding: 10px;
+        width: 5px;
+    }
+
+    .pagination li.pagination-last a {
+        color: $davinci-dark;
+        width: 5px;
+    }
+
+    .pagination li {
+        text-align: center;
+        padding: 10px;
+        width: 5px;
+    }

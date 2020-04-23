@@ -1,0 +1,78 @@
+ .selectItem {
+     cursor: pointer;
+ }
+
+ .dropbtn {
+     border: 1px solid $davinci-dark;
+     background-color: $davinci-white;
+     max-height: 40px;
+     min-width: 180px;
+     font-weight: bold;
+     max-width: 180px;
+     border-radius: 2px;
+     color: #000; //$davinci-soft;
+     background-color: transparent;
+     border-radius: 2px 0px 0px 2px;
+     padding: 5px;
+     border: none;
+     cursor: pointer;
+ }
+
+ .dropdown {
+     position: relative;
+     display: inline-block;
+ }
+
+ .dropdown-content {
+     display: none;
+     cursor: pointer;
+     border: 1px solid $davinci-dark;
+     border-radius: 0px 4px 0px 4px;
+     position: absolute;
+     background-color: $davinci-white;
+     min-width: 160px;
+     //box-shadow: 0px 8px 16px 0px rgba(78, 29, 0, 0.5);
+     z-index: 1;
+ }
+
+ .dropdown-content p {
+     z-index: 9000;
+     color: black;
+     padding: 12px 16px;
+     text-decoration: none;
+     display: block;
+ }
+
+ .dropdown-content p:hover {
+     z-index: 9000;
+     font-weight: bold;
+     background-color: $davinci-dark;
+     color: $davinci-white;
+ }
+
+ .dropdown:hover .dropdown-content {
+     z-index: 9000;
+     display: block;
+     background-color: $davinci-white;
+ }
+
+ .dropdown:hover .dropbtn {
+     z-index: 9000;
+     cursor: pointer;
+ }
+
+ .find-box {
+     cursor: pointer;
+     border: 1px solid $davinci-dark;
+     border-radius: 3px 3px 3px 3px;
+ }
+
+ .text-find {
+     min-width: calc(100% - 180px);
+ }
+
+ .fixed-height {
+     padding: 1px;
+     max-height: 80px !important;
+     overflow: auto;
+ }
