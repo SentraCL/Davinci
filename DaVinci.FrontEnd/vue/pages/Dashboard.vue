@@ -75,6 +75,7 @@
       projectName() {
         if (this.viewCreate) {
           this.viewCreate = false;
+          this.editProject = false;
         }
       }
 
