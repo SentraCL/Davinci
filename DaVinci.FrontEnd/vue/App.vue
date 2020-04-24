@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'nav-open': $sidebar.showSidebar }">
+  <div :class="{ 'nav-open': $sidebar.showSidebar }">    
     <img src="@/assets/img/davinci-logo.png" id="favicon" style="display:none" />
     <session-watch></session-watch>
     <notifications></notifications>

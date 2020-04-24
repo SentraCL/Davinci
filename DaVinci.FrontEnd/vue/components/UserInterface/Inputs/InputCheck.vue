@@ -1,9 +1,6 @@
 <template>
   <span>
     <div class="input-group">
-      <span class="input-group-addon">
-        <strong v-bind:class="{'lock': inactive }">{{label}}</strong>
-      </span>
       <div class="onoffswitch">
         <input v-if="!inactive" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" :id="id" v-model="optionSN" @click="change" >
         <input v-if="inactive" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" :id="id" v-model="optionSN" disabled>
@@ -11,6 +8,9 @@
           <span class="onoffswitch-inner"></span>
         </label>
       </div>
+      <span class="input-group-addon titleCheck">
+        <strong v-bind:class="{'lock': inactive }">{{label}}</strong>
+      </span>
     </div>
 
   </span>
@@ -53,13 +53,20 @@
     }
   };
 </script>
-<style scoped>
+<style scoped> 
+
+  .titleCheck{
+    position: relative; 
+    top:5px;
+    left:5px;
+  }
+
   .onoffswitch {
     position: relative;
     padding: 4px 5px;
     background-color: #fff;
     width: 60px;
-    border: 1px solid #ccc;
+    
     border-radius: 0px 4px 4px 0px;
     -webkit-user-select: none;
     -moz-user-select: none;

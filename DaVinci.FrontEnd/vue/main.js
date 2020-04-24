@@ -25,7 +25,14 @@ import "jquery-ui/themes/base/datepicker.css";
 //Metodo comunes en las distintas Vistas
 Vue.mixin({
   methods: {
-    formatDays: date => {
+    screen: function(theSwitch) {
+      var all = document.getElementsByClassName("fixedmodal");
+      for (var i = 0; i < all.length; i++) {
+        console.log("OCULTA!!");
+        all[i].style.display = theSwitch == "on" ? "block" : "none";
+      }
+    },
+    formatDays: (date) => {
       //2019-09-23 12:02:17
       var createDate = new Date(date);
 
@@ -79,7 +86,7 @@ Vue.mixin({
       }
       return false;
     },
-    makeId: length => {
+    makeId: (length) => {
       var result = "";
       var characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -91,21 +98,21 @@ Vue.mixin({
       }
       return result;
     },
-    isEmptyOrSpaces: str => {
+    isEmptyOrSpaces: (str) => {
       if (typeof str === "undefined") {
         return true;
       }
       str += "";
       return str === null || str.match(/^ *$/) !== null;
     },
-    cloneObject: any => {
+    cloneObject: (any) => {
       return JSON.parse(JSON.stringify(any));
-    }
-  }
+    },
+  },
 });
 
 /* eslint-disable no-new */
 new Vue({
   router,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

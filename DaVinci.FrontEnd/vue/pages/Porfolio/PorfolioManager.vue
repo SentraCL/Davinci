@@ -465,14 +465,7 @@
 
                     if (inventionTO.slots == this.NEW) {
                         this.find[this.currentName].push(keyValue);
-                        //var concho = this.totalInv > Math.round(aprox) * this.totalInv ? 1 : 0;
-                        //this.pagination.currentPage = Math.round(aprox) + concho;
-                        //this.activeIndex = (this.pagination.currentPage * this.itemsPerPage - Object.keys(this.repository[this.currentCode]).length) + 1;
                         this.activeIndex = 1;
-                        //console.log(`Current Page > ${this.pagination.currentPage}`);
-                        //console.log(`activeIndex  > ${this.activeIndex}`);
-                        //console.log(`this.pagination.currentPage *  this.itemsPerPage  > ${this.pagination.currentPage *  this.itemsPerPage}`);
-                        //console.log(`Max          > ${Object.keys(this.repository[this.currentCode]).length}`);
                     }
                     this.undo();
                 });

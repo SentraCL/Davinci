@@ -5,7 +5,7 @@
         <div :id="id" class="fixedmodal">
 
             <!-- Modal content -->
-            <div class="fixedmodal-content">
+            <div class="fixedmodal-content" v-if="show">
 
                 <span>
                     <span>
@@ -69,12 +69,14 @@
             */
             var fixedmodal = document.getElementById(this.id);
             if (fixedmodal != null) {
-                fixedmodal.style.display = "block";
+                //fixedmodal.style.display = "block";
+                this.screen("on");
             }
             if (this.time > 0) {
                 if (fixedmodal == null) {
                     fixedmodal = document.getElementById(this.id);
-                    fixedmodal.style.display = "block";
+                    this.screen("on");
+                    //fixedmodal.style.display = "block";
                 }
                 setTimeout(() => {
                     fixedmodal.style.display = "none";

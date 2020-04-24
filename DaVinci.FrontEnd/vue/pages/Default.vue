@@ -14,7 +14,15 @@
     props: {
       artifactForm: {}
     },
+    watch{
+      //Listener de datos
+    },
+    computed{
 
+    },
+    filter{
+      funcion
+    },
     data() {
       return {
         defaultArtifac: ["Texto", "Numerico", "Fecha y Hora", "Si/No"],
