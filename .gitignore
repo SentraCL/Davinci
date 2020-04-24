@@ -1,3 +1,5 @@
 node_modules
-./dist/index.js
+./dist/
 ./DaVinci.FrontEnd/dist/
+DaVinci.FrontEnd/dist/
+dist/
