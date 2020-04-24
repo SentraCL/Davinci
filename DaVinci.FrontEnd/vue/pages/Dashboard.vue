@@ -6,7 +6,7 @@
     </h6>
     <div class="card-group" v-if="ready">
       <div class="col-lg-3" v-for="proItem in filterProject">
-        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :name="proItem.name" :epics="proItem.epics" :userStories="proItem.userStories" :data="proItem.data" :avatar="proItem.avatar">
+        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem">
           <span slot="description">
             <p v-html="proItem.resume"></p>
 
@@ -31,7 +31,7 @@
       </div>
 
       <div class="col-lg-3">
-        <project-item :name="projectName" :resume="createText" v-if="filterProject.length==0">
+        <project-item :project="proItem" :resume="createText" v-if="filterProject.length==0">
           <p slot="description" class="description">
             <br />
             <center>

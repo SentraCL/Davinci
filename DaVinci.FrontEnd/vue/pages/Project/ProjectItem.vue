@@ -50,7 +50,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4" >
-                        <a href="#" style="color:black" @click="Export" title="Exportar proyecto para enviar a otro sistema Davinci">
+                        <a href="#" style="color:black" @click="exportPro" title="Exportar proyecto para enviar a otro sistema Davinci">
                             <small>
                                 <i class="fa fa-briefcase"></i> Exportar
                             </small>
@@ -64,7 +64,7 @@
                         </a>
                     </div>
                     <div class="col-md-4" >
-                        <a href="#" style="color:black" title="Crea copia de Proyecto">
+                        <a href="#" style="color:black"  @click="copyPro" title="Crea copia de Proyecto">
                             <small>
                                 <i class="fa fa-copy"></i> Crear Copia
                             </small>
@@ -86,22 +86,26 @@
             }
         },
         props: {
-            name: String,
+            project:{},
             resume: String,
-            epics: String,
-            userStories: String,
-            data: String,
-            avatar: String,
-            isNew : Boolean
         },
 
         data() {
             return {
+                name:  this.project.name,
+                epics:  this.project.epics,
+                userStories:  this.project.userStories,
+                data:  this.project.data,
+                avatar:  this.project.avatar,
+                isNew : this.project.isNew
             }
         },
 
         methods: {
-            Export(){
+            copyPro(){
+                console.log("Copiar Proyecto");
+            },
+            exportPro(){
                 console.log("Exportar Proyecto");
             },
             avatarClick() {
