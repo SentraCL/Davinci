@@ -95,8 +95,8 @@
                             <span class="col-md-12">
                                 <input-text label="Nombre Copia" v-model="copyName" autocomplete="off">
                                 </input-text>
-                                <hr/>
-                                <div>                                   
+                                <hr />
+                                <div>
                                     <check-box :value.sync="copy.users" label="Usuarios"></check-box>
                                     <check-box :value.sync="copy.epics" label="Tipos de Epicos"></check-box>
                                     <check-box :value.sync="copy.userStories" label="Tipos de Historias de Usuario"></check-box>
@@ -115,7 +115,7 @@
                 <span class="btn-group">
                     <d-button type="success" class="btn" round @click.native.prevent="closeDialog">
                         Crear Copia
-                    </d-button>      
+                    </d-button>
                     <d-button type="warning" class="btn" round @click.native.prevent="closeDialog">
                         Cerrar
                     </d-button>
@@ -162,7 +162,15 @@
                 }
             }
         },
-
+        updated() {
+            this.name = this.project.name;
+            this.epics = this.project.epics;
+            this.userStories = this.project.userStories;
+            this.data = this.project.data;
+            this.avatar = this.project.avatar;
+            this.isNew = this.project.isNew;
+            this.copyName = "Copia " + this.project.name;
+        },
         methods: {
             closeDialog() {
                 this.actionDialog.show = false;

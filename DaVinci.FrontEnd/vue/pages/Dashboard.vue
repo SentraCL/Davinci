@@ -11,8 +11,8 @@
             <p v-html="proItem.resume"></p>
 
             <small><a v-if="!proItem.isNew" :href="'/davinci/' + proItem.alias + '/'" target="_blank"><i class="ti-share"></i> ir al sitio..</a></small>
-            <center v-if="proItem.isNew && filterProject.length>1 ">
-              <button class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
+            <center v-if="proItem.isNew">
+              <button v-if="filterProject.length!=1" class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
             </center>
 
 
@@ -20,8 +20,8 @@
           </span>
         </project-item>
       </div>
-      <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length<=1">
-        <project-form v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
+      <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length==1">
+        <project-form ref="projectForm" v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
 
         </project-form>
       </div>
@@ -88,7 +88,7 @@
       currentProject() {
         var project = {}
         var title = "";
-        if (this.filterProject.length == 1) {
+        if (this.filterProject.length == 1 ) {
           project = this.cloneObject(this.filterProject[0]);
           if (!project.isNew) {
             project.title = `<span class="ti-panel"></span> Modificar Proyecto`;
@@ -103,45 +103,37 @@
         return html;
       },
       filterProject() {
-        var fproject = this.projectName.length == 0 ? this.cloneObject(this.projects) : [];
+
+        if (this.editProject) {
+          return this.projects.filter(this.equalsName);
+        }
+
         if (this.viewCreate) {
-          return []
+          return [this.templateNewProject()]
         }
-        var namesProjects = []
-        if (fproject.length == 0) {
-          //Agregar proyecto nuevo
-          if (this.isNameProjectUniq()) {
-            var newProject = this.templateNewProject()
-            newProject.name = this.projectName;
-            fproject.push(newProject);
-          }
-          for (var p in this.projects) {
-            if (!this.editProject) {
-              if (this.projects[p].name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1) {
-                this.projects[p].isNew = false;
-                fproject.push(this.projects[p]);
-                namesProjects.push(this.projects[p].name.toUpperCase())
-              }
-            }else{
-              if (this.projects[p].name == this.projectName) {
-                this.projects[p].isNew = false;
-                fproject.push(this.projects[p]);
-                namesProjects.push(this.projects[p].name.toUpperCase())
-              }
-            }
-          }
-        }
-        /*
-        //Ver que paso aca...
-        if (this.projectName.length > 2 && namesProjects.indexOf(this.projectName.toUpperCase()) == -1) {
-          var newProject = this.templateNewProject();
+
+
+        var fproject =this.cloneObject(this.projects.filter(this.filterName));
+
+        //Agregar proyecto vacio y nuevo, al inicio          
+        if (this.isNameProjectUniq() && this.projectName.length>0) {
+          var newProject = this.templateNewProject()
+          newProject.name = this.projectName;
           fproject.unshift(newProject);
         }
-        */
+
+
+
         return fproject;
       }
     },
     methods: {
+      equalsName(project) {
+        return (project.name == this.projectName)
+      },
+      filterName(project) {
+        return (project.name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1)
+      },
       isNameProjectUniq() {
         var unique = true;
         this.projects.forEach(project => {
@@ -180,8 +172,11 @@
         this.editProject = true;
       },
       async notifySave() {
-        await this.loadProjects();
         this.projectName = ""
+        this.editProject = false;
+        this.viewCreate = false;
+        await this.loadProjects();
+
       },
 
       async reload() {
