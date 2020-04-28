@@ -185,7 +185,7 @@
             async doCopy() {
                 await this.axios.post(`/api/project/copy/`, this.copy).then(rs => {
                     this.$emit("reload")
-                    this.copyDialog.show = true;
+                    this.copyDialog.show = false;
                 });        
             },
             avatarClick() {
