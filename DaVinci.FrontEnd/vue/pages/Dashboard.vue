@@ -168,6 +168,9 @@
       },
 
       selectProject(proItem) {
+        if (proItem.isNew){
+          return false;
+        }
         this.projectName = proItem.name
         this.editProject = true;
       },

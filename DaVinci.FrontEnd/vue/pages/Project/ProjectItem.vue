@@ -183,10 +183,23 @@
                 console.log("Exportar Proyecto");
             },
             async doCopy() {
-                await this.axios.post(`/api/project/copy/`, this.copy).then(rs => {
-                    this.$emit("reload")
-                    this.copyDialog.show = false;
-                });        
+                var projects = []
+                await this.axios.post("/api/project/getAll/").then(rs => {
+                    projects = rs.data
+                });
+                var copyName = this.copy.name;
+                var filter = projects.filter(function (project) {
+                    return project.name == copyName
+                })
+
+                if (filter.length == 0) {
+                    await this.axios.post(`/api/project/copy/`, this.copy).then(rs => {
+                        this.$emit("reload")
+                        this.copyDialog.show = false;
+                    });
+                }else{
+                    alert(`El Proyecto ${copyNames} ya Existe.`);                    
+                }
             },
             avatarClick() {
                 this.$emit("clickAvatar");

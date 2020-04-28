@@ -70,9 +70,11 @@ func (pc *ProjectController) GetAll() []models.ProjectRequest {
 
 //Copy : Copiar Proyecto
 func (pc *ProjectController) Copy(projectCopyRQ models.CopyProjectRequest) bool {
+
 	project := projectModel.GetProjectByCode(projectCopyRQ.Code)
 	project.Name = projectCopyRQ.Name
 	project.Code = ""
+	//Se concatena el ".CP", para determinar que es una copia, y concer esta referencia.
 	project.Alias = strings.Replace(projectCopyRQ.Name, " ", "", -1)
 
 	if projectCopyRQ.Data == 0 {
