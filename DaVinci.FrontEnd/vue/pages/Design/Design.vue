@@ -6,7 +6,7 @@
         </h6>
         <div class="card-group" v-if="ready">
             <div class="col-lg-3" v-for="proItem in filterProject" v-if="filterProject.length>=1 && option==-1">
-                <project-item :name="proItem.name" :epics="proItem.epics" :userStories="proItem.userStories" :data="proItem.data" :avatar="proItem.avatar">
+                <project-item :name="proItem.name" :project="proItem" >
                     <span slot="description">
                         <blockquote>
                             <p v-html="proItem.resume"></p>
