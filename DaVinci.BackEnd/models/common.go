@@ -13,6 +13,16 @@ import (
 	util "../util"
 )
 
+//CopyProjectRequest , Request que representa la copia de un proyecto
+type CopyProjectRequest struct {
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	Users       int    `json:"users"`
+	Epics       int    `json:"epics"`
+	UserStories int    `json:"userStories"`
+	Data        int    `json:"data"`
+}
+
 //ExecuteResponse , Retonar mensajes hacia front-end
 type ExecuteResponse struct {
 	StatusCode string      `json:"status"`

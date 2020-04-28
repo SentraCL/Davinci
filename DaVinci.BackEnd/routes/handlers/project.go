@@ -15,6 +15,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//CopyProject : Copia proyectos.
+func (h *Handler) CopyProject(responseW http.ResponseWriter, request *http.Request) {
+	if !h.isDavinciOnline(request) {
+		return
+	}
+	copyProjectRQ := models.CopyProjectRequest{}
+	decoder := json.NewDecoder(request.Body)
+	decoder.Decode(&copyProjectRQ)
+	projectCtrl.Copy(copyProjectRQ)
+}
+
 //SaveProject : Guarda proyectos.
 func (h *Handler) SaveProject(responseW http.ResponseWriter, request *http.Request) {
 	if !h.isDavinciOnline(request) {

@@ -44,6 +44,34 @@ func (pm *ProjectModel) Drop(project *Project) bool {
 	return false
 }
 
+//Create , Crea un proyecto
+func (pm *ProjectModel) Create(project *Project) bool {
+	session, err := GetSession()
+	defer session.Close()
+	projectDAO := session.DB(DataBaseName).C(ProjectColl)
+	//log.Println("response :", util.StringifyJSON(projectResult))
+	if err == nil {
+		project.Date = time.Now()
+		dcode := util.DavinciCode{}
+		project.Code = dcode.Encript(project.Alias)
+		log.Println("Project Code >>", project.Code)
+		//upsertdata := bson.M{"$set": project}
+
+		upsertdata := bson.M{
+			"$set": project}
+
+		projectDAO.UpsertId(
+			//Where
+			project.Code,
+			//Set
+			upsertdata,
+		)
+
+		return true
+	}
+	return false
+}
+
 //Save , Guarda cualquier cambio en el proyecto
 func (pm *ProjectModel) Save(project *Project) bool {
 	session, err := GetSession()

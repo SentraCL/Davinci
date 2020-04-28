@@ -50,7 +50,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="#" style="color:black" @click="exportPro" title="Exportar proyecto para enviar a otro sistema Davinci">
+                        <a href="#" style="color:black" @click="doExport" title="Exportar proyecto para enviar a otro sistema Davinci">
                             <small>
                                 <i class="fa fa-briefcase"></i> Exportar
                             </small>
@@ -64,7 +64,7 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="#" style="color:black" @click="copyPro" title="Crea copia de Proyecto">
+                        <a href="#" style="color:black" @click="showCopy" title="Crea copia de Proyecto">
                             <small>
                                 <i class="fa fa-copy"></i> Crear Copia
                             </small>
@@ -75,7 +75,7 @@
             <br />
         </div>
 
-        <m-dialog :id="project.code" :title="actionDialog.title" :show.sync="actionDialog.show" :isClose.sync="actionDialog.close">
+        <m-dialog :id="project.code" :title="copyDialog.title" :show.sync="copyDialog.show" :isClose.sync="copyDialog.close">
             <span slot="dialog">
                 <div class="row">
                     <span class="col-md-8">
@@ -93,7 +93,7 @@
 
                         <div class="row">
                             <span class="col-md-12">
-                                <input-text label="Nombre Copia" v-model="copyName" autocomplete="off">
+                                <input-text label="Nombre Copia" v-model="copy.name" autocomplete="off">
                                 </input-text>
                                 <hr />
                                 <div>
@@ -113,7 +113,7 @@
             </span>
             <span slot="actions">
                 <span class="btn-group">
-                    <d-button type="success" class="btn" round @click.native.prevent="closeDialog">
+                    <d-button type="success" class="btn" round @click.native.prevent="doCopy">
                         Crear Copia
                     </d-button>
                     <d-button type="warning" class="btn" round @click.native.prevent="closeDialog">
@@ -147,14 +147,15 @@
                 data: this.project.data,
                 avatar: this.project.avatar,
                 isNew: this.project.isNew,
-                copyName: "Copia " + this.project.name,
-                actionDialog: {
+                copyDialog: {
                     show: false,
                     close: false,
                     title: "",
                     html: ""
                 },
                 copy: {
+                    code: this.project.code,
+                    name: "Copia de " + this.project.name,
                     users: 0,
                     epics: 0,
                     userStories: 0,
@@ -173,14 +174,19 @@
         },
         methods: {
             closeDialog() {
-                this.actionDialog.show = false;
+                this.copyDialog.show = false;
             },
-            copyPro() {
-                //console.log("Copiar Proyecto " + JSON.stringify(this.project));
-                this.actionDialog.show = true;
+            showCopy() {
+                this.copyDialog.show = true;
             },
-            exportPro() {
+            doExport() {
                 console.log("Exportar Proyecto");
+            },
+            async doCopy() {
+                await this.axios.post(`/api/project/copy/`, this.copy).then(rs => {
+                    this.$emit("reload")
+                    this.copyDialog.show = true;
+                });        
             },
             avatarClick() {
                 this.$emit("clickAvatar");

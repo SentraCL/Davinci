@@ -31,6 +31,7 @@ func (r *Router) Routers() *mux.Router {
 	//Project
 	route.HandleFunc("/api/project/save/", handlers.SaveProject).Methods("POST")
 	route.HandleFunc("/api/project/drop/", handlers.DropProject).Methods("POST")
+	route.HandleFunc("/api/project/copy/", handlers.CopyProject).Methods("POST")
 	route.HandleFunc("/api/project/getAll/", handlers.GetAllProject).Methods("POST")
 	route.HandleFunc("/api/project/inventions/", handlers.GetAllProjectInventions).Methods("POST")
 	route.HandleFunc("/api/project/avatar/{alias}.png", handlers.GetAvatarProject)

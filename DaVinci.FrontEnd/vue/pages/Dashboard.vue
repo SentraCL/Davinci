@@ -6,7 +6,7 @@
     </h6>
     <div class="card-group" v-if="ready">
       <div class="col-lg-3" v-for="proItem in filterProject">
-        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem">
+        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
           <span slot="description">
             <p v-html="proItem.resume"></p>
 

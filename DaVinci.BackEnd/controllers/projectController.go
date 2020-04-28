@@ -68,6 +68,32 @@ func (pc *ProjectController) GetAll() []models.ProjectRequest {
 	return projectsRqs
 }
 
+//Copy : Copiar Proyecto
+func (pc *ProjectController) Copy(projectCopyRQ models.CopyProjectRequest) bool {
+	project := projectModel.GetProjectByCode(projectCopyRQ.Code)
+	project.Name = projectCopyRQ.Name
+	project.Code = ""
+	project.Alias = strings.Replace(projectCopyRQ.Name, " ", "", -1)
+
+	if projectCopyRQ.Data == 0 {
+		project.Repository = nil
+	}
+	if projectCopyRQ.Users == 0 {
+		project.Users = nil
+	}
+	if projectCopyRQ.Epics == 0 {
+		project.Epics = models.Epics{}
+	}
+	if projectCopyRQ.UserStories == 0 {
+		project.UserStories = models.UserStories{}
+	}
+
+	if projectModel.Create(&project) {
+		return true
+	}
+	return false
+}
+
 //Save : Upsert Project!!
 func (pc *ProjectController) Save(projectRQ models.ProjectRequest) bool {
 	project := pc.translateRequestToBO(projectRQ)
@@ -142,4 +168,3 @@ func (pc *ProjectController) GetAllInventions(projectCode string) []models.Inven
 	}
 	return inventions
 }
-
