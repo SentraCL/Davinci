@@ -26,6 +26,12 @@
         </project-form>
       </div>
 
+      <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length==0">
+        <project-form ref="projectNewForm" v-if="currentProject.isNew" v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
+
+        </project-form>
+      </div>
+
       <div class="col-md-11" v-if="filterProject.length==1">
         <project-context :project="currentProject"></project-context>
       </div>
