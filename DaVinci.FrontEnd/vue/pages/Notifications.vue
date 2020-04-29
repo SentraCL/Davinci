@@ -28,7 +28,7 @@
         <div class="col-md-6">
           <h5>Notification states</h5>
           <div class="alert alert-info">
-            <button type="button" aria-hidden="true" class="close">×</button>
+            <button type="button" aria-hidden="true" class="close">×</button>e
             <span>
               <b> Info - </b> This is a regular notification made with
               ".alert-info"</span>

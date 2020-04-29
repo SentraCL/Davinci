@@ -14,13 +14,13 @@ import (
 func (pm *ProjectModel) AddUser(projectCode string, user string, pass string) {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		dcode := util.DavinciCode{}
 		var user = bson.M{"_id": dcode.Encript(user), "user": user, "password": pass}
-		projectClr.Update(
+		projectCollector.Update(
 			//Where
 			bson.M{"_id": projectCode},
 			//Add
@@ -33,9 +33,9 @@ func (pm *ProjectModel) AddUser(projectCode string, user string, pass string) {
 func (pm *ProjectModel) DelUser(projectCode string, user string) {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		log.Println("Encontrado")
 		log.Println(projectResult.Users)
@@ -48,7 +48,7 @@ func (pm *ProjectModel) DelUser(projectCode string, user string) {
 			}
 		}
 		log.Println("final : ", dataUsers)
-		projectClr.Update(
+		projectCollector.Update(
 			//Where
 			bson.M{"_id": projectCode},
 			//Add
@@ -61,9 +61,9 @@ func (pm *ProjectModel) DelUser(projectCode string, user string) {
 func (pm *ProjectModel) UpdateUser(projectCode string, code string, user string, pass string) {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		dataUsers := []UserProject{}
 
@@ -75,7 +75,7 @@ func (pm *ProjectModel) UpdateUser(projectCode string, code string, user string,
 			}
 			dataUsers = append(dataUsers, repo)
 		}
-		projectClr.Update(
+		projectCollector.Update(
 			//Where
 			bson.M{"_id": projectCode},
 			//Add
@@ -88,9 +88,9 @@ func (pm *ProjectModel) UpdateUser(projectCode string, code string, user string,
 func (pm *ProjectModel) LoginUser(projectName string, user string, pass string) bool {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"alias": projectName}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"alias": projectName}).One(&projectResult)
 	var result = false
 	if err == nil {
 
@@ -107,9 +107,9 @@ func (pm *ProjectModel) LoginUser(projectName string, user string, pass string) 
 func (pm *ProjectModel) GetUsers(projectCode string) []UserProject {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	dataUsers := []UserProject{}
 	if err == nil {
 		for _, repo := range projectResult.Users {
@@ -127,19 +127,19 @@ func (pm *ProjectModel) GetUsers(projectCode string) []UserProject {
 func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStoriesType) {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usTypes := projectResult.UserStories.Types
 	find := false
 	for index, usTyped := range usTypes {
 		if usTyped.Code == usType.Code {
 			find = true
 			fmt.Println("UPDATE [OK]")
-			projectClr.Update(
+			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
 				//Set
@@ -151,7 +151,7 @@ func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStori
 
 		if err == nil {
 			fmt.Println("INSERT [OK]")
-			projectClr.Update(
+			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
 				//Set
@@ -167,12 +167,12 @@ func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStori
 func (pm *ProjectModel) GetAllUserStories(projectCode string) []UserStoriesType {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		return projectResult.UserStories.Types
 	} else {
@@ -184,12 +184,12 @@ func (pm *ProjectModel) GetAllUserStories(projectCode string) []UserStoriesType 
 func (pm *ProjectModel) getSequenceByRef(projectCode string, codeValue string) string {
 	session, _ := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
 
-	projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usRepository := projectResult.UserStories.Repository
 	//TODO : Es muy charcha iterar para sacar el resultado.
 	count := 1
@@ -206,12 +206,12 @@ func (pm *ProjectModel) getSequenceByRef(projectCode string, codeValue string) s
 func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStory {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usRepository := projectResult.UserStories.Repository
 
 	if us.ID != "" {
@@ -227,7 +227,7 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 					//Aumento la Version, considerando que el arreglo trae una nueva version.
 					us.LastVersionIndex = us.LastVersionIndex + 1
 				}
-				projectClr.Update(
+				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
 					//Set
@@ -241,7 +241,7 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 		usRepository = append(usRepository, us)
 		if err == nil {
 			fmt.Println("INSERT [OK] =>", us.ID)
-			projectClr.Update(
+			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
 				//Set
@@ -260,13 +260,13 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 func (pm *ProjectModel) GetUserStoryByCode(projectCode string, codeValue string) []UserStory {
 	session, _ := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	fmt.Println("MODEL>> projectCode:", projectCode)
 	fmt.Println("MODEL>> codeValue:", codeValue)
 
-	projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usRepository := projectResult.UserStories.Repository
 	userStories := []UserStory{}
 
@@ -283,18 +283,18 @@ func (pm *ProjectModel) GetUserStoryByCode(projectCode string, codeValue string)
 func (pm *ProjectModel) GetUserStoryByCodeVersion(projectCode string, uscode string, indexVersion int) {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
-	err = projectClr.Find(bson.M{"_id": projectCode}).Select(bson.M{"userStories.repository": bson.M{"$elemMatch": bson.M{"id": uscode}}}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).Select(bson.M{"userStories.repository": bson.M{"$elemMatch": bson.M{"id": uscode}}}).One(&projectResult)
 
 	if err == nil {
-		fmt.Println("MODEL>> projectClr:", util.StringifyJSON(projectResult))
+		fmt.Println("MODEL>> projectCollector:", util.StringifyJSON(projectResult))
 	} else {
 		fmt.Println(err)
 	}
 
 
-		err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+		err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 		if err == nil {
 
 		}
@@ -306,10 +306,10 @@ func (pm *ProjectModel) GetUserStoryByCodeVersion(projectCode string, uscode str
 func (pm *ProjectModel) GetAllUserStoriesbyPreconditions(projectCode string, queryPC []PreConditionQuery) []UserStory {
 	session, _ := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
-	projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usRepository := projectResult.UserStories.Repository
 	userStories := []UserStory{}
 	ids := []string{}
@@ -347,14 +347,14 @@ func (pm *ProjectModel) index(slice []string, item string) int {
 func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	fmt.Println("ID=", epic.ID)
 
 	fmt.Println("MODEL>> projectCode:", projectCode)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 
 	if err == nil {
 		//fmt.Println("MODEL>> Epics:", util.StringifyJSON(projectResult.Epics))
@@ -366,7 +366,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		idCoded := dcode.Encript(epic.Code)
 
 		fmt.Println("MODEL>> epic.ID	:", epic.ID)
-		fmt.Println("MODEL>> epic.Code	:",epic.Code)
+		fmt.Println("MODEL>> epic.Code	:", epic.Code)
 
 		if epic.ID != idCoded || epic.ID == "" {
 			epic.ID = idCoded
@@ -375,7 +375,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 				newRepo := []Epic{}
 				newRepo = append(epicRepository, *epic)
 				fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
-				projectClr.Update(
+				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
 					//Set
@@ -390,7 +390,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 				epic.Date = time.Now()
 				if epicDB.Code == epic.Code {
 					fmt.Println(epic.ID, " UPDATE [OK] =>", epic.Code)
-					projectClr.Update(
+					projectCollector.Update(
 						//Where
 						bson.M{"_id": projectCode},
 						//Set
@@ -409,16 +409,69 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 func (pm *ProjectModel) GetAllEpics(projectCode string) []Epic {
 	session, err := GetSession()
 	defer session.Close()
-	projectClr := session.DB(DataBaseName).C(ProjectColl)
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		return projectResult.Epics.Repository
 	} else {
 		return []Epic{}
 	}
 
+}
+
+//SaveDataType , Guarda cualquier cambio en el proyecto
+func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) bool {
+	session, err := GetSession()
+	defer session.Close()
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
+	projectResult := Project{}
+
+	fmt.Println("ID=", dataType.ID)
+
+	fmt.Println("MODEL>> projectCode:", projectCode)
+
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
+
+	if err == nil {
+		dataTypes := projectResult.DataStored.DataTypes
+		if dataType.ID == "" {
+			if dataType.ID == "" {
+				dcode := util.DavinciCode{}
+				dataType.ID = dcode.Encript(dataType.Name)
+			}
+			dataType.Date = time.Now()
+			if err == nil {
+				newRepo := []DataType{}
+				newRepo = append(dataTypes, *dataType)
+				fmt.Println(dataType.ID, " NEW [OK] =>", dataType.ID)
+				projectCollector.Update(
+					//Where
+					bson.M{"_id": projectCode},
+					//Set
+					bson.M{"$set": bson.M{"dataStored.dataTypes": newRepo}})
+			} else {
+				fmt.Println("SAVE [NOK]")
+				return false
+			}
+		} else {
+			for index, dataTypeDB := range dataTypes {
+				dataType.Date = time.Now()
+				if dataTypeDB.ID == dataType.ID {
+					fmt.Println(dataType.ID, " UPDATE [OK] =>", dataType.ID)
+					projectCollector.Update(
+						//Where
+						bson.M{"_id": projectCode},
+						//Set
+						bson.M{"$set": bson.M{"dataStored.dataTypes." + strconv.Itoa(index): dataType}})
+				}
+			}
+		}
+		return true
+	}
+	fmt.Println("SAVE [NOK]", err)
+	return false
 }

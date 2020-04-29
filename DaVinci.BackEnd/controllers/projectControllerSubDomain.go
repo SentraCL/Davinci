@@ -79,3 +79,9 @@ func (dc *DesignController) GetAllEpics(projectCode string) []models.Epic {
 	result := projectModel.GetAllEpics(projectCode)
 	return result
 }
+
+//SaveDataType Guarda el tipo de dato y retorna el objecto con su ID generado
+func (pc *ProjectController) SaveDataType(projectCode string, dataType models.DataType) models.DataType {
+	projectModel.SaveDataType(projectCode, &dataType)
+	return dataType
+}

@@ -41,6 +41,7 @@
     "vue-drag-drop": "^1.1.4",
     "vue-draggable": "^2.0.6",
     "vue-fixed-header": "^3.2.14",
+    "vue-form-wizard": "^0.8.4",
     "vue-json-pretty": "^1.6.3",
     "vue-multipane": "^0.9.5",
     "vue-notifyjs": "^0.4.3",

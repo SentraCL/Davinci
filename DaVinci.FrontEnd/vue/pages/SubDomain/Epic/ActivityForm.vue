@@ -12,11 +12,11 @@
         <h-tabs :tabs="usActivityTab" viewScoped>
             <span slot="us">
 
-                <small><i class="ti-exchange-vertical"></i> Orden de Ejecucion de las historias de usuario.</small>
+                <small><i class="ti-exchange-vertical"></i> Orden de Ejecucion de las historias de usuario.(Usted puede modificar este orden arrastrando los items.)</small>
                 <div class="activity-workspace">
                     <draggable ghost-class="ghost" v-model="userStories" @start="drag=true" @end="drag=false" draggable=".tusa">
 
-                        <div v-for="us,index in userStories" :key="us.code.value" style="color:#000" class="tusa alert alert-success">
+                        <div v-for="us,index in userStories" :key="us.id" style="color:#000" class="tusa alert alert-success">
                             N°{{index+1}}) <strong :title="us.fields.description"> {{us.id}} </strong>
                             <i style="cursor: pointer;color:blue" @click="take(us.id)" title="Ver en detalle" class="ti-share"></i>
                             <br>
@@ -77,7 +77,9 @@
                 </div>
             </span>
             <span slot="dat">
-                <div class="activity-workspace"></div>
+                <div class="activity-workspace">
+                    <attach-data :epic="epic" :activity="activity"></attach-data>
+                </div>
             </span>
         </h-tabs>
     </div>
@@ -85,12 +87,14 @@
 <script>
     import InventionForm from "../../Invention/InventionForm.vue";
     import Draggable from 'vuedraggable'
+    import AttachData from './AttachData.vue'
 
     export default {
         name: "activity-form",
         components: {
             InventionForm,
-            Draggable
+            Draggable,
+            AttachData
         },
         props: {
             epic: {},
@@ -319,7 +323,9 @@
 
             addUserStories(us) {
                 us.isAdded = true;
-                this.userStories.push(us);
+                if (this.userStories.indexOf(us) == -1) {
+                    this.userStories.push(us);
+                }
                 this.refreshTab();
             },
 

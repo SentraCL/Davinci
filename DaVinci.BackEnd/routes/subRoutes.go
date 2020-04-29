@@ -30,6 +30,9 @@ func (r *Router) SubRouters() *mux.Router {
 	route.HandleFunc("/davinci/{project}/userStories/{code}", handlers.GetUserStoryByCode).Methods("GET")
 	route.HandleFunc("/davinci/{project}/userStories/similar", handlers.GetAllUserStoriesbyPreconditions).Methods("POST")
 
+	//Data	
+	route.HandleFunc("/davinci/{project}/datatype/save/", handlers.SaveDataType).Methods("POST")
+
 	route.HandleFunc("/davinci/{project}/code", handlers.GetCode).Methods("GET")
 	route.HandleFunc("/davinci/{project}/epics", handlers.GetEpicsProject).Methods("GET")
 	route.HandleFunc("/davinci/typeref/{ref}/", handlers.GetTypeRef).Methods("GET")

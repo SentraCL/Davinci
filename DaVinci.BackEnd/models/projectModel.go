@@ -164,7 +164,7 @@ func (pm *ProjectModel) SaveEpicType(projectCode string, epicType EpicType) {
 	}
 }
 
-//SaveEpicType , Almacena tipos de Epicos
+//GetAllEpicType , Obtiene tipos de Epicos
 func (pm *ProjectModel) GetAllEpicType(projectCode string) []EpicType {
 	session, err := GetSession()
 	defer session.Close()

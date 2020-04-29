@@ -32,7 +32,7 @@
 
         <hsc-menu-bar-item label="Datos">
           <hsc-menu-item label="Cargar" @click="showLog('Cargar Datos')" />
-          <hsc-menu-item label="Crear Tipos de Datos" @click="showLog('Crear Datos')" />
+          <hsc-menu-item label="Crear Tipos de Datos" @click="doDataManager()" />
           <hsc-menu-item label="Buscar" @click="showLog('Buscar Datos')" />
         </hsc-menu-bar-item>
 
@@ -48,6 +48,8 @@
       <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
+
+          <!-- ESCRITORIO DE TRABAJO -->
           <workspace ref="workspace" :tasks.sync="tasks">
           </workspace>
 
@@ -56,7 +58,7 @@
       </div>
     </hsc-menu-style-white>
 
-
+    <!-- PANELES MODALES  -->
     <side-panel :show.sync="sidePanel.show">
       <div slot="content">
         <span v-if="sidePanel.isUS">
@@ -64,6 +66,9 @@
         </span>
         <span v-if="sidePanel.isEpic">
           <repository-epic :idEpic.sync="idEpic" v-on:found="getEpic()" v-on:toClose="closeRepositoryEpic()"></repository-epic>
+        </span>
+        <span v-if="sidePanel.isDataManager">
+          <data-manager v-on:toClose="closeDataManager()"></data-manager>
         </span>
       </div>
     </side-panel>
@@ -86,6 +91,7 @@
   import RepositoryEpic from "./Epic/Repository.vue";
   import Password from "./Profile/Password.vue";
   import FindUserStory from "./UserStories/FindUserStory.vue";
+  import DataManager from "./Data/DataManager.vue"
 
   export default {
     name: "subbdomain",
@@ -96,6 +102,7 @@
       RepositoryEpic,
       UserStory,
       FindUserStory,
+      DataManager,
       Password
     },
     props: {},
@@ -132,6 +139,7 @@
         sidePanel: {
           isUS: false,
           isEpic: false,
+          isDataManager: false,
           show: false
         },
 
@@ -164,6 +172,24 @@
     },
 
     methods: {
+      doDataManager(){
+        this.doActivePanel('dataManager');
+        this.sidePanel.show = true;
+      },
+      doFindUserStory() {
+        this.doActivePanel('userStories');
+        this.sidePanel.show = true;
+      },
+      async doFindEpic() {
+        this.doActivePanel('epic');
+        this.sidePanel.show = !this.sidePanel.show;
+      },
+
+      doActivePanel(option){
+        this.sidePanel.isEpic = option=='epic';
+        this.sidePanel.isUS = option=='userStories';
+        this.sidePanel.isDataManager = option=='dataManager';        
+      },
 
       async getEpic() {
         await this.$refs.workspace.takeEpic(this.idEpic);
@@ -176,14 +202,10 @@
       goto(nameLink) {
         window.location.href = '#' + nameLink;
       },
-
-      doFindUserStory() {
-        this.sidePanel.isEpic = false;
-        this.sidePanel.isUS = true;
-        this.sidePanel.show = true;
+      closeDataManager() {
+        //console.log("cierro desde el parent");
+        this.sidePanel.show = false;
       },
-
-
       closeRepositoryEpic() {
         //console.log("cierro desde el parent");
         this.sidePanel.show = false;
@@ -194,7 +216,7 @@
       },
 
       async loadEpics() {
-        this.epics = (await this.getEpics()) == null ? [] : this.getEpics();
+        this.epics = (await this.getEpics()) == null ? [] : await this.getEpics();
       },
 
       createEpic(itemType) {
@@ -205,14 +227,7 @@
         this.$refs.workspace.addNewUserStyory(itemType);
       },
 
-      doFindEpic() {
-        var epics = this.getEpics();
-        //console.log(JSON.stringify(epics));
-        //this.findEpicsDlg.show = true;
-        this.sidePanel.isEpic = true;
-        this.sidePanel.isUS = false;
-        this.sidePanel.show = !this.sidePanel.show;
-      },
+
       showPassword() {
         this.showPasswordDlg.show = true;
         this.showForm = true;

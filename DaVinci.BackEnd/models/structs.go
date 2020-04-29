@@ -53,6 +53,7 @@ type Project struct {
 	Avatar64      string        `bson:"avatar64"`
 	Repository    []Repository  `bson:"repository"`
 	Users         []UserProject `bson:"users"`
+	DataStored    DataStored    `bson:"dataStored"`
 	Epics         Epics         `bson:"epics"`
 	UserStories   UserStories   `bson:"userStories"`
 }
@@ -301,11 +302,17 @@ type Activities struct {
 	UserStoriesRef []UserStoriesRef    `json:"userStoriesRef" bson:"userStoriesRef"`
 }
 
+//DataStored , Repositorio de Datos de Prueba
+type DataStored struct {
+	DataTypes []DataType `json:"dataTypes" bson:"dataTypes"`
+}
+
 //DataType , es la definicion del tipo de dato a cargar.
 type DataType struct {
-	ID           string `json:"id" bson:"_id"`
-	PrincipalKey string `json:"principalKey" bson:"principalKey"`
-	Name         string `json:"name" bson:"name"`
-	Description  string `json:"description" bson:"description"`
-	Icon         string `json:"icon" bson:"icon64"`
+	ID           string    `json:"id" bson:"_id"`
+	PrincipalKey string    `json:"principalKey" bson:"principalKey"`
+	Name         string    `json:"name" bson:"name"`
+	Date         time.Time `json:"date" bson:"date"`
+	Description  string    `json:"description" bson:"description"`
+	Icon         string    `json:"icon" bson:"icon64"`
 }

@@ -82,6 +82,7 @@
     },
     created() {
       this.loadProjects();
+      this.proItem = this.templateNewProject();
     },
 
     computed: {

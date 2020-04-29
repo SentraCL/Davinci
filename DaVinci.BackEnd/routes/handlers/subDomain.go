@@ -300,3 +300,19 @@ func (h *Handler) SaveEpicProject(responseW http.ResponseWriter, request *http.R
 
 	}
 }
+
+
+//SaveDataType , Save a Type Of Data Project
+func (h *Handler) SaveDataType(responseW http.ResponseWriter, request *http.Request) {
+	if h.isOnline(request) {
+		params := mux.Vars(request)
+		projectName := params["project"]
+		dcode := util.DavinciCode{}
+		projectCode := dcode.Encript(projectName)		
+		dataType := models.DataType{}
+		decoder := json.NewDecoder(request.Body)
+		decoder.Decode(&dataType)
+		dataType = projectCtrl.SaveDataType(projectCode, dataType)
+		h.ResponseJSON(responseW, dataType)
+	}
+}
