@@ -121,6 +121,12 @@ Vue.mixin({
       return inventionDef;
     },
 
+    getProjectDomain(){
+      var pathname = window.location.pathname;
+      var projectName = pathname.split("/")[2];
+      return projectName;
+    },
+
     async getCodeProject() {
       var code = "";
       var pathname = window.location.pathname;

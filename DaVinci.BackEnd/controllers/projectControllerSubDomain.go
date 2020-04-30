@@ -85,3 +85,15 @@ func (pc *ProjectController) SaveDataType(projectCode string, dataType models.Da
 	projectModel.SaveDataType(projectCode, &dataType)
 	return dataType
 }
+
+//GetAllDataTypes Retorna todos los tipos de inventos por proyecto
+func (pc *ProjectController) GetAllDataTypes(projectCode string) []models.DataType {
+	dataTypes := projectModel.GetAllDataTypes(projectCode)
+	return dataTypes
+}
+
+//GetDataTypeByID Retorna un tipo de data segun ID
+func (pc *ProjectController) GetDataTypeByID(projectCode string, id string) models.DataType {
+	dataType := projectModel.GetDataTypeByID(projectCode, id)
+	return dataType
+}

@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	models "../../models"
 	util "../../util"
@@ -301,18 +305,76 @@ func (h *Handler) SaveEpicProject(responseW http.ResponseWriter, request *http.R
 	}
 }
 
-
 //SaveDataType , Save a Type Of Data Project
 func (h *Handler) SaveDataType(responseW http.ResponseWriter, request *http.Request) {
 	if h.isOnline(request) {
 		params := mux.Vars(request)
 		projectName := params["project"]
 		dcode := util.DavinciCode{}
-		projectCode := dcode.Encript(projectName)		
+		projectCode := dcode.Encript(projectName)
 		dataType := models.DataType{}
 		decoder := json.NewDecoder(request.Body)
 		decoder.Decode(&dataType)
 		dataType = projectCtrl.SaveDataType(projectCode, dataType)
 		h.ResponseJSON(responseW, dataType)
+	}
+}
+
+//GetAllDataTypes , retorna en formato JSON Tipos de datos segun codigo de proyecto
+func (h *Handler) GetAllDataTypes(responseW http.ResponseWriter, request *http.Request) {
+	if h.isOnline(request) {
+		params := mux.Vars(request)
+		projectName := params["project"]
+		dcode := util.DavinciCode{}
+		projectCode := dcode.Encript(projectName)
+		dataTypes := projectCtrl.GetAllDataTypes(projectCode)
+		h.ResponseJSON(responseW, dataTypes)
+	}
+}
+
+//GetDataTypeByID , Retorna JSON con tipo de dato segun su ID
+func (h *Handler) GetDataTypeByID(responseW http.ResponseWriter, request *http.Request) {
+	if h.isOnline(request) {
+		params := mux.Vars(request)
+		projectName := params["project"]
+		id := params["id"]
+		dcode := util.DavinciCode{}
+		projectCode := dcode.Encript(projectName)
+		dataType := projectCtrl.GetDataTypeByID(projectCode, id)
+		h.ResponseJSON(responseW, dataType)
+	}
+}
+
+//GetIconDataTypeByID , Imagen en base64
+func (h *Handler) GetIconDataTypeByID(w http.ResponseWriter, r *http.Request) {
+	if h.isOnline(r) {
+		params := mux.Vars(r)
+		projectName := params["project"]
+		id := params["id"]
+		dcode := util.DavinciCode{}
+		projectCode := dcode.Encript(projectName)
+		dataType := projectCtrl.GetDataTypeByID(projectCode, id)
+		h.ResponseError = "EOF"
+		image64 := dataType.Icon
+		if len(image64) > 0 {
+			//log.Println(image64)
+			format := strings.Split(image64, ";")[0]
+			format = strings.Split(format, ":")[1]
+
+			log.Println(format)
+
+			content64 := strings.Split(image64, ",")[1]
+			w.Header().Set("Content-Type", format)
+			p, err := base64.StdEncoding.DecodeString(content64)
+			if err != nil {
+				http.Error(w, "internal error", 500)
+				return
+			}
+			w.Header().Set("Content-Length", strconv.Itoa(len(p))) //len(dec)
+			io.WriteString(w, string(p))
+		} else {
+			r.Header.Set("Content-Type", "application/json")
+			h.ResponseJSON(w, h.ResponseError)
+		}
 	}
 }

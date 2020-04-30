@@ -314,5 +314,5 @@ type DataType struct {
 	Name         string    `json:"name" bson:"name"`
 	Date         time.Time `json:"date" bson:"date"`
 	Description  string    `json:"description" bson:"description"`
-	Icon         string    `json:"icon" bson:"icon64"`
+	Icon         string    `json:"icon64" bson:"icon64"`
 }

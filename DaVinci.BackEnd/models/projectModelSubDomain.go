@@ -138,7 +138,7 @@ func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStori
 	for index, usTyped := range usTypes {
 		if usTyped.Code == usType.Code {
 			find = true
-			fmt.Println("UPDATE [OK]")
+			//fmt.Println("UPDATE [OK]")
 			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
@@ -150,7 +150,7 @@ func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStori
 		usTypes = append(usTypes, usType)
 
 		if err == nil {
-			fmt.Println("INSERT [OK]")
+			//fmt.Println("INSERT [OK]")
 			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
@@ -158,7 +158,7 @@ func (pm *ProjectModel) SaveUserStoriesType(projectCode string, usType UserStori
 				bson.M{"$set": bson.M{"userStories.types": usTypes}},
 			)
 		} else {
-			fmt.Println("SAVE [NOK]")
+			//fmt.Println("SAVE [NOK]")
 		}
 	}
 }
@@ -222,7 +222,7 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 
 				if us.LastVersionIndex+1 == len(us.Versions) {
 					//Actualizo fecha, solo se puede modificar la ultima version de una Historia de Usuario
-					fmt.Println("UPDATE [OK] >>", us.ID)
+					//fmt.Println("UPDATE [OK] >>", us.ID)
 				} else {
 					//Aumento la Version, considerando que el arreglo trae una nueva version.
 					us.LastVersionIndex = us.LastVersionIndex + 1
@@ -240,7 +240,7 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 		us.Versions[0].Date = time.Now()
 		usRepository = append(usRepository, us)
 		if err == nil {
-			fmt.Println("INSERT [OK] =>", us.ID)
+			//fmt.Println("INSERT [OK] =>", us.ID)
 			projectCollector.Update(
 				//Where
 				bson.M{"_id": projectCode},
@@ -250,7 +250,7 @@ func (pm *ProjectModel) SaveUserStory(projectCode string, us UserStory) UserStor
 				bson.M{"$set": bson.M{"userStories.repository": usRepository}})
 
 		} else {
-			fmt.Println("SAVE [NOK]")
+			//fmt.Println("SAVE [NOK]")
 		}
 	}
 	return us
@@ -263,8 +263,8 @@ func (pm *ProjectModel) GetUserStoryByCode(projectCode string, codeValue string)
 	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
-	fmt.Println("MODEL>> projectCode:", projectCode)
-	fmt.Println("MODEL>> codeValue:", codeValue)
+	//fmt.Println("MODEL>> projectCode:", projectCode)
+	//fmt.Println("MODEL>> codeValue:", codeValue)
 
 	projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	usRepository := projectResult.UserStories.Repository
@@ -288,9 +288,9 @@ func (pm *ProjectModel) GetUserStoryByCodeVersion(projectCode string, uscode str
 	err = projectCollector.Find(bson.M{"_id": projectCode}).Select(bson.M{"userStories.repository": bson.M{"$elemMatch": bson.M{"id": uscode}}}).One(&projectResult)
 
 	if err == nil {
-		fmt.Println("MODEL>> projectCollector:", util.StringifyJSON(projectResult))
+		//fmt.Println("MODEL>> projectCollector:", util.StringifyJSON(projectResult))
 	} else {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 
 
@@ -350,9 +350,9 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
-	fmt.Println("ID=", epic.ID)
+	//fmt.Println("ID=", epic.ID)
 
-	fmt.Println("MODEL>> projectCode:", projectCode)
+	//fmt.Println("MODEL>> projectCode:", projectCode)
 
 	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 
@@ -365,8 +365,8 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		dcode := util.DavinciCode{}
 		idCoded := dcode.Encript(epic.Code)
 
-		fmt.Println("MODEL>> epic.ID	:", epic.ID)
-		fmt.Println("MODEL>> epic.Code	:", epic.Code)
+		//fmt.Println("MODEL>> epic.ID	:", epic.ID)
+		//fmt.Println("MODEL>> epic.Code	:", epic.Code)
 
 		if epic.ID != idCoded || epic.ID == "" {
 			epic.ID = idCoded
@@ -374,7 +374,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 			if err == nil {
 				newRepo := []Epic{}
 				newRepo = append(epicRepository, *epic)
-				fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
+				//fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
 				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
@@ -382,14 +382,14 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 					bson.M{"$set": bson.M{"epics.repository": newRepo}})
 				epic.Save = true
 			} else {
-				fmt.Println("SAVE [NOK]")
+				//fmt.Println("SAVE [NOK]")
 				return false
 			}
 		} else {
 			for index, epicDB := range epicRepository {
 				epic.Date = time.Now()
 				if epicDB.Code == epic.Code {
-					fmt.Println(epic.ID, " UPDATE [OK] =>", epic.Code)
+					//fmt.Println(epic.ID, " UPDATE [OK] =>", epic.Code)
 					projectCollector.Update(
 						//Where
 						bson.M{"_id": projectCode},
@@ -401,7 +401,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		}
 		return true
 	}
-	fmt.Println("SAVE [NOK]", err)
+	//fmt.Println("SAVE [NOK]", err)
 	return false
 }
 
@@ -430,9 +430,9 @@ func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) boo
 	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
-	fmt.Println("ID=", dataType.ID)
+	//fmt.Println("ID=", dataType.ID)
 
-	fmt.Println("MODEL>> projectCode:", projectCode)
+	//fmt.Println("MODEL>> projectCode:", projectCode)
 
 	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 
@@ -447,21 +447,21 @@ func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) boo
 			if err == nil {
 				newRepo := []DataType{}
 				newRepo = append(dataTypes, *dataType)
-				fmt.Println(dataType.ID, " NEW [OK] =>", dataType.ID)
+				//fmt.Println(dataType.ID, " NEW [OK] =>", dataType.ID)
 				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
 					//Set
 					bson.M{"$set": bson.M{"dataStored.dataTypes": newRepo}})
 			} else {
-				fmt.Println("SAVE [NOK]")
+				//fmt.Println("SAVE [NOK]")
 				return false
 			}
 		} else {
 			for index, dataTypeDB := range dataTypes {
 				dataType.Date = time.Now()
 				if dataTypeDB.ID == dataType.ID {
-					fmt.Println(dataType.ID, " UPDATE [OK] =>", dataType.ID)
+					//fmt.Println(dataType.ID, " UPDATE [OK] =>", dataType.ID)
 					projectCollector.Update(
 						//Where
 						bson.M{"_id": projectCode},
@@ -472,6 +472,46 @@ func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) boo
 		}
 		return true
 	}
-	fmt.Println("SAVE [NOK]", err)
+	//fmt.Println("SAVE [NOK]", err)
 	return false
+}
+
+//GetAllDataTypes , retorna todos los tipos de datos segun el codigo de un proyecto
+func (pm *ProjectModel) GetAllDataTypes(projectCode string) []DataType {
+	session, err := GetSession()
+	defer session.Close()
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
+	projectResult := Project{}
+
+	//fmt.Println("MODEL>> projectCode:", projectCode)
+
+	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	if err == nil {
+		return projectResult.DataStored.DataTypes
+	} else {
+		return []DataType{}
+	}
+
+}
+
+//GetDataTypeByID , retorna un tipo de datos segun ID
+func (pm *ProjectModel) GetDataTypeByID(projectCode string, idValue string) DataType {
+	session, _ := GetSession()
+	defer session.Close()
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
+	projectResult := Project{}
+
+	//fmt.Println("MODEL>> projectCode:", projectCode)
+	//fmt.Println("MODEL>> ID:", idValue)
+
+	projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	usRepository := projectResult.DataStored.DataTypes
+	dataType := DataType{}
+	//TODO : Ver forma de evitar iterar para encontrar, Seguramente mongodb tiene algo mejor
+	for _, dataTypeDB := range usRepository {
+		if dataTypeDB.ID == idValue {
+			dataType = dataTypeDB
+		}
+	}
+	return dataType
 }
