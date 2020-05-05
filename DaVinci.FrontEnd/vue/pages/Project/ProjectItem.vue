@@ -14,6 +14,7 @@
                     <span style="color:greenyellow"><small>@{{alias}}</small></span>
                 </h4>
             </div>
+
             <div class="col-lg-12">
                 <slot name="description">
 
@@ -48,6 +49,7 @@
                         <h6>{{data}}<br><small>Datos</small></h6>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-4">
                         <a href="#" style="color:black" @click="doExport" title="Exportar proyecto para enviar a otro sistema Davinci">
@@ -56,6 +58,7 @@
                             </small>
                         </a>
                     </div>
+
                     <div class="col-md-4">
                         <a href="#" style="color:black" title="Genera reporte de Epicos, Actividades e Historias de Usuario">
                             <small>
@@ -123,7 +126,56 @@
             </span>
         </m-dialog>
 
+         <m-dialog :id="project.code" :title="exportDialog.title" :show.sync="exportDialog.show" :isClose.sync="exportDialog.close">
+            <span slot="dialog">
+                <div class="row">
+                    <span class="col-md-8">
+                        <div class="row">
+                            <span class="col-md-2">
+                                <img v-if="avatar" class="avatar border-white" @click="avatarClick()" :src="avatar" alt="...">
+                                <img v-if="!avatar" class="avatar border-white" @click="avatarClick()" src="@/assets/img/davinci-logo.png" alt="...">
+
+                            </span>
+                            <span class="col-md-6">
+                                <h3><i class="fa fa-copy"></i> Exportar Proyecto {{project.name}}</h3>
+                            </span>
+                        </div>
+                        
+
+                        <div class="row">
+                            <span class="col-md-12">
+                                <hr />
+                                <div>
+                                    <check-box :value.sync="copy.users" label="Usuarios"></check-box>
+                                    <check-box :value.sync="copy.epics" label="Tipos de Epicos"></check-box>
+                                    <check-box :value.sync="copy.userStories" label="Tipos de Historias de Usuario"></check-box>
+                                    <check-box :value.sync="copy.data" label="Datos"></check-box>
+                                </div>
+                            </span>
+                        </div>
+                    </span>
+                    <span class="col-md-4">
+                        <img src="@/assets/img/leo.png"><br />
+                        Antes de exportar el proyecto <i>{{project.name}}</i>, Debes Asignarle un nombre Diferente, y seleccionar que atributos desea replicar.
+                    </span>
+                </div>
+            </span>
+            <span slot="actions">
+                <span class="btn-group">
+                    <d-button type="success" class="btn" round @click.native.prevent="doCopy">
+                        Exportar
+                    </d-button>
+                    <d-button type="warning" class="btn" round @click.native.prevent="closeDialog">
+                        Cerrar
+                    </d-button>
+                </span>
+            </span>
+        </m-dialog>
+
     </div>
+
+
+    
 
 </template>
 <script>
@@ -153,9 +205,23 @@
                     title: "",
                     html: ""
                 },
+                 exportDialog: {
+                    show: false,
+                    close: false,
+                    title: "",
+                    html: ""
+                },
                 copy: {
                     code: this.project.code,
                     name: "Copia de " + this.project.name,
+                    users: 0,
+                    epics: 0,
+                    userStories: 0,
+                    data: 0
+                },
+                 export: {
+                    code: this.project.code,
+                    name: "Exportar Proyecto " + this.project.name,
                     users: 0,
                     epics: 0,
                     userStories: 0,
@@ -175,12 +241,14 @@
         methods: {
             closeDialog() {
                 this.copyDialog.show = false;
+                this.exportDialog.show = false;
             },
             showCopy() {
                 this.copyDialog.show = true;
             },
             doExport() {
-                console.log("Exportar Proyecto");
+                //console.log("Exportar Proyecto");
+                this.exportDialog.show = true;
             },
             async doCopy() {
                 var projects = []

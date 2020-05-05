@@ -8,6 +8,7 @@
       <div class="col-lg-3" v-for="proItem in filterProject">
         <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
           <span slot="description">
+            <!-- ToDo: hacer que se corte texto de resumen. -->
             <p v-html="proItem.resume"></p>
 
             <small><a v-if="!proItem.isNew" :href="'/davinci/' + proItem.alias + '/'" target="_blank"><i class="ti-share"></i> ir al sitio..</a></small>

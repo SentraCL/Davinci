@@ -193,6 +193,7 @@
 
       async getEpic() {
         await this.$refs.workspace.takeEpic(this.idEpic);
+
       },
 
       async getUserStory() {
