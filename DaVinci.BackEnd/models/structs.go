@@ -304,7 +304,8 @@ type Activities struct {
 
 //DataStored , Repositorio de Datos de Prueba
 type DataStored struct {
-	DataTypes []DataType `json:"dataTypes" bson:"dataTypes"`
+	DataTypes  []DataType `json:"dataTypes" bson:"dataTypes"`
+	Repository []TestData `json:"repository" bson:"repository"`
 }
 
 //DataType , es la definicion del tipo de dato a cargar.
@@ -315,4 +316,13 @@ type DataType struct {
 	Date         time.Time `json:"date" bson:"date"`
 	Description  string    `json:"description" bson:"description"`
 	Icon         string    `json:"icon64" bson:"icon64"`
+}
+
+//TestData , Almacen de Datos
+type TestData struct {
+	ID        string            `json:"id" bson:"_id"`
+	DataType  DataType          `json:"dataType" bson:"dataType"`
+	Atributes map[string]string `json:"atributes" bson:"atributes"`
+	Date      time.Time         `json:"date" bson:"date"`
+	Owner     string            `json:"owner" bson:"owner"`
 }
