@@ -26,6 +26,21 @@ func (h *Handler) CopyProject(responseW http.ResponseWriter, request *http.Reque
 	projectCtrl.Copy(copyProjectRQ)
 }
 
+//ExportProject : Exportar proyecto
+func (h *Handler) ExportProject(responseW http.ResponseWriter, request *http.Request) {
+	if !h.isDavinciOnline(request) {
+		return
+	}
+	exportProjectRQ := models.ExportProjectRequest{}
+	decoder := json.NewDecoder(request.Body)
+	decoder.Decode(&exportProjectRQ)
+	
+	
+	project := projectCtrl.Export(exportProjectRQ)
+	request.Header.Set("Content-Type", "application/json")
+	h.ResponseJSON(responseW, project)
+}
+
 //SaveProject : Guarda proyectos.
 func (h *Handler) SaveProject(responseW http.ResponseWriter, request *http.Request) {
 	if !h.isDavinciOnline(request) {
@@ -57,6 +72,8 @@ func (h *Handler) GetAllProject(responseW http.ResponseWriter, request *http.Req
 	request.Header.Set("Content-Type", "application/json")
 	h.ResponseJSON(responseW, projects)
 }
+
+
 
 //GetAvatarProject : Obtiene el listado de todos los proyectos.
 func (h *Handler) GetAvatarProject(w http.ResponseWriter, r *http.Request) {

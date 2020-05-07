@@ -23,6 +23,17 @@ type CopyProjectRequest struct {
 	Data        int    `json:"data"`
 }
 
+//ExportProjectRequest , Request que representa exportacion de un proyecto
+type ExportProjectRequest struct {
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	Users       int    `json:"users"`
+	Epics       int    `json:"epics"`
+	UserStories int    `json:"userStories"`
+	Data        int    `json:"data"`
+	Avatar		int    `json:"avatar"`
+}
+
 //ExecuteResponse , Retonar mensajes hacia front-end
 type ExecuteResponse struct {
 	StatusCode string      `json:"status"`

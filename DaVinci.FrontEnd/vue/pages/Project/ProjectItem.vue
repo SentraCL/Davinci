@@ -14,7 +14,7 @@
                     <span style="color:greenyellow"><small>@{{alias}}</small></span>
                 </h4>
             </div>
-
+            
             <div class="col-lg-12">
                 <slot name="description">
 
@@ -52,7 +52,7 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="#" style="color:black" @click="doExport" title="Exportar proyecto para enviar a otro sistema Davinci">
+                        <a href="#" style="color:black" @click="showExport" title="Exportar proyecto para enviar a otro sistema Davinci">
                             <small>
                                 <i class="fa fa-briefcase"></i> Exportar
                             </small>
@@ -96,14 +96,14 @@
 
                         <div class="row">
                             <span class="col-md-12">
-                                <input-text label="Nombre Copia" v-model="copy.name" autocomplete="off">
+                                <input-text label="Nombre Copia" v-model="copyProject.name" autocomplete="off">
                                 </input-text>
                                 <hr />
                                 <div>
-                                    <check-box :value.sync="copy.users" label="Usuarios"></check-box>
-                                    <check-box :value.sync="copy.epics" label="Tipos de Epicos"></check-box>
-                                    <check-box :value.sync="copy.userStories" label="Tipos de Historias de Usuario"></check-box>
-                                    <check-box :value.sync="copy.data" label="Datos"></check-box>
+                                    <check-box :value.sync="copyProject.users" label="Usuarios"></check-box>
+                                    <check-box :value.sync="copyProject.epics" label="Tipos de Epicos"></check-box>
+                                    <check-box :value.sync="copyProject.userStories" label="Tipos de Historias de Usuario"></check-box>
+                                    <check-box :value.sync="copyProject.data" label="Datos"></check-box>
                                 </div>
                             </span>
                         </div>
@@ -137,7 +137,7 @@
 
                             </span>
                             <span class="col-md-6">
-                                <h3><i class="fa fa-copy"></i> Exportar Proyecto {{project.name}}</h3>
+                                <h3><i class="fa fa-export"></i> Exportar Proyecto {{project.name}}</h3>
                             </span>
                         </div>
                         
@@ -146,10 +146,11 @@
                             <span class="col-md-12">
                                 <hr />
                                 <div>
-                                    <check-box :value.sync="copy.users" label="Usuarios"></check-box>
-                                    <check-box :value.sync="copy.epics" label="Tipos de Epicos"></check-box>
-                                    <check-box :value.sync="copy.userStories" label="Tipos de Historias de Usuario"></check-box>
-                                    <check-box :value.sync="copy.data" label="Datos"></check-box>
+                                    <check-box :value.sync="exportProject.avatar" label="Logo"></check-box>
+                                    <check-box :value.sync="exportProject.users" label="Usuarios"></check-box>
+                                    <check-box :value.sync="exportProject.epics" label="Tipos de Epicos"></check-box>
+                                    <check-box :value.sync="exportProject.userStories" label="Tipos de Historias de Usuario"></check-box>
+                                    <check-box :value.sync="exportProject.data" label="Datos"></check-box>
                                 </div>
                             </span>
                         </div>
@@ -162,7 +163,7 @@
             </span>
             <span slot="actions">
                 <span class="btn-group">
-                    <d-button type="success" class="btn" round @click.native.prevent="doCopy">
+                    <d-button type="success" class="btn" round @click.native.prevent="doExport">
                         Exportar
                     </d-button>
                     <d-button type="warning" class="btn" round @click.native.prevent="closeDialog">
@@ -211,7 +212,7 @@
                     title: "",
                     html: ""
                 },
-                copy: {
+                copyProject: {
                     code: this.project.code,
                     name: "Copia de " + this.project.name,
                     users: 0,
@@ -219,13 +220,14 @@
                     userStories: 0,
                     data: 0
                 },
-                 export: {
+                 exportProject: {
                     code: this.project.code,
-                    name: "Exportar Proyecto " + this.project.name,
+                    name: this.project.name,
                     users: 0,
                     epics: 0,
                     userStories: 0,
-                    data: 0
+                    data: 0,
+                    avatar: 0
                 }
             }
         },
@@ -246,27 +248,41 @@
             showCopy() {
                 this.copyDialog.show = true;
             },
-            doExport() {
-                //console.log("Exportar Proyecto");
+            showExport() {
                 this.exportDialog.show = true;
+            },
+            async doExport(){
+                await this.axios.post("/api/project/export/", this.exportProject).then(rs => {
+                        this.$emit("reload")
+                        const data = JSON.stringify(rs.data);
+                         const blob = new Blob([data], {type: 'text/plain'})
+                         const e = document.createEvent('MouseEvents'),
+                         a = document.createElement('a');
+                         a.download = this.project.name+".json";
+                         a.href = window.URL.createObjectURL(blob);
+                         a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+                         e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                         a.dispatchEvent(e);
+                         
+                    });
             },
             async doCopy() {
                 var projects = []
                 await this.axios.post("/api/project/getAll/").then(rs => {
                     projects = rs.data
                 });
-                var copyName = this.copy.name;
+                var copyName = this.copyProject.name;
                 var filter = projects.filter(function (project) {
                     return project.name == copyName
                 })
 
                 if (filter.length == 0) {
-                    await this.axios.post(`/api/project/copy/`, this.copy).then(rs => {
+                    await this.axios.post(`/api/project/copy/`, this.copyProject).then(rs => {
                         this.$emit("reload")
                         this.copyDialog.show = false;
                     });
                 }else{
-                    alert(`El Proyecto ${copyNames} ya Existe.`);                    
+                    alert(`El Proyecto ${copyName} ya Existe.`);                    
                 }
             },
             avatarClick() {

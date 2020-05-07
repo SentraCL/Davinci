@@ -96,6 +96,35 @@ func (pc *ProjectController) Copy(projectCopyRQ models.CopyProjectRequest) bool 
 	return false
 }
 
+//Export : Copiar Proyecto
+func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest) models.Project {
+
+	project := pc.GetProjectByCode(projectExportRQ.Code)
+
+	if projectExportRQ.Avatar == 0 {
+		project.Avatar64 = ""
+		log.Print("avatar = nil")
+	}
+	if projectExportRQ.Data == 0 {
+		project.Repository = nil
+		log.Print("repository = nil")
+	}
+	if projectExportRQ.Users == 0 {
+		project.Users = nil
+		log.Print("users = nil")
+	}
+	if projectExportRQ.Epics == 0 {
+		project.Epics = models.Epics{}
+		log.Print("epics = nil")
+	}
+	if projectExportRQ.UserStories == 0 {
+		project.UserStories = models.UserStories{}
+		log.Print("stories = nil")
+	}
+	
+	return project
+}
+
 //Save : Upsert Project!!
 func (pc *ProjectController) Save(projectRQ models.ProjectRequest) bool {
 	project := pc.translateRequestToBO(projectRQ)
@@ -121,6 +150,13 @@ func (pc *ProjectController) GetAvatarByAlias(alias string) string {
 	project := projectModel.GetProjectByCode(projectCode)
 	//log.Println(util.StringifyJSON(project))
 	return project.Avatar64
+}
+
+//GetProjectByCode : Retorna el proyecto segun su codigo
+func (pc *ProjectController) GetProjectByCode(code string) models.Project {
+	project := projectModel.GetProjectByCode(code)
+	//log.Println(util.StringifyJSON(project))
+	return project
 }
 
 //AddInvention :Agrega datos de inventos por Codigo Proyecto
