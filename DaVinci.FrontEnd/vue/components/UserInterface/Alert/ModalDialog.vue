@@ -2,15 +2,15 @@
 
     <span v-if="show">
         <!-- The Modal -->
-        <div :id="id" class="fixedmodal">
+        <div :id="id" class="fixedmodal" @click="toClose()"">
 
             <!-- Modal content -->
             <div class="fixedmodal-content" v-if="show">
 
-                <span>
+                <span > 
                     <span>
                         <div class="md-title">
-                            <span class="closemodal" v-if="doClose" @click="toClose()">&times;</span>
+                            <span class="closemodal" v-if="doClose" @click="toClose()" >&times;</span>
                             <h4 v-html="title"></h4>
                         </div>
                     </span>
@@ -90,11 +90,13 @@
         methods: {
             toClose: function () {
                 var fixedmodal = document.getElementById(this.id);
-                fixedmodal.style.display = "none";
-                this.$emit("update:time", 0);
-                this.$emit("update:show", false);
-                this.$emit("off");
-                this.$emit("onClose");
+                if (fixedmodal){
+                    fixedmodal.style.display = "none";
+                    this.$emit("update:time", 0);
+                    this.$emit("update:show", false);
+                    this.$emit("off");
+                    this.$emit("onClose");
+                }
             }
         }
     };
