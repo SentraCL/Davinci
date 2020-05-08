@@ -313,12 +313,12 @@
         var inventionSequence = "";
 
         if (!this.codeOK) {
-          alert("No ha determinado todos los valores que forman el codigo identificador de esta historia de usuario.");
+          this.alertInfo("No ha determinado todos los valores que forman el codigo identificador de esta historia de usuario.");
           return false;
         }
 
         if (this.isEmptyOrSpaces(this.userStoryForm.fields.description)) {
-          alert("Las Historias de Usuarios, debe poseer si o si una descripcion.");
+          this.alertInfo("Las Historias de Usuarios, debe poseer si o si una descripcion.");
           return false;
         }
 
@@ -433,7 +433,7 @@
           code += value;
         });
         this.codeSimil = "";
-        alert("Historia de usuario guardada");
+        this.alertInfo("Historia de usuario guardada");
       }
 
     }

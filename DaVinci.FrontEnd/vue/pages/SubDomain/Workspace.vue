@@ -152,7 +152,7 @@
           if (task.isUserStory) {
             if (Object.keys(task.userStory).indexOf("us") > -1) {
               if (code == task.userStory.us.id) {
-                //alert("Esta Historia de Usuario (" + code + ") ya se encuentra abierta.");
+                //this.alertInfo("Esta Historia de Usuario (" + code + ") ya se encuentra abierta.");
                 goExit = true;
                 return false;
               }

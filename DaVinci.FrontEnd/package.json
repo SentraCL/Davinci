@@ -47,6 +47,7 @@
     "vue-notifyjs": "^0.4.3",
     "vue-picture-input": "^2.1.6",
     "vue-router": "^3.1.6",
+    "vue-toast-notification": "^0.3.0",
     "vuedraggable": "^2.23.2",
     "vuejs-uib-pagination": "^1.0.6",
     "webpack-cli": "^3.3.11"

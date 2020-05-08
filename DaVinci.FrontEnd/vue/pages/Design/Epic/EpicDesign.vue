@@ -265,7 +265,7 @@
                         artifactType: ""
                     };
                 } else {
-                    alert("NOOO!!!.");
+                    this.alertInfo("NOOO!!!.");
                 }
             },
             getNameInventionByCode(code) {
@@ -293,7 +293,7 @@
                         value: ""
                     };
                 } else {
-                    alert("NOOO!!!.");
+                    this.alertInfo("NOOO!!!.");
                 }
             },
 
@@ -313,7 +313,7 @@
                         inventions: this.epicForm.inventions
                     }
                     await this.axios.post(`/api/project/${this.project.code}/design/epic`, epicType).then(rs => {
-                        alert("Epico Guardado");
+                        this.alertInfo("Epico Guardado");
                     });
                 }
             },

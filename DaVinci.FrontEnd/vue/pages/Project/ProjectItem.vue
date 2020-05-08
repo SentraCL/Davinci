@@ -180,6 +180,7 @@
 
 </template>
 <script>
+
     export default {
         name: "project-item",
         computed: {
@@ -280,9 +281,10 @@
                     await this.axios.post(`/api/project/copy/`, this.copyProject).then(rs => {
                         this.$emit("reload")
                         this.copyDialog.show = false;
+                        this.alertInfo("Copia de Proyecto " + copyname + ", fue creado")
                     });
                 }else{
-                    alert(`El Proyecto ${copyName} ya Existe.`);                    
+                    this.alertInfo(`El Proyecto ${copyName} ya Existe.`);                    
                 }
             },
             avatarClick() {

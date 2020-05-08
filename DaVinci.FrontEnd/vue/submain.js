@@ -2,6 +2,9 @@ import Vue from "vue";
 import SubApp from "./SubApp";
 import router from "./router/subRoutes";
 
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-default.css';
+
 import VueAxios from "vue-axios";
 import axios from "axios";
 Vue.use(VueAxios, axios);
@@ -27,9 +30,11 @@ import "jquery-ui/themes/base/theme.css";
 //Metodo comunes en las distintas Vistas
 Vue.mixin({
   methods: {
+    
     formatDays: date => {
       //2019-09-23 12:02:17
       var createDate = new Date(date);
+      
 
       if (Object.prototype.toString.call(createDate) === "[object Date]") {
         var today = new Date();
@@ -71,6 +76,38 @@ Vue.mixin({
         //if Hace N años
       }
       return "";
+    },
+    
+    alertSuccess: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'success',
+      });
+    },
+
+    alertError: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'error',
+      });
+    },
+
+    alertInfo: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'info',
+      });
+
+    },
+
+    alertCustom: function (custom) {
+      Vue.use(VueToast);
+      Vue.$toast.open(
+        custom
+      );
     },
     async getInventionDefByCode(inventionCode) {
       var projectCode = await this.getCodeProject();

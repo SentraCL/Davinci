@@ -205,7 +205,7 @@
                         this.currentForm = inv;
                         this.keyValue = inv.keyValue;
                         this.keyLabel = inv.keyLabel;
-                        this.currentName = inv.name;
+                        this.currentName = inv.name ;
                         this.currentCode = inv.code;
                         this.icon = inv.icon;
                         this.inventionVOs = []
@@ -401,6 +401,7 @@
 
             },
             async save(inventionItem) {
+                //TODO: arreglar algo que a Fdo, un desafio.
                 var inventionTO = {}
                 if (inventionItem.slots == this.NEW) {
                     inventionTO = this.cloneObject(inventionItem)
@@ -410,9 +411,9 @@
                 var keyValue = inventionTO.artifact[this.keyValue];
                 var keyLabel = inventionTO.artifact[this.keyLabel];
 
-                //console.log("inventionTO  : " + JSON.stringify(inventionTO));
-                //console.log("keyValue     : " + JSON.stringify(keyValue));
-                //console.log("keyLabel     : " + JSON.stringify(keyLabel));
+                console.log("inventionTO  : " + JSON.stringify(inventionTO));
+                console.log("keyValue     : " + JSON.stringify(keyValue));
+                console.log("keyLabel     : " + JSON.stringify(keyLabel));
 
                 if (inventionTO.slots == this.NEW) {
                     if (this.isEmptyOrSpaces(keyLabel) || this.isEmptyOrSpaces(keyValue)) {
@@ -508,16 +509,23 @@
                         select[inv.keyValue] = data[inv.keyValue][0]
                         if (Object.keys(select).indexOf(inv.keyLabel) > -1) { select[inv.keyLabel] = data[inv.keyLabel][0] }
                         comboInv.push(select)
+                        //{"010101_date":["2020-05-08 12:14:12.989 -0400 -04"],"Nombre":["Cepillo"],"Precio":["11000"],"SKU":["010101"]}
+
+                        console.log(JSON.stringify(data));
+
+                        var labelInv= data[inv.keyLabel];
+
                         this.find[inv.name].push(key)
-                        var invData = {}
-                        invData.artifact = data;
-                        invData.form = this.currentForm;
-                        invData.slots = key;
-                        invData.title = `<span style="min-width:120px" >${key} </span>`;
-                        invData.subtitle = `${inv.name} : <strong>${select[inv.keyValue]}</strong>`
-                        invData.id = key;
-                        invData.update = data[key + "_date"][0].substring(0, 19);
-                        this.repository[inv.code][key] = invData;
+                        var invDataTAB = {}
+                        invDataTAB.artifact = data;
+                        invDataTAB.form = this.currentForm;
+                        invDataTAB.slots = key;
+                        invDataTAB.title = `<small><span style="min-width:120px" title="${key}:${labelInv}" <strong><p style="width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${labelInv} ${key} </strong></span><small>`;
+                        //invDataTAB.title = `<small>${labelInv}</small>`
+                        invDataTAB.subtitle = `${inv.name} : <strong> ${select[inv.keyValue]}</strong>`
+                        invDataTAB.id = key;
+                        invDataTAB.update = data[key + "_date"][0].substring(0, 19);
+                        this.repository[inv.code][key] = invDataTAB;
                     }
 
                     sessionStorage.setItem(inv.code + this.project.code, JSON.stringify(comboInv));
@@ -633,5 +641,9 @@
         color: black;
         float: left;
         text-decoration: none;
+    }
+
+    .invDataTAB.title{
+
     }
 </style>

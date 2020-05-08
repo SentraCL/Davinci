@@ -313,7 +313,7 @@
                 var activity = this.cloneObject(this.activity);
                 activity['userStories'] = this.userStories;
                 this.$emit("update:activity", activity);
-                alert("Actividad Guardada.");
+                this.alertInfo("Actividad Guardada.");
             },
 
             refreshTab() {

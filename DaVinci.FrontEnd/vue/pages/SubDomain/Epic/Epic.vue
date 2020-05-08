@@ -127,13 +127,13 @@
         //console.log(JSON.stringify(this.inventions));
         for (var key in this.inventions) {
           if (this.inventions[key] == "") {
-            alert("No ha Ingresado el valor para " + key);
+            this.alertInfo("No ha Ingresado el valor para " + key);
             return false;
           }
         }
 
         if (this.isEmptyOrSpaces(this.attributes[this.keyValue])) {
-          alert("No ingreso el Codigo de la Iniciativa");
+          this.alertInfo("No ingreso el Codigo de la Iniciativa");
           return false;
         }
 
@@ -161,7 +161,7 @@
 
         this.epicForm.activityList.forEach(act => {
           if (act.activityForm.activity == activity) {
-            alert("Esta actividad ya fue ingresada.");
+            this.alertInfo("Esta actividad ya fue ingresada.");
             unique = false;
             return false;
           }
@@ -403,7 +403,7 @@
 
 
         if (this.attributes[this.keyValue] == "") {
-          alert("No ha ingresado el Codigo del Epico");
+          this.alertInfo("No ha ingresado el Codigo del Epico");
           return false;
         }
 
@@ -446,7 +446,7 @@
         updatedEpic['formatDate'] = this.formatDays(epicResult.date);
         this.$emit("update:epic", updatedEpic)
         this.showEpicAtrs = true;
-        alert('Epico Guardado.');
+        this.alertInfo('Epico Guardado.');
       }
 
     }

@@ -33,10 +33,10 @@
     methods: {
       validar() {
         if (this.datos.oldData != this.datos.newData) {
-          alert("Las claves no son iguales");
+          this.alertInfo("Las claves no son iguales");
         } else {
           if (this.datos.newData.length < 5) {
-            alert("La clave debe poseer al menos 5 carácteres");
+            this.alertInfo("La clave debe poseer al menos 5 carácteres");
           } else {
             var uno = this.getCodeProject().then(rs => {
               //console.log("/davinci/" + rs + "/user/changePassword/")

@@ -1,4 +1,8 @@
 import Vue from "vue";
+
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-default.css';
+
 import App from "./App";
 import router from "./router/index";
 
@@ -25,6 +29,40 @@ import "jquery-ui/themes/base/datepicker.css";
 //Metodo comunes en las distintas Vistas
 Vue.mixin({
   methods: {
+
+    alertSuccess: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'success',
+      });
+    },
+
+    alertError: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'error',
+      });
+    },
+
+    alertInfo: function (message) {
+      Vue.use(VueToast);
+      Vue.$toast.open({
+        message: message,
+        type: 'info',
+      });
+
+    },
+
+    alertCustom: function (custom) {
+      Vue.use(VueToast);
+      Vue.$toast.open(
+        custom
+      );
+    },
+    
+
     screen: function(theSwitch) {
       var all = document.getElementsByClassName("fixedmodal");
       for (var i = 0; i < all.length; i++) {

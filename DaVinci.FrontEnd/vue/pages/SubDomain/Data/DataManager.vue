@@ -190,7 +190,7 @@
 
       validateSave() {
         if (this.isEmptyOrSpaces(this.dataType.name) || this.isEmptyOrSpaces(this.dataType.principalKey)) {
-          alert('Debe Completar todos los datos indispensables!.');
+          this.alertInfo('Debe Completar todos los datos indispensables!.');
           return false;
         }
         return true;

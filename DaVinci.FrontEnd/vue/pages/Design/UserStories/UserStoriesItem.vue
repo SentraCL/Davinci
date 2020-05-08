@@ -313,7 +313,7 @@
         if (option == this.SAVE) {
 
           if (Object.keys(this.testCaseCode).length == 0) {
-            alert("Aun no asigna la formula del codigo que hara unica esta historia de usuario.");
+            this.alertInfo("Aun no asigna la formula del codigo que hara unica esta historia de usuario.");
             return false;
           }
 
@@ -337,7 +337,7 @@
           //console.log(JSON.stringify(this.userStoriesForm));
           //console.log(JSON.stringify(this.userStoriesForm.preConditions, null, 4));
           await this.axios.post(`/api/project/${this.project.code}/design/userstories`, this.userStoriesForm).then(rs => {
-            alert("Historia de Usuario Guardada..");
+            this.alertInfo("Historia de Usuario Guardada..");
             this.$emit("back");
           });
         }

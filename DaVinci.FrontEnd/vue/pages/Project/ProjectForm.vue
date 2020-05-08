@@ -82,6 +82,7 @@
     </card>
 </template>
 <script>
+
     import avatar from "vue-picture-input";
     export default {
         components: {
@@ -149,6 +150,8 @@
                     status = rs.data;
                 });
                 this.$emit("save");
+
+                this.alertSuccess(`Proyecto ${this.projectForm.name} , Guardado.`);
             },
 
             back() {
@@ -167,6 +170,8 @@
                     status = rs.data;
                 });
                 this.$emit("back");
+                
+                this.alertInfo("Proyecto Eliminado")
             },
             changeAvatar() {
                 if (this.$refs.avatar.image) {

@@ -138,7 +138,7 @@
       },
       addStep() {
         if (this.isEmptyOrSpaces(this.step.step)) {
-          alert("Como minimo debe describir el paso.");
+          this.alertInfo("Como minimo debe describir el paso.");
           return false;
         }
         var step = this.cloneObject(this.step);
