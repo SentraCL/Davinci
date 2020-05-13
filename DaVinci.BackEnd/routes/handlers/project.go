@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"fmt"
 	"strings"
 
 	models "../../models"
@@ -37,8 +38,16 @@ func (h *Handler) ExportProject(responseW http.ResponseWriter, request *http.Req
 	
 	
 	project := projectCtrl.Export(exportProjectRQ)
-	request.Header.Set("Content-Type", "application/json")
-	h.ResponseJSON(responseW, project)
+	request.Header.Set("Content-Type", "text/plain")
+
+	projectString := util.StringifyJSON(project);
+
+	dcode := util.DavinciCode{}
+	exportEncript := dcode.Decript(projectString)
+
+	
+	fmt.Fprintln(responseW, exportEncript)
+	
 }
 
 //SaveProject : Guarda proyectos.
