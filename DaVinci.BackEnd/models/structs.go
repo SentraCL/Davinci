@@ -228,6 +228,12 @@ type PreCondition struct {
 	Value     string       `json:"value" bson:"value"`
 }
 
+//ProjectInOutRequest , Estructura que representa la exportacion e Importacion de un Proyecto
+type ProjectInOutRequest struct{
+	Project Project `json:"project"`
+	Inventions []InventionVO `json:"inventions"`
+}
+
 //Fields , Atributos de la Historia de Usuario.
 type Fields struct {
 	Description    string `json:"description" bson:"description"`

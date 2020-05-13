@@ -62,8 +62,11 @@ Vue.mixin({
       );
     },
     
-    getUserOnline: function(){
-      return "admini"
+    async getUserOnline(){
+      var name = await this.axios.get("/api/").then(rs =>{
+        return rs.data;
+      });
+      return name.split("\n").join("");
     },
 
     screen: function(theSwitch) {

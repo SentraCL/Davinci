@@ -45,23 +45,23 @@ func (ic *InventionController) getTypeRef(artifactVO model.ArtifactVO) model.Typ
 	}
 }
 
-func (ic *InventionController) makeOrigin() model.Origin{
+func (ic *InventionController) makeOrigin(author string) model.Origin{
 	origin := model.Origin{}
 	origin.Mac = util.GetHostMAC()
-	origin.HostName = "hostname en proceso"
-	origin.UserName = "GetUserAlias()"
+	origin.HostName = util.GetHostUsername()
+	origin.UserName = author
 	return origin
 }
 
 
-func (ic *InventionController) translateRequestToBO(vo model.InventionVO) model.Invention {
+func (ic *InventionController) TranslateRequestToBO(vo model.InventionVO) model.Invention {
 	invBO := model.Invention{}
 	invBO.Code = vo.Code
 	invBO.Name = vo.Name
 	invBO.KeyLabel = vo.KeyLabel
 	invBO.KeyValue = vo.KeyValue
 	invBO.Icon = vo.Icon
-	invBO.Origin = ic.makeOrigin()
+	invBO.Origin = ic.makeOrigin(vo.Author)
 	invBO.Author = vo.Author
 
 	for _, artifactVO := range vo.Artifacts {
@@ -86,7 +86,7 @@ func (ic *InventionController) SaveAll(InventionVO []model.InventionVO) []model.
 
 	for _, invention := range InventionVO {
 		invention.Code = ic.dcode.Encript(invention.Name)
-		inventionBO := ic.translateRequestToBO(invention)
+		inventionBO := ic.TranslateRequestToBO(invention)
 		//log.Println(util.StringifyJSON(inventionBO))
 		inventionModel.Save(&inventionBO)
 		inventionCheck = append(inventionCheck, invention)
@@ -97,13 +97,13 @@ func (ic *InventionController) SaveAll(InventionVO []model.InventionVO) []model.
 //Save : Guarda un invento.
 func (ic *InventionController) Save(invention model.InventionVO) model.InventionVO {
 	invention.Code = ic.dcode.Encript(invention.Name)
-	inventionBO := ic.translateRequestToBO(invention)
+	inventionBO := ic.TranslateRequestToBO(invention)
 	//log.Println("GUARDANDO : " + util.StringifyJSON(inventionBO))
 	inventionModel.Save(&inventionBO)
 	return invention
 }
 
-func (ic *InventionController) translateBOToRequest(invention model.Invention) model.InventionVO {
+func (ic *InventionController) TranslateBOToRequest(invention model.Invention) model.InventionVO {
 	inVO := model.InventionVO{}
 	inVO.Name = invention.Name
 	inVO.Code = invention.Code
@@ -151,7 +151,7 @@ func (ic *InventionController) GetAll() []model.InventionVO {
 	inventions := inventionModel.GetAll()
 	inventionVOs := []model.InventionVO{}
 	for _, invention := range inventions {
-		inventionVO := ic.translateBOToRequest(invention)
+		inventionVO := ic.TranslateBOToRequest(invention)
 		inventionVOs = append(inventionVOs, inventionVO)
 	}
 	return inventionVOs

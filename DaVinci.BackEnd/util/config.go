@@ -7,6 +7,7 @@ import (
 	"os"
 	"net"
 	"bytes"
+	"os/user"
 )
 
 //Config : Archivo de configuracion
@@ -81,3 +82,11 @@ func GetHostMAC() (addr string) {
 	return
 }
 
+//GetHostUsername: Get host name (username)
+func GetHostUsername() string{
+	usr, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	return usr.Username
+}

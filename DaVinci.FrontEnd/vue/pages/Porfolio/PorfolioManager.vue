@@ -519,7 +519,7 @@
                         invDataTAB.artifact = data;
                         invDataTAB.form = this.currentForm;
                         invDataTAB.slots = key;
-                        invDataTAB.title = `<small><span style="min-width:120px" title="${key}:${labelInv}" <strong><p style="width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${labelInv} ${key} </strong></span><small>`;
+                        invDataTAB.title = `<small><span style="min-width:120px" title="${key}:${labelInv}" <strong><p style="width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${labelInv} </br> ${key} </strong></span><small>`;
                         //invDataTAB.title = `<small>${labelInv}</small>`
                         invDataTAB.subtitle = `${inv.name} : <strong> ${select[inv.keyValue]}</strong>`
                         invDataTAB.id = key;

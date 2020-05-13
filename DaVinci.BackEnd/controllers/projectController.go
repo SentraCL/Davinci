@@ -97,7 +97,7 @@ func (pc *ProjectController) Copy(projectCopyRQ models.CopyProjectRequest) bool 
 }
 
 //Export : Copiar Proyecto
-func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest) models.Project {
+func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest) models.ProjectInOutRequest {
 
 	project := pc.GetProjectByCode(projectExportRQ.Code)
 
@@ -122,8 +122,28 @@ func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest)
 		log.Print("stories = nil")
 	}
 	
+	proyectExport := models.ProjectInOutRequest{}
+	proyectExport.Project = project
+	proyectExport.Inventions = pc.FiltersInventionsFromProject(project)
+
+	return proyectExport
+}
+
+//FiltersInventionsFromProject , Traer inventos a partir del proyecto.
+func (pc *ProjectController) FiltersInventionsFromProject(project models.Project) []models.InventionVO{
+	inventions := []models.InventionVO{}
+	inventionController := InventionController{}
+	// 1) Del "project", capturo el listado de inventos desde (project.Repository) * foreach, en la iteracion (item.CODE)
+	for _, data := range project.Repository{
+		bo := inventionController.GetInventionByCode(data.InventionCode)
+		vo := inventionController.TranslateBOToRequest(bo) 
+		inventions = append(inventions, vo)
+		log.Print(util.StringifyJSON(vo))
+	}
 	
-	return project
+	// 2) Agregai inventos al "inventions", append
+
+	return inventions
 }
 
 //Save : Upsert Project!!
@@ -201,7 +221,7 @@ func (pc *ProjectController) GetAllInventions(projectCode string) []models.Inven
 	inventions := []models.InventionVO{}
 	for _, repository := range repos {
 		invention := inventionModel.GetInventionByCode(repository.InventionCode)
-		inventionVO := invCtrol.translateBOToRequest(invention)
+		inventionVO := invCtrol.TranslateBOToRequest(invention)
 		inventionVO.Data = repository.WareHouse
 		inventions = append(inventions, inventionVO)
 	}

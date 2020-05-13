@@ -472,7 +472,7 @@
                 this.artifactForm.keyLabel = this.keyLabel;
                 this.artifactForm.keyValue = this.keyValue;
                 this.artifactForm.icon = this.icon;
-                this.artifactForm.author = this.getUserOnline()
+                this.artifactForm.author = await this.getUserOnline()
 
                 //console.log("Guardo : " + JSON.stringify(this.artifactForm));
                 await this.axios.post("/api/invention/save/", this.artifactForm).then(rs => {

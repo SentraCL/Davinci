@@ -2,7 +2,7 @@
 
     <span v-if="show">
         <!-- The Modal -->
-        <div :id="id" class="fixedmodal" @click="toClose()"">
+        <div :id="id" class="fixedmodal" >
 
             <!-- Modal content -->
             <div class="fixedmodal-content" v-if="show">
