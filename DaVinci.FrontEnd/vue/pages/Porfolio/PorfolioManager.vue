@@ -284,7 +284,7 @@
                 repository: {}
 
             }
-        }, async created() {
+        }, async mounted() {
             await this.loadInventions();
         }, methods: {
             manager() {
@@ -401,7 +401,6 @@
 
             },
             async save(inventionItem) {
-                //TODO: arreglar algo que a Fdo, un desafio.
                 var inventionTO = {}
                 if (inventionItem.slots == this.NEW) {
                     inventionTO = this.cloneObject(inventionItem)
@@ -410,11 +409,11 @@
                 }
                 var keyValue = inventionTO.artifact[this.keyValue];
                 var keyLabel = inventionTO.artifact[this.keyLabel];
-
+                /*
                 console.log("inventionTO  : " + JSON.stringify(inventionTO));
                 console.log("keyValue     : " + JSON.stringify(keyValue));
                 console.log("keyLabel     : " + JSON.stringify(keyLabel));
-
+                */
                 if (inventionTO.slots == this.NEW) {
                     if (this.isEmptyOrSpaces(keyLabel) || this.isEmptyOrSpaces(keyValue)) {
                         this.alertDialog.show = true;
@@ -511,7 +510,7 @@
                         comboInv.push(select)
                         //{"010101_date":["2020-05-08 12:14:12.989 -0400 -04"],"Nombre":["Cepillo"],"Precio":["11000"],"SKU":["010101"]}
 
-                        console.log(JSON.stringify(data));
+                        //console.log(JSON.stringify(data));
 
                         var labelInv= data[inv.keyLabel];
 

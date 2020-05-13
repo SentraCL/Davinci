@@ -97,7 +97,6 @@
                                         </div>
 
                                         <div class="col-6">
-
                                             <d-radio v-if="artifact.isEssential" type="success" name="keyLabel" :value="artifact.name" :to.sync="keyLabel" v-on:click="setKeyLabel(artifact.name)" outline icon>
                                                 <i class="ti-eye"></i>
                                             </d-radio>
@@ -568,7 +567,7 @@
                     /* {"name":"Segmento","typeName":"json","nickName":"Segmento","keyValue":"Codigo","keyLabel":"Nombre","isEssential":false} */
                     //console.log("this.artifactType.isEssential : " + this.artifactType.isEssential)
                     //ACA CRITERIO DE LO ESENCIAL.
-                    var isEssential = this.defaultTypes.indexOf(this.artifactType) > -1
+                    var isEssential = (this.defaultTypes.indexOf(this.artifactType) > -1);
 
 
                     var artifact = {
@@ -579,7 +578,7 @@
                         nickName: nickName,
                         isEssential: isEssential,
                         isList: this.isList,
-                        isJson: true
+                        isJson: !isEssential
                     }
 
 

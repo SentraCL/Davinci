@@ -327,8 +327,8 @@
         this.projectName = project.name;
         var upInventions = [];
         upInventions = [];
-        for (var i in this.projectInventions[this.projectContext.name]) {
-          var invention = this.projectInventions[this.projectContext.name][i];
+        for (var i in this.projectInventions[project.name]) {
+          var invention = this.projectInventions[project.name][i];
           upInventions.push(invention);
         }
         this.isWorkingInAProject = true;
