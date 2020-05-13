@@ -27,6 +27,7 @@
       <v-tabs :tabs="inventionsPerPage" v-if="refresh">
         <span :slot="invo.slots" v-for="(invo, index) of inventionVOs" :key="index">
           <artifact :artifactForm.sync="invo" v-on:save="notifySave()" v-on:drop="getInventions()" v-on:cancel="getInventions()"></artifact>
+        {{invo.origin}}
         </span>
       </v-tabs>
 

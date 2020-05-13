@@ -62,6 +62,9 @@ Vue.mixin({
       );
     },
     
+    getUserOnline: function(){
+      return "admini"
+    },
 
     screen: function(theSwitch) {
       var all = document.getElementsByClassName("fixedmodal");

@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"fmt"
 
 	models "../../models"
 	util "../../util"
@@ -77,4 +78,22 @@ func (h *Handler) isDavinciOnline(request *http.Request) bool {
 	auth, isOnline := session.Values["authenticated"].(bool)
 	//user := h.GetUserAlias(request, DavinciCookieName)
 	return auth && isOnline
+}
+
+
+//GetUserAlias : Obtiene el usuario logeado
+func (h *Handler) GetUserAlias(request *http.Request, nameCookie string) (userName string) {
+	if cookie, err := request.Cookie(nameCookie); err == nil {
+		cookieValue := make(map[string]string)
+		if err = cookieHandler.Decode(nameCookie, cookie.Value, &cookieValue); err == nil {
+			userName = cookieValue["UserName"]
+		}
+	}
+	return userName
+}
+
+//Status : Ver si se ve la url
+func (h *Handler) Status(responseW http.ResponseWriter, request *http.Request) {
+	userOnline := h.GetUserAlias(request, DavinciCookieName)
+	fmt.Fprintln(responseW, userOnline)
 }

@@ -45,6 +45,15 @@ func (ic *InventionController) getTypeRef(artifactVO model.ArtifactVO) model.Typ
 	}
 }
 
+func (ic *InventionController) makeOrigin() model.Origin{
+	origin := model.Origin{}
+	origin.Mac = util.GetHostMAC()
+	origin.HostName = "hostname en proceso"
+	origin.UserName = "GetUserAlias()"
+	return origin
+}
+
+
 func (ic *InventionController) translateRequestToBO(vo model.InventionVO) model.Invention {
 	invBO := model.Invention{}
 	invBO.Code = vo.Code
@@ -52,6 +61,8 @@ func (ic *InventionController) translateRequestToBO(vo model.InventionVO) model.
 	invBO.KeyLabel = vo.KeyLabel
 	invBO.KeyValue = vo.KeyValue
 	invBO.Icon = vo.Icon
+	invBO.Origin = ic.makeOrigin()
+	invBO.Author = vo.Author
 
 	for _, artifactVO := range vo.Artifacts {
 		artifact := model.Artifact{}
@@ -104,6 +115,8 @@ func (ic *InventionController) translateBOToRequest(invention model.Invention) m
 	inVO.Subtitle = invention.Name
 	inVO.Slots = invention.Code
 	inVO.Icon = invention.Icon
+	inVO.Author = invention.Author
+	inVO.Origin = invention.Origin
 
 	for _, artifact := range invention.Artifacts {
 		artifactVO := model.ArtifactVO{}

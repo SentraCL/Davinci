@@ -66,10 +66,7 @@ func (h *Handler) PublicHTML(fileName string) (string, error) {
 	return string(bytes), nil
 }
 
-//Status : Ver si se ve la url
-func (h *Handler) Status(responseW http.ResponseWriter, request *http.Request) {
-	fmt.Fprintln(responseW, "OK")
-}
+
 
 //ClearCookie : Limpia las cookies
 func (h *Handler) ClearCookie(response http.ResponseWriter, nameCookie string) {
@@ -99,17 +96,6 @@ func (h *Handler) UpSetCookie(userName string, response http.ResponseWriter, nam
 		cookieCode = encoded
 	}
 	return cookieCode
-}
-
-//GetUserAlias : Obtiene el usuario logeado
-func (h *Handler) GetUserAlias(request *http.Request, nameCookie string) (userName string) {
-	if cookie, err := request.Cookie(nameCookie); err == nil {
-		cookieValue := make(map[string]string)
-		if err = cookieHandler.Decode(nameCookie, cookie.Value, &cookieValue); err == nil {
-			userName = cookieValue["UserName"]
-		}
-	}
-	return userName
 }
 
 //GetUserAliasProject : Obtiene el usuario logeado en el proyecto
@@ -151,3 +137,4 @@ func (h *Handler) ReadUserIP(r *http.Request) string {
 	}
 	return IPAddress
 }
+

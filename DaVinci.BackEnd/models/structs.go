@@ -86,6 +86,14 @@ type Invention struct {
 	KeyValue  string     `bson:"key_value"`
 	Date      time.Time  `bson:"date"`
 	Artifacts []Artifact `bson:"artifacts"`
+	Origin 	  Origin 	 `bson:"origin"`
+	Author string 	`json:"author" bson:"author"`
+}
+
+type Origin struct{
+	UserName string `json:"username" bson:"username"`
+	HostName string `json:"hostname" bson:"hostname"`
+	Mac string 		`json:"mac" bson:"mac"`
 }
 
 //Artifact : Artefactos para crear inventos
@@ -116,7 +124,11 @@ type InventionVO struct {
 	KeyLabel  string          `json:"keyLabel"`
 	KeyValue  string          `json:"keyValue"`
 	Data      []DataInvention `json:"WareHouse"`
+	Author 	  string 	      `json:"author"`
+	Origin    Origin 		  `json:"origin"`
 }
+
+
 
 //ArtifactVO : Representacion Front-END de artefactos
 type ArtifactVO struct {
