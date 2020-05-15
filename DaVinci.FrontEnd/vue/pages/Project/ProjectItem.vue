@@ -26,9 +26,8 @@
         <div class="text-center">
             <div class="col-lg-12" v-if="isNew">
                 <div class="row">
-                    <div class="col-md-4">
-                        <input id='upload' type='file' hidden/>
-                        <small @click="doImport" title="Exportar proyecto para enviar a otro sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
+                    <div class="col-md-4">                        
+                        <small @click="doImport" style="cursor:pointer" title="Instala un proyecto desde otro Sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
                     </div>
                     <div class="col-md-4">
 
@@ -79,7 +78,7 @@
             <br />
         </div>
 
-        <m-dialog :id="project.code" :title="copyDialog.title" :show.sync="copyDialog.show" :isClose.sync="copyDialog.close">
+        <m-dialog :id="project.code + 'CP'" :title="copyDialog.title" :show.sync="copyDialog.show" :isClose.sync="copyDialog.close">
             <span slot="dialog">
                 <div class="row">
                     <span class="col-md-8">
@@ -127,7 +126,7 @@
             </span>
         </m-dialog>
 
-        <m-dialog :id="project.code" :title="exportDialog.title" :show.sync="exportDialog.show" :isClose.sync="exportDialog.close">
+        <m-dialog :id="project.code + 'EXP'" :title="exportDialog.title" :show.sync="exportDialog.show" :isClose.sync="exportDialog.close">
             <span slot="dialog">
                 <div class="row">
                     <span class="col-md-8">
@@ -174,6 +173,13 @@
             </span>
         </m-dialog>
 
+        <m-dialog :id="project.code + 'IMP'" :title="importDialog.title" :show.sync="importDialog.show" :isClose.sync="importDialog.close"> 
+            <span slot="dialog">
+                <project-import :project="project" ></project-import>
+            </span>
+        </m-dialog>
+
+
     </div>
 
 
@@ -181,9 +187,14 @@
 
 </template>
 <script>
-
+    import ProjectImport from "./ProjectImport.vue";
     export default {
         name: "project-item",
+        components: {
+            ProjectImport
+        },
+        
+
         computed: {
             alias() {
                 return this.name.replace(/\s/g, '');
@@ -204,6 +215,12 @@
                 data: this.project.data,
                 avatar: this.project.avatar,
                 isNew: this.project.isNew,
+                importDialog: {
+                    show: false,
+                    close: false,
+                    title: "",
+                    html: ""
+                },                
                 copyDialog: {
                     show: false,
                     close: false,
@@ -248,6 +265,7 @@
             closeDialog() {
                 this.copyDialog.show = false;
                 this.exportDialog.show = false;
+                this.importDialog.show = false;
             },
             showCopy() {
                 this.copyDialog.show = true;
@@ -256,8 +274,8 @@
                 this.exportDialog.show = true;
             },
              doImport(){
-                console.log("import kaloche")
-                document.getElementById('upload').click();
+                this.importDialog.show = true;
+                
                 
             },
             async doExport() {
