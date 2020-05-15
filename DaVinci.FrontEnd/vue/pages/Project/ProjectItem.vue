@@ -27,7 +27,8 @@
             <div class="col-lg-12" v-if="isNew">
                 <div class="row">
                     <div class="col-md-4">
-                        <small title="Exportar proyecto para enviar a otro sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
+                        <input id='upload' type='file' hidden/>
+                        <small @click="doImport" title="Exportar proyecto para enviar a otro sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
                     </div>
                     <div class="col-md-4">
 
@@ -253,6 +254,11 @@
             },
             showExport() {
                 this.exportDialog.show = true;
+            },
+             doImport(){
+                console.log("import kaloche")
+                document.getElementById('upload').click();
+                
             },
             async doExport() {
                 if (!this.waitingDownload) {
