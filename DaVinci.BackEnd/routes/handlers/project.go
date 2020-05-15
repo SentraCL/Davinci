@@ -3,11 +3,12 @@ package handlers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
-	"fmt"
 	"strings"
 
 	models "../../models"
@@ -15,6 +16,46 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+//ExportProject : Exportar proyecto
+func (h *Handler) ExportProject(responseW http.ResponseWriter, request *http.Request) {
+	if !h.isDavinciOnline(request) {
+		return
+	}
+	exportProjectRQ := models.ExportProjectRequest{}
+	decoder := json.NewDecoder(request.Body)
+	decoder.Decode(&exportProjectRQ)
+
+	project := projectCtrl.Export(exportProjectRQ)
+	request.Header.Set("Content-Type", "text/plain")
+
+	projectString := util.StringifyJSON(project)
+	fmt.Fprintln(responseW, projectString)
+}
+
+//ImportProject : Importa un proyecto y los carga en el sistema
+func (h *Handler) ImportProject(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("File Upload Endpoint Hit")
+
+	file, _, err := r.FormFile("DavinciFile")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	bytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+	proIO := &models.ProjectInOutRequest{}
+	err = json.Unmarshal(bytes, proIO)
+	//TODO : Aca Nika hacer los import
+	go projectCtrl.ImportProject(proIO)
+
+	fmt.Fprintln(w, proIO.Project.Name)
+
+}
 
 //CopyProject : Copia proyectos.
 func (h *Handler) CopyProject(responseW http.ResponseWriter, request *http.Request) {
@@ -25,29 +66,6 @@ func (h *Handler) CopyProject(responseW http.ResponseWriter, request *http.Reque
 	decoder := json.NewDecoder(request.Body)
 	decoder.Decode(&copyProjectRQ)
 	projectCtrl.Copy(copyProjectRQ)
-}
-
-//ExportProject : Exportar proyecto
-func (h *Handler) ExportProject(responseW http.ResponseWriter, request *http.Request) {
-	if !h.isDavinciOnline(request) {
-		return
-	}
-	exportProjectRQ := models.ExportProjectRequest{}
-	decoder := json.NewDecoder(request.Body)
-	decoder.Decode(&exportProjectRQ)
-	
-	
-	project := projectCtrl.Export(exportProjectRQ)
-	request.Header.Set("Content-Type", "text/plain")
-
-	projectString := util.StringifyJSON(project);
-
-	dcode := util.DavinciCode{}
-	exportEncript := dcode.Decript(projectString)
-
-	
-	fmt.Fprintln(responseW, exportEncript)
-	
 }
 
 //SaveProject : Guarda proyectos.
@@ -81,8 +99,6 @@ func (h *Handler) GetAllProject(responseW http.ResponseWriter, request *http.Req
 	request.Header.Set("Content-Type", "application/json")
 	h.ResponseJSON(responseW, projects)
 }
-
-
 
 //GetAvatarProject : Obtiene el listado de todos los proyectos.
 func (h *Handler) GetAvatarProject(w http.ResponseWriter, r *http.Request) {

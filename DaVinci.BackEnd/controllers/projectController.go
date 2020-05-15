@@ -96,6 +96,11 @@ func (pc *ProjectController) Copy(projectCopyRQ models.CopyProjectRequest) bool 
 	return false
 }
 
+//ImportProject , lee un TO ProjectInOutRequest y lo registra en BD
+func (pc *ProjectController) ImportProject(proIO models.ProjectInOutRequest) {
+	//TODO: Aca leer el TO y hacer el insert
+}
+
 //Export : Copiar Proyecto
 func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest) models.ProjectInOutRequest {
 
@@ -121,7 +126,7 @@ func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest)
 		project.UserStories = models.UserStories{}
 		log.Print("stories = nil")
 	}
-	
+
 	proyectExport := models.ProjectInOutRequest{}
 	proyectExport.Project = project
 	proyectExport.Inventions = pc.FiltersInventionsFromProject(project)
@@ -130,17 +135,17 @@ func (pc *ProjectController) Export(projectExportRQ models.ExportProjectRequest)
 }
 
 //FiltersInventionsFromProject , Traer inventos a partir del proyecto.
-func (pc *ProjectController) FiltersInventionsFromProject(project models.Project) []models.InventionVO{
+func (pc *ProjectController) FiltersInventionsFromProject(project models.Project) []models.InventionVO {
 	inventions := []models.InventionVO{}
 	inventionController := InventionController{}
 	// 1) Del "project", capturo el listado de inventos desde (project.Repository) * foreach, en la iteracion (item.CODE)
-	for _, data := range project.Repository{
+	for _, data := range project.Repository {
 		bo := inventionController.GetInventionByCode(data.InventionCode)
-		vo := inventionController.TranslateBOToRequest(bo) 
+		vo := inventionController.TranslateBOToRequest(bo)
 		inventions = append(inventions, vo)
 		log.Print(util.StringifyJSON(vo))
 	}
-	
+
 	// 2) Agregai inventos al "inventions", append
 
 	return inventions
