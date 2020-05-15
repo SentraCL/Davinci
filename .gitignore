@@ -2,4 +2,7 @@ node_modules
 ./dist/
 ./DaVinci.FrontEnd/dist/
 DaVinci.FrontEnd/dist/
+\DaVinci.FrontEnd\dist\
+.\DaVinci.FrontEnd\dist\
 dist/
+dist
