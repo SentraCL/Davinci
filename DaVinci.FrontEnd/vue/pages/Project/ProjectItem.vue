@@ -14,7 +14,7 @@
                     <span style="color:greenyellow"><small>@{{alias}}</small></span>
                 </h4>
             </div>
-            
+
             <div class="col-lg-12">
                 <slot name="description">
 
@@ -126,7 +126,7 @@
             </span>
         </m-dialog>
 
-         <m-dialog :id="project.code" :title="exportDialog.title" :show.sync="exportDialog.show" :isClose.sync="exportDialog.close">
+        <m-dialog :id="project.code" :title="exportDialog.title" :show.sync="exportDialog.show" :isClose.sync="exportDialog.close">
             <span slot="dialog">
                 <div class="row">
                     <span class="col-md-8">
@@ -140,7 +140,7 @@
                                 <h3><i class="fa fa-export"></i> Exportar Proyecto {{project.name}}</h3>
                             </span>
                         </div>
-                        
+
 
                         <div class="row">
                             <span class="col-md-12">
@@ -164,7 +164,7 @@
             <span slot="actions">
                 <span class="btn-group">
                     <d-button type="success" class="btn" round @click.native.prevent="doExport">
-                        Exportar
+                        {{labelExport}}
                     </d-button>
                     <d-button type="warning" class="btn" round @click.native.prevent="closeDialog">
                         Cerrar
@@ -176,7 +176,7 @@
     </div>
 
 
-    
+
 
 </template>
 <script>
@@ -195,6 +195,8 @@
 
         data() {
             return {
+                labelExport: "Exportar",
+                waitingDownload: false,
                 name: this.project.name,
                 epics: this.project.epics,
                 userStories: this.project.userStories,
@@ -207,7 +209,7 @@
                     title: "",
                     html: ""
                 },
-                 exportDialog: {
+                exportDialog: {
                     show: false,
                     close: false,
                     title: "",
@@ -221,7 +223,7 @@
                     userStories: 0,
                     data: 0
                 },
-                 exportProject: {
+                exportProject: {
                     code: this.project.code,
                     name: this.project.name,
                     users: 0,
@@ -252,20 +254,27 @@
             showExport() {
                 this.exportDialog.show = true;
             },
-            async doExport(){
-                await this.axios.post("/api/project/export/", this.exportProject).then(rs => {
+            async doExport() {
+                if (!this.waitingDownload) {
+                    this.labelExport="Exportando..."
+                    this.waitingDownload = true;
+                    await this.axios.post("/api/project/export/", this.exportProject).then(rs => {
                         this.$emit("reload")
                         const data = JSON.stringify(rs.data);
-                         const blob = new Blob([data], {type: 'text/plain'})
-                         const e = document.createEvent('MouseEvents'),
-                         a = document.createElement('a');
-                         a.download = this.project.name+".dvc";
-                         a.href = window.URL.createObjectURL(blob);
-                         a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
-                         e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                         a.dispatchEvent(e);
-                         
+                        const blob = new Blob([data], { type: 'text/plain' })
+                        const e = document.createEvent('MouseEvents'),
+                            a = document.createElement('a');
+                        a.download = this.project.name + ".dvc";
+                        a.href = window.URL.createObjectURL(blob);
+                        a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+                        e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                        a.dispatchEvent(e);
+                        this.waitingDownload = false;
+                        this.labelExport="Exportar"
                     });
+                } else {
+                    this.alertInfo("Espere un momento el proyecto se esta creando.");
+                }
             },
             async doCopy() {
                 var projects = []
@@ -283,8 +292,8 @@
                         this.copyDialog.show = false;
                         this.alertInfo("Copia de Proyecto " + copyname + ", fue creado")
                     });
-                }else{
-                    this.alertInfo(`El Proyecto ${copyName} ya Existe.`);                    
+                } else {
+                    this.alertInfo(`El Proyecto ${copyName} ya Existe.`);
                 }
             },
             avatarClick() {
