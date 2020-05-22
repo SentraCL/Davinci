@@ -56,7 +56,6 @@ func (pm *InventionModel) Save(invention *Invention) bool {
 			//Set
 			upsertdata,
 		)
-
 		return true
 	}
 	return false

@@ -232,6 +232,7 @@ type PreCondition struct {
 type ProjectInOutRequest struct{
 	Project Project `json:"project"`
 	Inventions []InventionVO `json:"inventions"`
+	InventionsImport []InventionVO `json:"inventionsImport"`
 }
 
 //Fields , Atributos de la Historia de Usuario.
