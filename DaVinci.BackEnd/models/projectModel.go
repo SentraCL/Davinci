@@ -93,6 +93,7 @@ func (pm *ProjectModel) Save(project *Project) bool {
 				"resume":        project.Resume,
 				"administrator": project.Administrator,
 				"avatar64":      project.Avatar64,
+				"repository" :   project.Repository,
 			}}
 
 		projectDAO.UpsertId(

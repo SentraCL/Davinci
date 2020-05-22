@@ -109,28 +109,16 @@ type ProjectInOutRequest struct{
 //ImportProject , lee un TO ProjectInOutRequest y lo registra en BD
 func (pc *ProjectController) ImportProject(proIO *models.ProjectInOutRequest) {
 	//TODO: Aca leer el TO y hacer el insert
-	//Insertarlos.. OJO!!! Origin
-	//TODO : Si los inventos ya existen
-	//proIO.Inventions
-	//Creai el project 
-	//proIO.Project
-	
-	/*
-	inventionController := InventionController{}
-	inventVO := proIO.Inventions // Leer listado de inventos
-	inventBO := inventionController.TranslateRequestToBO(inventVO.) //cambiar de VO a BO
-	log.Println(proIO)
-	log.Println(inventBO)
-	*/
-
 	inventionController := InventionController{}
 	log.Println(proIO.Inventions)
-	projectModel.Save(&proIO.Project)
+	//TODO : Si los inventos ya existen
 	inventionController.SaveAll(proIO.Inventions) 
+	
+	projectModel.Save(&proIO.Project)
 		
-		for _, user := range proIO.Project.Users{
-			pc.AddUser(proIO.Project.Code, user.UserName, user.Password)
-		}
+	for _, user := range proIO.Project.Users{
+		pc.AddUser(proIO.Project.Code, user.UserName, user.Password)
+	}
 
 }
 

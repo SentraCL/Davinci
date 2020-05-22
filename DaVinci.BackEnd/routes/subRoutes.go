@@ -42,6 +42,7 @@ func (r *Router) SubRouters() *mux.Router {
 	route.HandleFunc("/davinci/typeref/{ref}/", handlers.GetTypeRef).Methods("GET")
 	route.HandleFunc("/davinci/invention/{project}/{ref}/", handlers.GetInventionByProject).Methods("GET")
 
+	route.HandleFunc("/davinci/{project}/epic/export/{type}", handlers.ExportEpicProject).Methods("POST")
 	route.HandleFunc("/davinci/{project}/epic", handlers.SaveEpicProject).Methods("POST")
 
 	return route

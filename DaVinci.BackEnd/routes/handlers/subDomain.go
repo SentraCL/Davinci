@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	models "../../models"
+	controllers "../../controllers"
 	util "../../util"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -286,6 +287,32 @@ func (h *Handler) GetAllUserStoriesbyPreconditions(responseW http.ResponseWriter
 		h.ResponseJSON(responseW, userStoriesTypes)
 	}
 }
+
+
+//ExportEpicProject , EpicTypes by Project ??
+func (h *Handler) ExportEpicProject(responseW http.ResponseWriter, request *http.Request) {
+	if h.isOnline(request) {
+		params := mux.Vars(request)
+		projectName := params["project"]
+		typeFile := params["type"]
+		dcode := util.DavinciCode{}
+		projectCode := dcode.Encript(projectName)
+
+		epicRQ := controllers.EpicExportRequest{}
+		decoder := json.NewDecoder(request.Body)
+		decoder.Decode(&epicRQ)
+
+		log.Println("GUARDAR : ", util.StringifyJSON(epicRQ))
+
+		if typeFile == "XML"{
+			projectCtrl.ExportToXML(projectCode, epicRQ)
+		}
+
+		//Como retornar un XML
+
+	}
+}
+
 
 //SaveEpicProject , EpicTypes by Project ??
 func (h *Handler) SaveEpicProject(responseW http.ResponseWriter, request *http.Request) {

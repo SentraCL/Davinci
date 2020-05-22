@@ -405,7 +405,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 	return false
 }
 
-//GetAllEpics , Almacena tipos de Epicos
+//GetAllEpics , Retorna todos los Epicos
 func (pm *ProjectModel) GetAllEpics(projectCode string) []Epic {
 	session, err := GetSession()
 	defer session.Close()

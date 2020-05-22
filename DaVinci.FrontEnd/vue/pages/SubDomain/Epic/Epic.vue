@@ -7,8 +7,8 @@
             <span class="epic-reference" v-html="reference"></span>
             <!--<a title="Cerrar" @click="close"><i class="ti-close"></i></a>-->
             <a class="btn btn-xs e-btn" title="Cerrar" @click="remove"><i class="ti-close"></i></a>
-            <a class="btn btn-xs e-btn" title="Deshacer" @click="undo"><i class="ti-reload"></i></a class="btn btn-xs e-btn">
-            <a class="btn btn-xs e-btn" title="Crear" @click="save"><i class="ti-save"></i></a class="btn btn-xs e-btn">
+            <a class="btn btn-xs e-btn" title="Deshacer" @click="undo"><i class="ti-reload"></i></a>
+            <a class="btn btn-xs e-btn" title="Crear" @click="save"><i class="ti-save"></i></a>
           </div>
         </div>
       </template>
@@ -18,7 +18,7 @@
             <invention-form v-if="showEpicAtrs" :projectCode="projectCode" :invention.sync="epicForm.attributes" :values.sync="attributes"></invention-form>
 
             <!--<small>{{epic.definition}}</small>-->
-            <h6>Exportar</h6>
+            <h6 class="btn btn-xs btn-success" @click="exportToXML"><i class="fa fa-download"></i> Exportar</h6>
           </span>
           <span slot="act" style="min-height: 400px;">
             <card>
@@ -110,6 +110,16 @@
     },
 
     methods: {
+
+      async exportToXML(){
+        
+          var projectName = this.getProjectDomain();
+          console.log(JSON.stringify(this.epic));
+          await this.axios.post(`/davinci/${projectName}/epic/export/XML`,this.epic).then(rs => {
+            this.alertInfo("Exportando");
+          })        
+      },
+
       sendToWorkpace() {
         //console.log(`UserStory > ${this.idUS} ejecutando sendToWorkSpace`);
         this.$emit("update:idUS", this.idUS)

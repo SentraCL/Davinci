@@ -7,6 +7,15 @@ import (
 	models "../models"
 )
 
+
+
+//ExportToXML retorna los usuarios de un proyecto
+func (pc *ProjectController) ExportToXML(projectCode string, epicRQ EpicExportRequest) models.Epic {
+	epic := models.Epic{} 
+	return epic
+}
+
+
 //AddUser agrega un usuario al proyecto
 func (pc *ProjectController) GetUserStoryByCodeVersion(projectCode string, uscode string, indexVersion int) models.UserStory {
 	log.Println("Controller - GetUserStoryByCodeVersion ", projectCode)
