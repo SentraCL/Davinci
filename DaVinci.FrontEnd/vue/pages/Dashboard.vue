@@ -1,9 +1,16 @@
 <template>
   <div>
     <h6>
+      <!--
+      <div class="pull-right">
+        <button class="btn" @click="doImport()"><i class="fa fa-folder"></i></button>
+      </div>
+      -->
       <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off" v-if="projects.length>0">
       </input-text>
+    
     </h6>
+    <br/>
     <div class="card-group" v-if="ready">
       <div class="col-lg-3" v-for="proItem in filterProject">
         <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
@@ -68,7 +75,7 @@
       return {
         titles: {
           inventions: `<span class="ti-ruler-pencil"></span> Inventos`,
-          projects: `<span class="ti-blackboard"></span> Proyectos`,
+          projects: `<span class="ti-blackboard"></span> Crear Proyecto`,
         },
         projectName: "",
         ready: false,
@@ -96,6 +103,7 @@
       currentProject() {
         var project = {}
         var title = "";
+        
         if (this.filterProject.length == 1 ) {
           project = this.cloneObject(this.filterProject[0]);
           if (!project.isNew) {
@@ -182,6 +190,11 @@
         this.projectName = proItem.name
         this.editProject = true;
       },
+      
+      doImport(){
+        console.log("nika")
+        this.ProjectItem.doImport();
+      },
       async notifySave() {
         this.projectName = ""
         this.editProject = false;
@@ -202,8 +215,9 @@
           this.projects = rs.data
         });
         this.ready = true;
-
       }
+
+
     }
   };
 </script>

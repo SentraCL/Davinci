@@ -27,7 +27,8 @@
             <div class="col-lg-12" v-if="isNew">
                 <div class="row">
                     <div class="col-md-4">                        
-                        <small @click="doImport" style="cursor:pointer" title="Instala un proyecto desde otro Sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
+                        <small @click="doImport" style="cursor:pointer" 
+                        title="Instala un proyecto desde otro Sistema Davinci"><i class="fa fa-briefcase"></i> Importar</small>
                     </div>
                     <div class="col-md-4">
 

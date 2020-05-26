@@ -4,11 +4,11 @@
       <div class="topnav">
         <div class="user-stories-title" :name="userStoryCode">
           <span class="us-title">
-            <span v-if="userStoryCode==''" v-html="userStoryForm.title"></span>
+            <span  v-if="userStoryCode==''" v-html="userStoryForm.title"></span>
             {{userStoryCode}}
           </span>
-          <small class="us-ver">
-            <combo-simple v-if="isUserStoryExist && versions.length>0" v-on:change="changeVersion()" :showKey="true"
+          <small id="vers" class="us-ver"> 
+            <combo-simple  v-if="isUserStoryExist && versions.length>0" v-on:change="changeVersion()" :showKey="true"
               label class="input-item" :list="versions" keyValue="version" keyLabel="ref" :value.sync="currentVer">
             </combo-simple>
           </small>
@@ -196,16 +196,16 @@
     },
 
     methods: {
-      exportXML() {
-        //TODO : Que exporte la version que selecciono.
+      exportXML() {      
         var  preConditions = ``;
         var lastVersionIndex = this.userStory.us.lastVersionIndex;
-        //Aca se escoje la ultima version del listado de versiones de historias de usuario.
-        var userStoryExport = this.userStory.us.versions[lastVersionIndex];
+        var num = this.currentVer.match(/\d+/g);
+        var currentVer = num[0] - 1;
+        var userStoryExport = this.userStory.us.versions[currentVer];
         userStoryExport.preConditions.forEach(pc=>{
           preConditions += `${pc.name} : ${pc.value} \n`
         });
-
+        
         var xml_steps = "";
 
         userStoryExport.steps.forEach(step=>{
@@ -247,7 +247,7 @@
 
         var pom = document.createElement("a");
 
-        var filename = this.userStory.title + ".xml";
+        var filename = `${this.userStory.title}.${this.currentVer}.xml`;
         var pom = document.createElement("a");
         var bb = new Blob([xmltext], { type: "text/plain" });
         pom.setAttribute("href", window.URL.createObjectURL(bb));
