@@ -66,8 +66,6 @@ func (h *Handler) PublicHTML(fileName string) (string, error) {
 	return string(bytes), nil
 }
 
-
-
 //ClearCookie : Limpia las cookies
 func (h *Handler) ClearCookie(response http.ResponseWriter, nameCookie string) {
 	cookie := &http.Cookie{
@@ -138,3 +136,10 @@ func (h *Handler) ReadUserIP(r *http.Request) string {
 	return IPAddress
 }
 
+//DavinciEncode : Retorna un String encriptado por Davinci
+func (h *Handler) DavinciEncode(w http.ResponseWriter, r *http.Request) {
+	form := h.getPostValues(r)
+	dcode := util.DavinciCode{}
+	encript := dcode.Encript(form["text"])
+	h.ResponseJSON(w, encript)
+}

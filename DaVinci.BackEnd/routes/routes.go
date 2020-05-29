@@ -63,5 +63,8 @@ func (r *Router) Routers() *mux.Router {
 	route.HandleFunc("/api/invention/drop/", handlers.DropInventions).Methods("POST")
 	route.HandleFunc("/api/invention/artifact/default/", handlers.GetDefaultArtifact).Methods("GET")
 
+	//Util
+	route.HandleFunc("/api/util/encript", handlers.DavinciEncode).Methods("POST")
+
 	return route
 }

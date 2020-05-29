@@ -1,7 +1,7 @@
 import Vue from "vue";
 
-import VueToast from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-default.css';
+import VueToast from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-default.css";
 
 import App from "./App";
 import router from "./router/index";
@@ -29,41 +29,48 @@ import "jquery-ui/themes/base/datepicker.css";
 //Metodo comunes en las distintas Vistas
 Vue.mixin({
   methods: {
-
-    alertSuccess: function (message) {
+    alertSuccess: function(message) {
       Vue.use(VueToast);
       Vue.$toast.open({
         message: message,
-        type: 'success',
+        type: "success",
       });
     },
 
-    alertError: function (message) {
+    alertError: function(message) {
       Vue.use(VueToast);
       Vue.$toast.open({
         message: message,
-        type: 'error',
+        type: "error",
       });
     },
 
-    alertInfo: function (message) {
+    alertInfo: function(message) {
       Vue.use(VueToast);
       Vue.$toast.open({
         message: message,
-        type: 'info',
+        type: "info",
       });
-
     },
 
-    alertCustom: function (custom) {
+    alertCustom: function(custom) {
       Vue.use(VueToast);
-      Vue.$toast.open(
-        custom
-      );
+      Vue.$toast.open(custom);
     },
-    
-    async getUserOnline(){
-      var name = await this.axios.get("/api/").then(rs =>{
+
+    async EncriptCode(text) {
+      var textForm = {
+        text: text,
+      };
+      var name = await this.axios
+        .post("/api/util/encript", textForm)
+        .then((rs) => {
+          return rs.data;
+        });
+      return name.split("\n").join("");
+    },
+    async getUserOnline() {
+      var name = await this.axios.get("/api/").then((rs) => {
         return rs.data;
       });
       return name.split("\n").join("");
