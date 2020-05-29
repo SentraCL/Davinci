@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "@/assets/sass/davinci-dashboard.scss";
 import "@/assets/css/themify-icons.css";
 import "@/assets/css/font-awesome.css";
+import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
 export default {
   install(Vue) {

@@ -16,8 +16,12 @@
         <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
           <span slot="description">
             <!-- ToDo: hacer que se corte texto de resumen. -->
-            <p v-html="proItem.resume"></p>
-
+            
+            <details>
+              <summary>Ver Descripcion</summary>
+            <p id="more" v-html="proItem.resume"></p>
+            </details>
+            <!--<button @click="showDescription()" id="readMore">Read more <span id="dots">...</span></button> -->
             <small><a v-if="!proItem.isNew" :href="'/davinci/' + proItem.alias + '/'" target="_blank"><i class="ti-share"></i> ir al sitio..</a></small>
             <center v-if="proItem.isNew">
               <button v-if="filterProject.length!=1" class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
@@ -98,8 +102,10 @@
       this.loadProjects();
       this.proItem = this.templateNewProject();
     },
-
+   
     computed: {
+      
+
       currentProject() {
         var project = {}
         var title = "";
@@ -144,6 +150,23 @@
       }
     },
     methods: {
+
+       showDescription(){
+        
+        var dots = document.getElementById("dots");
+        var moreText = document.getElementById("more");
+        var btnText = document.getElementById("readMore");
+
+        if (dots.style.display === "none") {
+        dots.style.display = "inline";
+        btnText.innerHTML = "Read more"; 
+        moreText.style.display = "none";
+        } else {
+        dots.style.display = "none";
+         btnText.innerHTML = "Read less"; 
+         moreText.style.display = "inline";
+    }
+    },
       equalsName(project) {
         return (project.name == this.projectName)
       },
@@ -192,7 +215,6 @@
       },
       
       doImport(){
-        console.log("nika")
         this.ProjectItem.doImport();
       },
       async notifySave() {
@@ -215,10 +237,10 @@
           this.projects = rs.data
         });
         this.ready = true;
-      }
-
-
+      },
     }
   };
 </script>
-<style></style>
+<style>
+#more {display: inline;}
+</style>

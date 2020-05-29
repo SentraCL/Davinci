@@ -21,10 +21,15 @@ import {
 } from "@/components/index";
 
 import { Drag, Drop } from "vue-drag-drop";
+import { FormWizard, TabContent } from 'vue-form-wizard';
+
 
 const GlobalComponents = {
   install(Vue) {
     Vue.component("drag", Drag);
+    Vue.component("form-wizard", FormWizard);
+    Vue.component("tab-content", TabContent);
+    
     Vue.component("drop", Drop);
     Vue.component("accordion", Accordion);
 
