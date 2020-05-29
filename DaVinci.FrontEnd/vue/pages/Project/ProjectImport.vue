@@ -1,8 +1,7 @@
 <template>
   <div class="container">
-    <a class="btn btn-xs e-btn" title="Cerrar" @click="close"><i class="ti-close"></i></a>
-    <form-wizard v-if="showWizard" title="Asistente de Importación de Proyecto" subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
-      <tab-content title="Validar Proyecto" :before-change="checkFile">
+    <form-wizard title="Asistente de Importación de Proyecto" subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
+      <tab-content title="Validar Proyecto" :before-change="nextStep">
         <div class="large-12 medium-12 small-12 cell">
 
           <input v-if="step==0" accept=".dvc" type="file" id="DavinciFile" name="DavinciFile" ref="fileProject" v-on:input="handleFileUpload()" hidden />
@@ -10,15 +9,11 @@
 
           <div class="row">
             <div class="col-md-10">
-              <h5 v-if="error">Vaia vaia parece que se equivoco!, para continuar
-                usted deberia renombrar los siguiente
-                inventos.</h5>
-
-              <hr />
-              <div class="error" readonly v-if="error">
-                <span v-for="(obj, key) of invToRename" :key="key" class="col-md-2">
-                  <input-text removeSpace :label="key" v-model="invToRename[key]"></input-text><br />
-                </span>
+              <h5 v-if="error"><i class="ti-comment"></i> Tenemos que renombrar algunos inventos antes de continuar..</h5>
+              <div class="error row" readonly v-if="error">
+                <div class="col-md-4" v-for="(obj, key) of invToRename" :key="key">
+                  <input-text removeSpace :label="key" v-model="invToRename[key]"></input-text>
+                </div>
               </div>
             </div>
             <div class="col-md-2">
@@ -26,10 +21,10 @@
             </div>
             <div class="col-md-12">
               <h5 class="well" v-if="error">o bien subir otro archivo..</h5>
-              <button class="btn btn-success" v-if="step==0" @click="openFile">
+              <button class="btn btn-success" @click="openFile">
                 <span style="color:blue" class="ti-upload"></span> {{labelUpload}}
               </button>
-              <button class="btn btn-success" v-if="step==1" @click="submitFile">Cargar Archivo</button>
+
 
             </div>
           </div>
@@ -37,10 +32,15 @@
 
         </div>
       </tab-content>
-      <tab-content title="Subir Proyecto" :before-change="reset"></tab-content>
+      <tab-content title="Subir Proyecto">
+        <span v-if="step==1">
+          {{importProject.project.Name}}
+        </span>
+        <!--<button class="btn btn-success" v-if="step==1" @click="submitFile">Cargar Archivo</button>-->
+      </tab-content>
       <tab-content title="Finalizar"></tab-content>
-      <button class="btn btn-info" type="primary" slot="next" @click="checkFile">Siguiente</button>
-      <button class="btn btn-info" type="primary" slot="prev" @click="reset">Volver</button>
+      <button class="btn btn-info" type="primary" slot="next" @click="nextStep">Siguiente</button>
+      <button class="btn btn-info" type="primary" slot="prev" @click="backStep">Volver</button>
     </form-wizard>
     <!--
 
@@ -57,12 +57,10 @@
       return {
         file: "",
         step: 0,
-        xfile: {},
-        showWizard: true,
         labelUpload: "Subir Proyecto",
         error: false,
         errorMessage: "",
-
+        importProject: {},
         invToRename: {}
 
       };
@@ -70,7 +68,6 @@
 
     methods: {
       close() {
-        this.showWizard = false;
       },
       openFile() {
 
@@ -79,35 +76,36 @@
         this.$refs.fileProject.value = null;
         document.getElementById("DavinciFile").click();
       },
-      reset() {
-        this.$refs.fileProject.value = null;
-        this.alertInfo("Me ejecute!");
-        console.log("ye")
-        return true;
+      backStep() {
+        this.step = this.step - 1;
       },
-      checkFile() {
+      nextStep() {
+        if (this.step == 0) {
+          if (!this.$refs.fileProject.files[0]) {
+            this.alertError(
+              "No ha seleccionado Archivo."
+            );
+            return false;
+          }
+          //Si hay elementos que renombre entre al IF
+          if (Object.keys(this.invToRename).length > 0) { //+
+            this.error = false;
+            Object.keys(this.invToRename).forEach(key => {
+              if (Object.keys(this.invToRename).indexOf(this.invToRename[key]) > -1) {
+                this.alertError(
+                  `No renombraste ${this.invToRename[key]}`
+                );
+                this.error = true;
+              }
+            })
 
-        if (!this.$refs.fileProject.files[0]) {
-          this.alertError(
-            "No ha seleccionado Archivo."
-          );
-          return false;
+          }
+          if (!this.error) {
+            this.step = 1;
+          }
+          return !this.error;
         }
-        //Si hay elementos que renombre entre al IF
-        if (Object.keys(this.invToRename).length > 0) { //+
-          this.error = false;
-          Object.keys(this.invToRename).forEach(key => {
-            if (Object.keys(this.invToRename).indexOf(this.invToRename[key]) > -1) {
-              this.alertError(
-                `No renombraste ${this.invToRename[key]}`
-              );
-              this.error = true;
-            }
-          })
-
-        }
-
-        return !this.error;
+        return true;
       },
       submitFile() {
         let formData = new FormData();
@@ -133,7 +131,6 @@
       },
 
       handleFileUpload(event) {
-        this.alertInfo("Intento");
         this.file = this.$refs.fileProject.files[0];
         if (this.file) {
           var readFile = new FileReader();
@@ -143,7 +140,7 @@
             var content = event.target.result;
             var jsonImport = JSON.parse(content);
             me.alertInfo(`Evaluando proyecto ${jsonImport.project.Name}`);
-
+            me.importProject = jsonImport;
             me.invToRename = {}
             //Itera json.inventions , y valida si existen en nuestro ambiente
             //Compara ese listado con el GET que te retorne esta url /api/invention/all/
@@ -178,10 +175,9 @@
 </script>
 <style scoped>
   .error {
-    height: 300px;
     width: 100%;
     border: solid thin #fff;
-    background-color: #a1a1a1;
+    background-color: #fff;
     overflow-y: scroll;
     overflow-x: hidden;
     max-height: 450px;
