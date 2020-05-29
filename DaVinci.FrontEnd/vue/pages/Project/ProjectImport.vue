@@ -1,19 +1,17 @@
 <template>
   <div class="container">
     <a class="btn btn-xs e-btn" title="Cerrar" @click="close"><i class="ti-close"></i></a>
-    <form-wizard v-if="showWizard" title="Asistente de Importación de Proyecto"
-      subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
+    <form-wizard v-if="showWizard" title="Asistente de Importación de Proyecto" subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
       <tab-content title="Validar Proyecto" :before-change="checkFile">
         <div class="large-12 medium-12 small-12 cell">
 
-          <input v-if="step==0" accept=".dvc" type="file" id="DavinciFile" name="DavinciFile" ref="fileProject"
-            v-on:input="handleFileUpload()" hidden />
+          <input v-if="step==0" accept=".dvc" type="file" id="DavinciFile" name="DavinciFile" ref="fileProject" v-on:input="handleFileUpload()" hidden />
 
 
           <div class="row">
             <div class="col-md-10">
               <h5 v-if="error">Vaia vaia parece que se equivoco!, para continuar
-                 usted deberia renombrar los siguiente
+                usted deberia renombrar los siguiente
                 inventos.</h5>
 
               <hr />
@@ -75,16 +73,14 @@
         this.showWizard = false;
       },
       openFile() {
-        this.showWizard = false;
+
         this.invToRename = {}
         this.error = false;
-
+        this.$refs.fileProject.value = null;
         document.getElementById("DavinciFile").click();
-        this.showWizard = true;
-        //this.file = true; //+
       },
       reset() {
-        this.$refs.fileProject.files[0] = null;
+        this.$refs.fileProject.value = null;
         this.alertInfo("Me ejecute!");
         console.log("ye")
         return true;
