@@ -38,28 +38,34 @@
 
         </div>
       </tab-content>
-      <tab-content title="Subir Proyecto">
+      <tab-content title="Subir Proyecto" style="white-space: nowrap;">
         <span v-if="step==1" class="row">
 
-          <div class="col-md-10">
+          <div class="col-md-10" style="color: right;">
             <div class="row">
-              <div class="col-md-2">
+              <div class="col-4">
                 <img class="avatar border-white" :src="importProject.project.Avatar64">
               </div>
-              <div class="col-md-10">
-                <h4>{{importProject.project.Name}}</h4>
-                <strong>{{importProject.project.Author}}</strong><br />
-                {{importProject.project.Administrator.FullName}}<br />
-                <i class="ti-email"></i> {{importProject.project.Administrator.Email}}<br />
-                {{importProject.project.Company}}
+              <div class="col-sm-4" >
+               <i  class="ti-user"></i>&nbsp;<strong>{{importProject.project.Author}}</strong><br />
+                <i class="ti-blackboard"></i>&nbsp;<strong>{{importProject.project.Name}}</strong><br />
+                <i class="ti-email"></i>&nbsp;<strong>{{importProject.project.Administrator.Email}}</strong><br />
+               <!-- <i class="ti-briefcase"></i><strong>{{importProject.project.Company}}</strong>-->
               </div>
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <!--http://jsonviewer.stack.hu/ -->
-                <h5>Inventos Cargados..</h5>
-                <span v-for="repo in importProject.project.Repository">
-                  ({{Object.keys(repo.WareHouse).length}}) <div>{{repo.Invention}}</div>
-                </span>
-                <h5>Usuarios Cargados..</h5>
+              
+                 <i class="ti-wand"></i>&nbsp; Inventos Cargados: {{Object.keys(importProject.project.Repository).length}}<br />
+                    <!--<p v-for="repo in importProject.project.Repository">
+                  ({{Object.keys(repo.WareHouse).length}})
+                </p>-->
+                 <i class="ti-user"></i>&nbsp; Usuarios Cargados: {{Object.keys(importProject.project.Users).length}}<br />
+                 <i class="ti-book"></i>&nbsp; Epicos Cargados: {{Object.keys(importProject.project.Epics.Types).length}}<br />
+                <i class="ti-clipboard"></i>&nbsp;  Historias de usuario Cargados: {{Object.keys(importProject.project.UserStories.Types).length}}<br />
+                  
+
+                
+
               </div>
               <div class="col-md-6">
 
@@ -68,17 +74,17 @@
 
 
 
-            <div class="col-md-12">
+            <!--<div class="col-md-12">
               <div class="form-group">
                 <span v-html="importProject.project.Resume"></span>
               </div>
-            </div>
+            </div>-->
           </div>
         </span>
         <!--<button class="btn btn-success" v-if="step==1" @click="submitFile">Cargar Archivo</button>-->
       </tab-content>
       <tab-content title="Finalizar"></tab-content>
-      <button class="btn btn-info" type="primary" slot="next" @click="nextStep">Siguiente</button>
+      <button class="btn btn-info" type="primary" slot="next" @click="submitFile()">Siguiente</button>
       <button class="btn btn-info" type="primary" slot="prev" @click="backStep">Volver</button>
     </form-wizard>
     <!--
