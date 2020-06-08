@@ -34,6 +34,8 @@ func (r *Router) Routers() *mux.Router {
 	route.HandleFunc("/api/project/copy/", handlers.CopyProject).Methods("POST")
 	route.HandleFunc("/api/project/export/", handlers.ExportProject).Methods("POST")
 	route.HandleFunc("/api/project/import/", handlers.ImportProject).Methods("POST")
+	//TODO : Nika, acuardate de usar este metodo cuando el archivo a exportar no tiene conflictos con el ambiente.
+	route.HandleFunc("/api/project/importFile/", handlers.ImportProjectFile).Methods("POST")
 
 	route.HandleFunc("/api/project/getAll/", handlers.GetAllProject).Methods("POST")
 	route.HandleFunc("/api/project/inventions/", handlers.GetAllProjectInventions).Methods("POST")

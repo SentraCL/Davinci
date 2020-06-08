@@ -176,7 +176,7 @@
 
         <m-dialog :id="project.code + 'IMP'" :title="importDialog.title" :show.sync="importDialog.show" :isClose.sync="importDialog.close"> 
             <span slot="dialog">
-                <project-import :project="project" ></project-import>
+                <project-import :nameProject="project.name" v-on:importSuccess="importFinish"></project-import>
             </span>
         </m-dialog>
 
@@ -218,19 +218,19 @@
                 isNew: this.project.isNew,
                 importDialog: {
                     show: false,
-                    close: false,
+                    close: true,
                     title: "",
                     html: ""
                 },                
                 copyDialog: {
                     show: false,
-                    close: false,
+                    close: true,
                     title: "",
                     html: ""
                 },
                 exportDialog: {
                     show: false,
-                    close: false,
+                    close: true,
                     title: "",
                     html: ""
                 },
@@ -263,6 +263,8 @@
             this.copyName = "Copia " + this.project.name;
         },
         methods: {
+            
+
             closeDialog() {
                 this.copyDialog.show = false;
                 this.exportDialog.show = false;
@@ -301,6 +303,10 @@
                     this.alertInfo("Espere un momento el proyecto se esta creando.");
                 }
             },
+            importFinish(){
+                this.closeDialog();
+                this.$emit("reload");
+            },
             async doCopy() {
                 var projects = []
                 await this.axios.post("/api/project/getAll/").then(rs => {
@@ -330,4 +336,6 @@
         }
     };
 </script>
-<style></style>
+<style>
+
+</style>

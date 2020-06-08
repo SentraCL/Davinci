@@ -15,20 +15,13 @@
       <div class="col-lg-3" v-for="proItem in filterProject">
         <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
           <span slot="description">
-            <!-- ToDo: hacer que se corte texto de resumen. -->
-            
-            <details>
-              <summary>Ver Descripcion</summary>
-            <p id="more" v-html="proItem.resume"></p>
-            </details>
+            <!-- ToDo: hacer que se corte texto de resumen. -->              
+            <p class="prettySummary" :title="proItem.resume" v-html="proItem.resume"></p>        
             <!--<button @click="showDescription()" id="readMore">Read more <span id="dots">...</span></button> -->
             <small><a v-if="!proItem.isNew" :href="'/davinci/' + proItem.alias + '/'" target="_blank"><i class="ti-share"></i> ir al sitio..</a></small>
             <center v-if="proItem.isNew">
               <button v-if="filterProject.length!=1" class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
             </center>
-
-
-
           </span>
         </project-item>
       </div>
@@ -40,7 +33,6 @@
 
       <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length==0">
         <project-form ref="projectNewForm" v-if="currentProject.isNew" v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
-
         </project-form>
       </div>
 
@@ -243,4 +235,12 @@
 </script>
 <style>
 #more {display: inline;}
+
+  .prettySummary {
+    max-height: 140px;
+    height: 140px;
+    overflow-y: scroll;
+  }
+
+
 </style>

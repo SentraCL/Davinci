@@ -35,6 +35,16 @@ func (h *Handler) ExportProject(responseW http.ResponseWriter, request *http.Req
 
 //ImportProject : Importa un proyecto y los carga en el sistema
 func (h *Handler) ImportProject(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Importando desde FORM")
+	proIO := &models.ProjectInOutRequest{}
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&proIO)
+	projectCtrl.ImportProject(proIO)
+	fmt.Fprintln(w, proIO.Project.Name)
+}
+
+//ImportProjectFile : Importa un proyecto desde un archivo y los carga en el sistema
+func (h *Handler) ImportProjectFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("File Upload Endpoint Hit")
 
 	file, _, err := r.FormFile("DavinciFile")
@@ -50,11 +60,8 @@ func (h *Handler) ImportProject(w http.ResponseWriter, r *http.Request) {
 	}
 	proIO := &models.ProjectInOutRequest{}
 	err = json.Unmarshal(bytes, proIO)
-	//TODO : Aca Nika hacer los import
-	go projectCtrl.ImportProject(proIO)
-
+	projectCtrl.ImportProject(proIO)
 	fmt.Fprintln(w, proIO.Project.Name)
-
 }
 
 //CopyProject : Copia proyectos.
@@ -308,6 +315,7 @@ func (h *Handler) DeleteUserIntoProjectByFormDelete(responseW http.ResponseWrite
 	log.Print("UserName : " + userName)
 	var res = projectCtrl.DelUser(projectCode, userName)
 	log.Println("Resultado ", res)
+	log.Println("ye")
 }
 
 //UpdateUserIntoProjectByFormPut , Actualiza un usuario de un proyecto

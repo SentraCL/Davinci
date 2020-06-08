@@ -1,5 +1,10 @@
 <template>
   <div class="card">
+
+
+
+
+
     <div class="col-md-12">
       <div class="row">
         <div class="card-body">
@@ -10,8 +15,8 @@
               <span v-if="tab.slots=='NewUser'">
                 <!--Nuevo usuario-->
 
-                <input-text type="text" label="Nombre" v-model="tab.usuarioVO.name"></input-text>
-                <input-text type="password" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <input-text alphabetic removeSpace  type="text" id="inputNombre" label="Nombre" v-model="tab.usuarioVO.name"></input-text>
+                <input-text removeSpace  type="password" id="inputPassword" label="Password" v-model="tab.usuarioVO.pass"></input-text>
                 <hr />
 
                 <d-button type="info" round @click.native.prevent="addNewUserTab(tab.usuarioVO)">
@@ -26,9 +31,26 @@
                   <d-button type="info" round @click.native.prevent="saveTab(tab.usuarioVO)">
                     <span style="color:darkgreen" class="ti-back-left"></span> Guardar Usuario
                   </d-button>
-                  <d-button type="danger" round @click.native.prevent="deleteTab(tab.usuarioVO)">
+                  <d-button type="danger" round @click.native.prevent="deleteUser()">
                     <span style="color:darkgreen" class="ti-back-left"></span> Eliminar Usuario
                   </d-button>
+                  <m-dialog id="deleteDialog"  :show.sync="delAlert.show" :isClose.sync="delAlert.close">
+            <span slot="dialog">
+                <div>
+                   Estas seguro que quieres eliminar usuario <strong>{{tab.usuarioVO.name}}</strong> ?<br /> 
+                </div>
+            </span>
+            <span slot="actions">
+                <span class="btn-group">
+                    <d-button type="success" class="btn btn-xs" round @click.native.prevent="closeTab()">
+                        No , Cancelar
+                    </d-button>
+                    <d-button type="danger" class="btn btn-xs" round @click.native.prevent="deleteTab(tab.usuarioVO)">
+                        Si, Eliminar
+                    </d-button>
+                </span>
+            </span>
+        </m-dialog>
                 </div>
               </span>
             </div>
@@ -38,6 +60,10 @@
         </div>
       </div>
     </div>
+
+    
+
+
   </div>
 </template>
 <script>
@@ -54,12 +80,18 @@
 
     data() {
       return {
+        delAlert: {
+          mensaje:"",
+          tiempo: 10,
+          show: false
+        },
         userTabs: []
       };
     },
 
     methods: {
       deleteTab(userVO) {
+         
         var status = false;
         this.axios
           .delete("/api/project/" + this.project.code + "/user/" + userVO.code)
@@ -67,6 +99,7 @@
             status = rs.data;
           });
         this.$emit("delete");
+        this.delAlert.show = false;
       },
       saveTab(userVO) {
         var userUpdate = {};
@@ -81,27 +114,62 @@
           });
         this.$emit("update");
       },
-      addNewUserTab(_newUser) {
+      async addNewUserTab(_newUser) {
+        /*if(document.getElementById("inputNombre").value === '' || document.getEelemntById("inputPassword").value ===''){
+          this.alertError("No puedes dejar campos sin valor.");
+        }*/
         var cloneUser = this.cloneObject(_newUser);
-        cloneUser.slots = cloneUser.name;
-        _newUser.name = "";
-        _newUser.pass = "";
-
-        this.userTabs.push({
-          id: -1,
-          slots: cloneUser.slots,
-          title: cloneUser.name,
-          subtitle: "Llena el formulario",
-          usuarioVO: cloneUser
-        });
-
-        var status = false;
-        this.axios
-          .post("/api/project/" + this.project.code + "/user/save/", cloneUser)
-          .then(rs => {
+         var userExist;
+         await this.axios
+         .get("/api/project/"+ this.project.code + "/users")
+         .then(rs => {
             status = rs.data;
+            var users = rs.data;
+            for(var i = 0; i < users.length; i++){
+             //console.log(cloneUser.name);
+              if(users[i].UserName.localeCompare(cloneUser.name) == 0 ){
+               userExist = true;
+             }else{
+               userExist = false;
+             }
+            }
+            
+            if(!userExist){
+              console.log(cloneUser.name)
+               cloneUser.slots = "";
+              _newUser.name = "";
+              _newUser.pass = "";
+              
+                this.userTabs.push( {
+                  id: -1,
+                  slots: cloneUser.slots,
+                  title: cloneUser.name,
+                  subtitle: "Llena el formulario",
+                  usuarioVO: cloneUser
+                   });
+
+                      var status = false;
+                      this.axios
+                      .post("/api/project/" + this.project.code + "/user/save/", cloneUser)
+                      .then(rs => {
+                      status = rs.data;
+                      });
+                      this.$emit("save");
+                      userExist = false;
+            }else{
+              this.alertError("Usuario "+cloneUser.name+" ya existe!")
+              userExist = true;
+            }
           });
-        this.$emit("save");
+        
+      }, 
+      deleteUser() {
+       this.delAlert.show = true;
+       this.delAlert.close = true;
+      },
+      closeTab(){
+        this.delAlert.show = false;
+        this.delAlert.close = false;
       },
       getTemplateNewUserTab() {
         var templateTab = [];
