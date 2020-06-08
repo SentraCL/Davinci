@@ -118,19 +118,19 @@
         /*if(document.getElementById("inputNombre").value === '' || document.getEelemntById("inputPassword").value ===''){
           this.alertError("No puedes dejar campos sin valor.");
         }*/
-        var cloneUser = this.cloneObject(_newUser);
-         var userExist;
+        
          await this.axios
          .get("/api/project/"+ this.project.code + "/users")
          .then(rs => {
+            var cloneUser = this.cloneObject(_newUser);
+            var userExist = false;
             status = rs.data;
             var users = rs.data;
             for(var i = 0; i < users.length; i++){
-             //console.log(cloneUser.name);
+             console.log(users[i].UserName);
+             
               if(users[i].UserName.localeCompare(cloneUser.name) == 0 ){
                userExist = true;
-             }else{
-               userExist = false;
              }
             }
             
