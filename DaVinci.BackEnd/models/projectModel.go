@@ -84,28 +84,31 @@ func (pm *ProjectModel) Save(project *Project) bool {
 		project.Code = dcode.Encript(project.Alias)
 		log.Println("Project Code >>", project.Code)
 		//upsertdata := bson.M{"$set": project}
+		if (project.Code!=""){
+			upsertdata := bson.M{
+				"$set": bson.M{
+					"author":        project.Author,
+					"name":          project.Name,
+					"alias":         project.Alias,
+					"resume":        project.Resume,
+					"administrator": project.Administrator,
+					"avatar64":      project.Avatar64,
+					"repository" :   project.Repository,
+					"userStories" :  project.UserStories,
+					"epics" :        project.Epics,
+				}}
 
-		upsertdata := bson.M{
-			"$set": bson.M{
-				"author":        project.Author,
-				"name":          project.Name,
-				"alias":         project.Alias,
-				"resume":        project.Resume,
-				"administrator": project.Administrator,
-				"avatar64":      project.Avatar64,
-				"repository" :   project.Repository,
-				"userStories" :  project.UserStories,
-				"epics" :        project.Epics,
-			}}
-
-		projectDAO.UpsertId(
-			//Where
-			project.Code,
-			//Set
-			upsertdata,
-		)
-
-		return true
+			projectDAO.UpsertId(
+				//Where
+				project.Code,
+				//Set
+				upsertdata,
+			)
+			return true
+		}else{
+			log.Println("Error, Code no puede ir vacio.")
+			return false
+		}
 	}
 	return false
 }

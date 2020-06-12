@@ -176,6 +176,7 @@
 
         <m-dialog :id="project.code + 'IMP'" :title="importDialog.title" :show.sync="importDialog.show" :isClose.sync="importDialog.close"> 
             <span slot="dialog">
+               
                 <project-import :nameProject="project.name" v-on:importSuccess="importFinish"></project-import>
             </span>
         </m-dialog>
@@ -305,7 +306,7 @@
             },
             importFinish(){
                 this.closeDialog();
-                this.$emit("reload");
+                this.$emit("back");
             },
             async doCopy() {
                 var projects = []

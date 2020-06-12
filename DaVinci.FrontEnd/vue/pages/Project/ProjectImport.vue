@@ -1,10 +1,12 @@
 <template>
   <div class="container">
-    <form-wizard color="#A47B31" title="Asistente de Importación de Proyecto" subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
+    <form-wizard color="#A47B31" title="Asistente de Importación de Proyecto"
+      subtitle="Modulo de importacion de proyecto, donde se evalua y si hiciste bien tu pega.">
       <tab-content title="Validar Proyecto" :before-change="ready">
         <div class="large-12 medium-12 small-12 cell">
           <span v-if="nameExist">Importando proyecto para: <strong>{{nameProject}}</strong></span>
-          <input v-if="step==0" accept=".dvc" type="file" id="DavinciFile" name="DavinciFile" ref="fileProject" v-on:input="handleFileUpload()" hidden />
+          <input v-if="step==0" accept=".dvc" type="file" id="DavinciFile" name="DavinciFile" ref="fileProject"
+            v-on:input="handleFileUpload()" hidden />
 
 
           <div class="row">
@@ -44,7 +46,8 @@
           <div class="col-md-10" style="color: right;">
             <div class="row">
               <div class="col-4">
-                <h4 style="overflow: hidden;text-overflow: ellipsis;"><i class="ti-blackboard"></i>&nbsp;<strong>{{importProject.project.Name}}</strong></h4>
+                <h4 style="overflow: hidden;text-overflow: ellipsis;"><i
+                    class="ti-blackboard"></i>&nbsp;<strong>{{importProject.project.Name}}</strong></h4>
                 <img class="avatar border-white" :src="importProject.project.Avatar64"><br />
 
               </div>
@@ -98,12 +101,14 @@
         <span v-if="step==1" class="row">
 
           <div class="col-4">
-            <h4 style="overflow: hidden;text-overflow: ellipsis;"><i class="ti-blackboard"></i>&nbsp;<strong>{{importProject.project.Name}}</strong></h4>
+            <h4 style="overflow: hidden;text-overflow: ellipsis;"><i
+                class="ti-blackboard"></i>&nbsp;<strong>{{importProject.project.Name}}</strong></h4>
             <img class="avatar border-white" :src="importProject.project.Avatar64"><br />
 
           </div>
 
-          <div class="col-md-6" style="white-space:pre-line; padding:10px;border:4px double #A47B31; border-radius:16px 40px 0px 32px;">
+          <div class="col-md-6"
+            style="white-space:pre-line; padding:10px;border:4px double #A47B31; border-radius:16px 40px 0px 32px;">
             <strong>
               <p>{{importProject.project.Resume}}</p>
             </strong>
@@ -152,11 +157,9 @@
 
 <script>
   export default {
-    created() {
-      console.log("hola");
-    },
     props: {
-      nameProject: String
+      nameProject: String,
+      isNew: Boolean
     },
     data() {
       return {
@@ -261,11 +264,14 @@
           //End : Validaciones
           if (this.doContinue) {
             this.step = 1;
-
+            if (this.nameExist) {
+              this.importProject.project.Name = this.nameProject;
+            }
           }
         }
         if (this.step == 1) {
-          this.importProject.project.Name = this.nameProject;
+
+
           this.epicLength = Object.keys(this.importProject.project.Epics.Types).length;
           this.userStorieLength = Object.keys(this.importProject.project.UserStories.Types).length;
           var count = 0;
@@ -284,12 +290,9 @@
       },
       async finishStep() {
         var me = this;
-
-        var dcode = await this.EncriptCode(this.nameProject);;
-        console.log(`Davinci Code : ${dcode}`);
-        this.importProject.project.Code = dcode;
-        this.importProject.project.Alias = this.nameProject.replace(/ /g, "");
-        console.log(JSON.stringify(this.importProject));
+        this.importProject.project.Alias = this.importProject.project.Name.replace(/ /g, "");
+        var dcode = await this.EncriptCode(this.importProject.project.Alias );;        
+        this.importProject.project.Code = dcode;                
         await this.axios
           .post("/api/project/import/", this.importProject).then(function (rs) {
             me.alertInfo(
@@ -302,33 +305,7 @@
               "Ocurrio un error Terrible llame urgentemente a Nika"
             );
           });
-        /*
-        let formData = new FormData();
-        if (!this.error) {
-          formData.append("DavinciFile", this.file);
-          this.axios
-            .post("/api/project/import/", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data"
-              }
-            })
-            .then(function (rs) {
-              this.alertInfo(
-                "Proyecto " + JSON.stringify(rs.data)
-              );
-              this.$emit("importSuccess");
-            })
-            .catch(function () {
-              this.alertError(
-                "Ocurrio un error Terrible llame urgentemente a Nika"
-              );
-            });
-        } else {
-          this.alertError(
-            "Hemos encontrado algunos errores"
-          );
-        }
-        */
+
       },
 
       handleFileUpload(event) {

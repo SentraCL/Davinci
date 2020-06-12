@@ -13,7 +13,7 @@
     <br/>
     <div class="card-group" v-if="ready">
       <div class="col-lg-3" v-for="proItem in filterProject">
-        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()">
+        <project-item :isNew="proItem.isNew" v-on:clickAvatar="selectProject(proItem)" :project="proItem" v-on:reload="reload()" v-on:back="reload()" >
           <span slot="description">
             <!-- ToDo: hacer que se corte texto de resumen. -->              
             <p class="prettySummary" :title="proItem.resume" v-html="proItem.resume"></p>        
@@ -32,7 +32,7 @@
       </div>
 
       <div class="col-xl-8 col-lg-7 col-md-6" v-if="filterProject.length==0">
-        <project-form ref="projectNewForm" v-if="currentProject.isNew" v-on:save="notifySave()" v-on:back="reload()" :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
+        <project-form ref="projectNewForm" v-if="currentProject.isNew" v-on:save="notifySave()" v-on:back="reload()"  :title="currentProject.title" :project="currentProject" :isMyFirtsProject="projects.length==0">
         </project-form>
       </div>
 
@@ -41,7 +41,7 @@
       </div>
 
       <div class="col-lg-3">
-        <project-item :project="proItem" :resume="createText" v-if="filterProject.length==0">
+        <project-item :project="proItem" :resume="createText" v-on:back="reload()"  v-if="filterProject.length==0">
           <p slot="description" class="description">
             <br />
             <center>
@@ -218,6 +218,7 @@
       },
 
       async reload() {
+        //console.log("Reload de Dashboard");
         this.projectName = "";
         this.editProject = false;
         await this.loadProjects();
