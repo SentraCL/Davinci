@@ -179,7 +179,6 @@
         }
         return true;
       },
-
       select(dt) {
         this.dataType = dt;
         this.dataTypeID = dt.id;

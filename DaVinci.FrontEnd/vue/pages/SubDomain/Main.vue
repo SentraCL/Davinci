@@ -31,9 +31,9 @@
         </hsc-menu-bar-item>
 
         <hsc-menu-bar-item label="Datos">
-          <hsc-menu-item label="Cargar" @click="showLog('Cargar Datos')" />
+          <hsc-menu-item label="Cargar" @click="doLoadData()" />
           <hsc-menu-item label="Crear Tipos de Datos" @click="doDataManager()" />
-          <hsc-menu-item label="Buscar" @click="showLog('Buscar Datos')" />
+          <hsc-menu-item label="Buscar" @click="getAllDataTypes('Buscar Datos')" />
         </hsc-menu-bar-item>
 
 
@@ -70,6 +70,9 @@
         <span v-if="sidePanel.isDataManager">
           <data-manager v-on:toClose="closeDataManager()"></data-manager>
         </span>
+        <span v-if="sidePanel.isLoadData">
+          <load-data v-on:toClose="closeLoadData()"></load-data>
+        </span>
       </div>
     </side-panel>
 
@@ -92,6 +95,7 @@
   import Password from "./Profile/Password.vue";
   import FindUserStory from "./UserStories/FindUserStory.vue";
   import DataManager from "./Data/DataManager.vue"
+  import LoadData from "./Data/LoadData.vue"
 
   export default {
     name: "subbdomain",
@@ -103,7 +107,8 @@
       UserStory,
       FindUserStory,
       DataManager,
-      Password
+      Password,
+      LoadData
     },
     props: {},
     watch: {
@@ -140,6 +145,7 @@
           isUS: false,
           isEpic: false,
           isDataManager: false,
+          isLoadData: false,
           show: false
         },
 
@@ -176,6 +182,10 @@
         this.doActivePanel('dataManager');
         this.sidePanel.show = true;
       },
+      doLoadData(){
+        this.doActivePanel('loadData');
+        this.sidePanel.show = true;
+      },
       doFindUserStory() {
         this.doActivePanel('userStories');
         this.sidePanel.show = true;
@@ -189,6 +199,7 @@
         this.sidePanel.isEpic = option=='epic';
         this.sidePanel.isUS = option=='userStories';
         this.sidePanel.isDataManager = option=='dataManager';        
+        this.sidePanel.isLoadData = option=='loadData';        
       },
 
       async getEpic() {
@@ -204,6 +215,10 @@
         window.location.href = '#' + nameLink;
       },
       closeDataManager() {
+        //console.log("cierro desde el parent");
+        this.sidePanel.show = false;
+      },
+      closeLoadData() {
         //console.log("cierro desde el parent");
         this.sidePanel.show = false;
       },
@@ -233,7 +248,10 @@
         this.showPasswordDlg.show = true;
         this.showForm = true;
       },
-
+     async getAllDataTypes(){
+        var dataTypes = await this.GetAllDataTypes();
+        console.log(dataTypes);
+      },
 
       showLog(msg) {
         console.log(msg);

@@ -239,7 +239,15 @@ Vue.mixin({
         });
       return us;
     },
-
+    async getAllDataTypes(){
+      var dataTypes = [];
+      var pathname = window.location.pathname;
+      var projectName = pathname.split("/")[2];
+      await this.axios.get(`/davinci/${projectName}/datatype/getAll/`).then(rs => {
+        dataTypes = rs.data;
+      });
+      return dataTypes;
+    },
     async saveEpic(epic) {
       var pathname = window.location.pathname;
       var projectName = pathname.split("/")[2];

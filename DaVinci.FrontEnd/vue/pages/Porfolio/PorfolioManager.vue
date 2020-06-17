@@ -470,6 +470,8 @@
                     this.undo();
                 });
                 await this.commitUI();
+                this.activeIndex = 1;
+                this.ready = true;
                 //if (inventionTO.slots == this.NEW)
                 //this.activeIndex = 1;
             },

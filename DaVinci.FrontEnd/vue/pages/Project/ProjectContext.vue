@@ -16,7 +16,7 @@
                 <!--Nuevo usuario-->
 
                 <input-text alphabetic removeSpace  type="text" id="inputNombre" label="Nombre" v-model="tab.usuarioVO.name"></input-text>
-                <input-text removeSpace  type="password" id="inputPassword" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <input-text removeSpace  type="password" id="inputPass" label="Password" v-model="tab.usuarioVO.pass"></input-text>
                 <hr />
 
                 <d-button type="info" round @click.native.prevent="addNewUserTab(tab.usuarioVO)">
@@ -24,7 +24,7 @@
                 </d-button>
               </span>
               <span v-if="tab.slots==tab.usuarioVO.name">
-                <input-text type="text" label="Nombre" :isInactive="true" v-model="tab.usuarioVO.name"></input-text>
+                <input-text  type="text" label="Nombre" :isInactive="true" v-model="tab.usuarioVO.name"></input-text>
                 <input-text type="password" label="Password" v-model="tab.usuarioVO.pass"></input-text>
                 <hr />
                 <div class="btn-toolbar">
@@ -115,10 +115,10 @@
         this.$emit("update");
       },
       async addNewUserTab(_newUser) {
-        /*if(document.getElementById("inputNombre").value === '' || document.getEelemntById("inputPassword").value ===''){
+        if(document.getElementById("inputNombre").value == '' || document.getElementById("inputPass").value ==''){
           this.alertError("No puedes dejar campos sin valor.");
-        }*/
-        
+          return false;
+        }
          await this.axios
          .get("/api/project/"+ this.project.code + "/users")
          .then(rs => {
@@ -166,6 +166,7 @@
       deleteUser() {
        this.delAlert.show = true;
        this.delAlert.close = true;
+       this.$emit("update");
       },
       closeTab(){
         this.delAlert.show = false;
