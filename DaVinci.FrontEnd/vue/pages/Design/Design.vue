@@ -1,30 +1,60 @@
 <template>
     <div>
         <h6>
-            <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off">
-            </input-text>
+            <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off"></input-text>
         </h6>
-        <div class="card-group" v-if="ready">
-            <div class="col-lg-3" v-for="proItem in filterProject" v-if="filterProject.length>=1 && option==-1">
-                <project-item :name="proItem.name" :project="proItem" >
-                    <span slot="description">
-                        <blockquote>
-                            <!--<p v-html="proItem.resume"></p>-->
-                            <h5>Diseñar...</h5>
-                            <button class="btn-d btn btn-xs btn-success col-md-6" @click="CreateEpic(proItem)">Tipo de Epico</button>
-                            <button class="btn-d btn btn-xs btn-success col-md-6" @click="CreateUserStories(proItem)">Tipo de Historia de Usuario</button>
-                        </blockquote>
-                    </span>
-                </project-item>
+        <div v-if="ready">
+            <div v-if="filterProject.length>=1 && option==-1">
+              
+                <card>
+                    <h4>Objetivo</h4>
+                    <p>Este modulo usted podra crear categorias de Epicos e Historias de Usuario, acorde al negocio de
+                        su proyecto.</p>
+                </card>
+              
+                <div class="card-group">
+                    <div class="col-lg-4" v-for="proItem in filterProject">
+
+
+
+
+
+                        <project-item :name="proItem.name" :project="proItem" hiddenTools>
+                            <span slot="description">
+                                <blockquote>
+                                    <!--<p v-html="proItem.resume"></p>-->
+                                    <h5>
+                                        <i class="fa fa-magic"></i> Diseñar...
+                                    </h5>
+                                    <span class="row">
+                                        <span class="icon-design col-md-6">
+                                            <img width="56px" title="Bla bla bla EPICO"
+                                                src="@/assets/img/SubDomain/d.epic.png" @click="CreateEpic(proItem)" />
+                                            <br />Tipo de Epico
+                                        </span>
+
+                                        <span class="icon-design col-md-6">
+                                            <img width="56px" title="Bla bla bla HISTO..."
+                                                src="@/assets/img/SubDomain/d.us.png"
+                                                @click="CreateUserStories(proItem)" />
+                                            <br />Tipo de Historia de Usuario
+                                        </span>
+                                    </span>
+                                </blockquote>
+                            </span>
+                        </project-item>
+                    </div>
+                </div>
             </div>
         </div>
 
-
         <div class="col-md-12" v-if="filterProject.length==1">
-            <button class="btn btn-back btn-warning btn-xs rigth" @click="reload()"  v-if="option>0" >Ver todos los proyectos.</button>
+            <button class="btn btn-back btn-warning btn-xs rigth" @click="reload()" v-if="option>0">Ver todos los
+                proyectos.</button>
             <div>
-                <user-stories v-if="option==USER_HISTORY" :inventions="inventions[projectCode]" :project="project"></user-stories>
-                <epic v-if="option==EPIC" :inventions="inventions[projectCode]"  :project="project"></epic>
+                <user-stories v-if="option==USER_HISTORY" :inventions="inventions[projectCode]" :project="project">
+                </user-stories>
+                <epic v-if="option==EPIC" :inventions="inventions[projectCode]" :project="project"></epic>
             </div>
         </div>
     </div>
@@ -53,9 +83,9 @@
                 projects: [],
                 project: {},
                 titles: {
-                    projects: `<span class="ti-write"></span> PROYECTO`,
-                },
-            }
+                    projects: `<span class="ti-write"></span> PROYECTO`
+                }
+            };
         },
         watch: {
             projectName() {
@@ -63,7 +93,6 @@
                     this.project = this.filterProject[0];
                 }
             }
-
         },
         async mounted() {
             await this.loadProjects();
@@ -71,7 +100,7 @@
 
         computed: {
             currentProject() {
-                var project = {}
+                var project = {};
                 var title = "";
                 if (this.filterProject.length == 1) {
                     project = this.cloneObject(this.filterProject[0]);
@@ -88,14 +117,19 @@
                 return html;
             },
             filterProject() {
-                var fproject = this.projectName.length == 0 ? this.cloneObject(this.projects) : [];
-                var namesProjects = []
+                var fproject =
+                    this.projectName.length == 0 ? this.cloneObject(this.projects) : [];
+                var namesProjects = [];
                 if (fproject.length == 0) {
                     for (var p in this.projects) {
-                        if (this.projects[p].name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1) {
+                        if (
+                            this.projects[p].name
+                                .toUpperCase()
+                                .indexOf(this.projectName.toUpperCase()) > -1
+                        ) {
                             this.projects[p].isNew = false;
                             fproject.push(this.projects[p]);
-                            namesProjects.push(this.projects[p].name.toUpperCase())
+                            namesProjects.push(this.projects[p].name.toUpperCase());
                         }
                     }
                 }
@@ -103,30 +137,30 @@
             }
         },
         methods: {
-
-
             async CreateUserStories(proItem) {
                 this.projectCode = proItem.code;
-                await this.loadInventionsByProjectCode(this.projectCode)
+                await this.loadInventionsByProjectCode(this.projectCode);
                 this.projectName = proItem.name;
                 this.option = this.USER_HISTORY;
             },
             async CreateEpic(proItem) {
                 this.projectName = proItem.name;
                 this.projectCode = proItem.code;
-                await this.loadInventionsByProjectCode(this.projectCode)
+                await this.loadInventionsByProjectCode(this.projectCode);
                 this.option = this.EPIC;
             },
 
             async loadInventionsByProjectCode(projectCode) {
                 if (this.inventions[projectCode] == null) {
-                    await this.axios.post("/api/project/inventions/", {
-                        projectCode: projectCode
-                    }).then(rs => {
-                        this.inventions[projectCode] = rs.data
-                    });
+                    await this.axios
+                        .post("/api/project/inventions/", {
+                            projectCode: projectCode
+                        })
+                        .then(rs => {
+                            this.inventions[projectCode] = rs.data;
+                        });
                 }
-                return this.inventions[projectCode]
+                return this.inventions[projectCode];
             },
 
             async reload() {
@@ -134,7 +168,6 @@
                 this.projectName = "";
                 await this.loadProjects();
             },
-
 
             async loadProjects() {
                 this.projects = [];
@@ -146,7 +179,6 @@
                     });
                 });
                 this.ready = true;
-
             }
         }
     };
@@ -157,7 +189,17 @@
         right: 30px;
         position: absolute !important;
     }
-    .btn-d{
-        min-height: 100px;
+
+    .icon-design {
+        position: relative;
+        min-height: 64px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .icon-design:hover {
+        top: -1;
+        left: -1;
+        font-size: 12px;
     }
 </style>

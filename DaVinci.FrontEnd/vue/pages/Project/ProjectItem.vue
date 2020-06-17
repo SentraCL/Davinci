@@ -51,7 +51,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="!hiddenTools">
                     <div class="col-md-4">
                         <a href="#" style="color:black" @click="showExport" title="Exportar proyecto para enviar a otro sistema Davinci">
                             <small>
@@ -205,6 +205,7 @@
         props: {
             project: {},
             resume: String,
+            hiddenTools:Boolean
         },
 
         data() {

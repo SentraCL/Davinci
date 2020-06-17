@@ -11,7 +11,7 @@
           </p>
           <blockquote>
             <h4>
-              <span class="ti-write"></span> {{project.name}}</h4>
+              <img src="@/assets/img/SubDomain/d.epic.png" width="28px">  {{project.name}}</h4>
             <p v-html="project.resume"></p>
           </blockquote>
         </div>
