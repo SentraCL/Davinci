@@ -47,8 +47,23 @@
     </div>
     <epic-design v-if="task==EDIT" :epicType="epicForm" :inventions="inventions" v-on:back="listEpic();" :project="project"></epic-design>
 
+    <div class="row">
+        <div class="col-md-12">
+          <div class="scrolling">
+            <span class="col-lg-6" v-on:mouseover="setInvention(invention)" :title="invention.resume" v-for="invention in filterInventions" v-bind:key="invention">
+              <drag class="drag invention" :transfer-data="{ invention }">
+                <img :src="invention.icon" width="64px" />
+                <br />
+                <span class="labelPrj">{{invention.name}}</span>
+              </drag>
+            </span>
+          </div>
+        </div>
+      </div>
+
 
   </div>
+  
 </template>
 <script>
 
@@ -57,21 +72,50 @@
   export default {
     name: "user-stories",
     computed: {
-
+       filterInventions: function () {
+        var filterInventions = [];
+        for (var i in this.inventionVOs) {
+          var inv = this.inventionVOs[i];
+          if (
+            inv.name.toUpperCase().indexOf(this.inventionName.toUpperCase()) >
+            -1 ||
+            this.inventionName == ""
+          ) {
+            var include = false;
+            var invCount = 0;
+            var artiNames = "";
+            for (var a in inv.artifacts) {
+              var artifact = inv.artifacts[a];
+              if (!artifact.isEssential) {
+                invCount++;
+                include = true;
+                artiNames += `\n${artifact.name} : ${artifact.nickName}`;
+              }
+            }
+            if (include) {
+              inv.resume = `${inv.name} : Depende de ${invCount} inventos para funcionar: ${artiNames}`;
+            }
+            filterInventions.push(inv);
+          }
+        }
+        return filterInventions;
+      }
     },
 
     components: {
       EpicDesign,
     },
+    
 
     props: {
       project: {},
       inventions: {},
     },
+    
 
     data() {
       return {
-
+        inventionName: "",
         EDIT: 1,
         NEW: 0,
         NONE: -1,
@@ -107,7 +151,9 @@
         await this.getEpicTypes();
         this.task = this.NONE;
       },
-
+    setInvention(invention) {
+        this.currentInvention = invention;
+      },
       createNew() {
         this.epicForm = {
           name: "",

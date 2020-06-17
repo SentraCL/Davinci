@@ -9,9 +9,10 @@
                 <project-item :name="proItem.name" :project="proItem" >
                     <span slot="description">
                         <blockquote>
-                            <p v-html="proItem.resume"></p>
-                            <button class="btn btn-xs btn-success col-md-12" @click="CreateEpic(proItem)">Crear Epico.</button>
-                            <button class="btn btn-xs btn-success col-md-12" @click="CreateUserStories(proItem)">Historias de Usuario.</button>
+                            <!--<p v-html="proItem.resume"></p>-->
+                            <h5>Diseñar...</h5>
+                            <button class="btn-d btn btn-xs btn-success col-md-6" @click="CreateEpic(proItem)">Tipo de Epico</button>
+                            <button class="btn-d btn btn-xs btn-success col-md-6" @click="CreateUserStories(proItem)">Tipo de Historia de Usuario</button>
                         </blockquote>
                     </span>
                 </project-item>
@@ -155,5 +156,8 @@
         z-index: 99;
         right: 30px;
         position: absolute !important;
+    }
+    .btn-d{
+        min-height: 100px;
     }
 </style>
