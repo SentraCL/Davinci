@@ -30,11 +30,11 @@ import "jquery-ui/themes/base/theme.css";
 //Metodo comunes en las distintas Vistas
 Vue.mixin({
   methods: {
-    
+
     formatDays: date => {
       //2019-09-23 12:02:17
       var createDate = new Date(date);
-      
+
 
       if (Object.prototype.toString.call(createDate) === "[object Date]") {
         var today = new Date();
@@ -77,7 +77,7 @@ Vue.mixin({
       }
       return "";
     },
-    
+
     alertSuccess: function (message) {
       Vue.use(VueToast);
       Vue.$toast.open({
@@ -158,7 +158,7 @@ Vue.mixin({
       return inventionDef;
     },
 
-    getProjectDomain(){
+    getProjectDomain() {
       var pathname = window.location.pathname;
       var projectName = pathname.split("/")[2];
       return projectName;
@@ -239,7 +239,7 @@ Vue.mixin({
         });
       return us;
     },
-    async getAllDataTypes(){
+    async getAllDataTypes() {
       var dataTypes = [];
       var pathname = window.location.pathname;
       var projectName = pathname.split("/")[2];
@@ -247,6 +247,14 @@ Vue.mixin({
         dataTypes = rs.data;
       });
       return dataTypes;
+    },
+    async getAllInventions() {
+      var invents = [];
+      var projectCode = await this.getCodeProject();
+      await this.axios.get(`/davinci/invention/${projectCode}/all/`).then(rs => {
+        invents = rs.data;
+      });
+      return invents;
     },
     async saveEpic(epic) {
       var pathname = window.location.pathname;
