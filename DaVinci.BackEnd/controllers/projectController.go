@@ -23,7 +23,7 @@ func (pc *ProjectController) translateRequestToBO(projectRQ models.ProjectReques
 	project.Name = projectRQ.Name
 	project.Alias = strings.Replace(projectRQ.Name, " ", "", -1)
 	project.Resume = projectRQ.Resume
-	project.Company = projectRQ.Company
+	project.Enterprise = projectRQ.Enterprise
 	project.Avatar64 = projectRQ.Avatar64
 	contactAdmin := models.Contact{}
 	contactAdmin.FullName = projectRQ.Name
@@ -39,7 +39,7 @@ func (pc *ProjectController) translateBOToRequest(project models.Project) models
 	projectRQ.Alias = strings.Replace(project.Name, " ", "", -1)
 	projectRQ.Name = project.Name
 	projectRQ.Resume = project.Resume
-	projectRQ.Company = project.Company
+	projectRQ.Enterprise = project.Enterprise
 	projectRQ.Avatar64 = project.Avatar64
 	projectRQ.Users = project.Users
 
@@ -57,10 +57,10 @@ func (pc *ProjectController) translateBOToRequest(project models.Project) models
 }
 
 //GetAll : Upsert Project!!
-func (pc *ProjectController) GetAll() []models.ProjectRequest {
+func (pc *ProjectController) GetAll(user string) []models.ProjectRequest {
 	//models.Project
 	projectsRqs := []models.ProjectRequest{}
-	projects := projectModel.GetAll()
+	projects := projectModel.GetAll(user)
 	for _, project := range projects {
 		projectRQ := pc.translateBOToRequest(project)
 		projectsRqs = append(projectsRqs, projectRQ)
@@ -115,9 +115,9 @@ func (pc *ProjectController) ImportProject(proIO *models.ProjectInOutRequest) {
 	inventionController.SaveAll(proIO.Inventions) 
 	
 	projectModel.Save(&proIO.Project)
-		
+	
 	for _, user := range proIO.Project.Users{
-		pc.AddUser(proIO.Project.Code, user.UserName, user.Password)
+		pc.AddUser(proIO.Project.Code, user.UserName, user.Password,user.IsDesign)
 	}
 
 }

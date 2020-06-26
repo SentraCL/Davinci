@@ -30,8 +30,7 @@
                                 </input-text>
                             </div>
                             <div class="col-md-6">
-                                <input-text type="text" label="Empresa" title="Empresa" v-model="projectForm.company">
-                                </input-text>
+                                <combo-simple label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name" :value.sync="projectForm.enterprise"></combo-simple>
                             </div>
                         </div>
 
@@ -92,6 +91,7 @@
             title: String,
             isMyFirtsProject: Boolean,
             project: {}
+            
         },
         computed: {
             titleDelete() {
@@ -115,6 +115,7 @@
             }
         },
         data() {
+            console.log(this.project)
             return {
                 delAlert: {
                     mensaje: "",
@@ -123,6 +124,7 @@
                 },
                 projectForm: this.project,
                 avatar64: [],
+                enterprise:[],
                 settingAvatar: {
                     upload: "<h1>Fallo!</h1>",
                     selected: "<p>Avatar Seleccionado</p>", // HTML allowed
@@ -142,10 +144,20 @@
         updated() {
             this.projectForm = this.project;
         },
+        async mounted() {
+            await this.getAllEnterprise();
+        },
         methods: {
-
+            async getAllEnterprise(){
+              await this.axios
+         .get("/api/enterprise/" )
+         .then(rs => {
+            this.enterprise=rs.data;
+            })  
+            },
             async updateProject() {
                 var status = false;
+                console.log("projectForm",this.projectForm)
                 await this.axios.post("/api/project/save/", this.projectForm).then(rs => {
                     status = rs.data;
                 });

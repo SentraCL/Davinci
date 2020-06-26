@@ -4,5 +4,6 @@ node_modules
 DaVinci.FrontEnd/dist/
 \DaVinci.FrontEnd\dist\
 .\DaVinci.FrontEnd\dist\
+.\DaVinci.FrontEnd\dist\project.js
 dist/
 dist

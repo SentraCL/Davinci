@@ -186,7 +186,7 @@
         project.isNew = true;
         project.title = title;
         project.name = this.projectName;
-        project.company = "";
+        project.enterprise = "";
         project.admin = "";
         project.email = "";
         project.resume = "";

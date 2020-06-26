@@ -14,9 +14,9 @@
             <div :slot="tab.slots" v-for="(tab, index) of userTabs" :key="index" class="user-panel">
               <span v-if="tab.slots=='NewUser'">
                 <!--Nuevo usuario-->
-
                 <input-text alphabetic removeSpace  type="text" id="inputNombre" label="Nombre" v-model="tab.usuarioVO.name"></input-text>
                 <input-text removeSpace  type="password" id="inputPass" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <check-box :disableonoff="true" :value.sync="tab.usuarioVO.isDesign" id="inputDesign" label="Diseñador"></check-box>
                 <hr />
 
                 <d-button type="info" round @click.native.prevent="addNewUserTab(tab.usuarioVO)">
@@ -26,6 +26,7 @@
               <span v-if="tab.slots==tab.usuarioVO.name">
                 <input-text  type="text" label="Nombre" :isInactive="true" v-model="tab.usuarioVO.name"></input-text>
                 <input-text type="password" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <check-box :disableonoff="true" v-model="tab.usuarioVO.isDesign" label="Diseñador"></check-box>
                 <hr />
                 <div class="btn-toolbar">
                   <d-button type="info" round @click.native.prevent="saveTab(tab.usuarioVO)">
@@ -91,13 +92,17 @@
 
     methods: {
       deleteTab(userVO) {
-         
         var status = false;
         this.axios
           .delete("/api/project/" + this.project.code + "/user/" + userVO.code)
           .then(rs => {
             status = rs.data;
           });
+        this.userTabs.forEach((value,index)=>{
+          if(value.usuarioVO.code==userVO.code){
+            this.userTabs.splice(index,1);
+          }
+        });
         this.$emit("delete");
         this.delAlert.show = false;
       },
@@ -106,7 +111,7 @@
         userUpdate.name = userVO.name;
         userUpdate.pass = userVO.pass;
         userUpdate.code = userVO.code;
-
+        userUpdate.isDesign = userVO.isDesign;
         this.axios
           .put("/api/project/" + this.project.code + "/user/update/", userUpdate)
           .then(rs => {
@@ -117,6 +122,10 @@
       async addNewUserTab(_newUser) {
         if(document.getElementById("inputNombre").value == '' || document.getElementById("inputPass").value ==''){
           this.alertError("No puedes dejar campos sin valor.");
+          return false;
+        }
+        if(document.getElementById("inputNombre").value.length< 5){
+          this.alertError("El nombre de usuario debe de ser mayor a 4 caracteres.");
           return false;
         }
          await this.axios
@@ -135,29 +144,38 @@
             }
             
             if(!userExist){
-              console.log(cloneUser.name)
+              if(cloneUser.isDesign){
+                cloneUser.isDesign="1";
+              }else{
+                cloneUser.isDesign="0";
+              }
                cloneUser.slots = "";
               _newUser.name = "";
               _newUser.pass = "";
-              
-                this.userTabs.push( {
-                  id: -1,
-                  slots: cloneUser.slots,
-                  title: cloneUser.name,
-                  subtitle: "Llena el formulario",
-                  usuarioVO: cloneUser
-                   });
+              _newUser.isDesign = false;
 
                       var status = false;
                       this.axios
                       .post("/api/project/" + this.project.code + "/user/save/", cloneUser)
                       .then(rs => {
                       status = rs.data;
+                      if(status){
+                        this.userTabs.push( {
+                        id: -1,
+                        slots: cloneUser.slots,
+                        title: cloneUser.name,
+                        subtitle: "Llena el formulario",
+                        usuarioVO: cloneUser
+                        });
+                        this.$emit("save");
+                        this.$emit("update");
+                      }else{
+                        this.alertError("Usuario "+cloneUser.name+" ya existe como usuario principal!")
+                      }
                       });
-                      this.$emit("save");
                       userExist = false;
             }else{
-              this.alertError("Usuario "+cloneUser.name+" ya existe!")
+              this.alertError("Usuario "+cloneUser.name+" ya existe como usuario de subdominio!")
               userExist = true;
             }
           });
@@ -181,7 +199,8 @@
           subtitle: "Llena el formulario",
           usuarioVO: {
             name: "",
-            pass: ""
+            pass: "",
+            isDesign:false
           }
         });
         if (this.project && this.project.Users) {
@@ -193,7 +212,8 @@
               usuarioVO: {
                 code: element.Code,
                 name: element.UserName,
-                pass: element.Password
+                pass: element.Password,
+                isDesign: element.IsDesign
               }
             });
           });

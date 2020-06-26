@@ -65,7 +65,7 @@ type ProjectRequest struct {
 	Code       string          `json:"code"`
 	Name       string          `json:"name"`
 	Alias      string          `json:"alias"`
-	Company    string          `json:"company"`
+	Enterprise    string          `json:"enterprise"`
 	Admin      string          `json:"admin"`
 	Email      string          `json:"email"`
 	Resume     string          `json:"resume"`
@@ -97,6 +97,7 @@ const DataBaseName = "DAVINCI"
 
 const UserColl = "User"
 const ProjectColl = "Project"
+const EnterpriseColl = "Enterprise"
 const ArtifactColl = "Artifact"
 const InventionColl = "Invention"
 const TypeRefColl = "TypeRef"

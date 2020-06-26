@@ -9,23 +9,39 @@
                     <input-text label="Titulo del Epico" alphabetic capitalize name="name" v-model="epicForm.name" autocomplete="off"> </input-text>
                     <drop-menu :title="epicTitle" class="epicMenu" v-on:change="epicManager(epicMenu.option)" :options="epicMenu.options" :option.sync="epicMenu.option"></drop-menu>
                 </div>
+
+                
+
                 <div class="col-md-12" style="min-height: 300px;">
                     <h-tabs :tabs="epicInputsTab" viewScoped>
                         <span slot="des">
                             <span class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
+                                        <div class="scrolling">
+                                            <span class="col-lg-6" v-on:mouseover="setInvention(invention)" :title="invention.resume" v-for="invention in this.inventions" :name="invention.name" >
+                                            <div class="drag invention"  :name="invention.name" @drag="drag"  :value="invention.name" :data-value="invention.name" >
+                                                <img :src="invention.icon" :name="invention.name" @drag="drag" width="64px" :value="invention.name" :data-value="invention.name" />
+                                                <br />
+                                                <span :name="invention.name" @drag="drag" :value="invention.name" :data-value="invention.name" class="labelPrj">{{invention.name}}</span>
+                                            </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
                                         <span><i class="ti-info"></i> Descripcion del proposito del EPICO, este texto se ocupara de referencia para conocer el propisito que busca este tipo de epico. </span>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="col-md-12">
-                                            <textarea rows="5" class="form-control border-input" title="Definicion del Epico" v-model="epicForm.definition">
+                                            <textarea id="epic-description" rows="5" class="form-control border-input" @dragover.prevent @drop.stop.prevent="drop" title="Definicion del Epico" v-model="epicForm.definition">
                                             </textarea>
                                         </div>
                                     </div>
                                 </div>
                             </span>
                         </span>
+
+
                         <span slot="atr">
                             <span class="card-body">
                                 <div class="row">
@@ -95,8 +111,35 @@
     export default {
         name: "epic-design",
         computed: {
-
-        },
+       filterInventions: function () {
+        var filterInventions = [];
+        for (var i in this.inventionVOs) {
+          var inv = this.inventionVOs[i];
+          if (
+            inv.name.toUpperCase().indexOf(this.inventionName.toUpperCase()) >
+            -1 ||
+            this.inventionName == ""
+          ) {
+            var include = false;
+            var invCount = 0;
+            var artiNames = "";
+            for (var a in inv.artifacts) {
+              var artifact = inv.artifacts[a];
+              if (!artifact.isEssential) {
+                invCount++;
+                include = true;
+                artiNames += `\n${artifact.name} : ${artifact.nickName}`;
+              }
+            }
+            if (include) {
+              inv.resume = `${inv.name} : Depende de ${invCount} inventos para funcionar: ${artiNames}`;
+            }
+            filterInventions.push(inv);
+          }
+        }
+        return filterInventions;
+      }
+    },
         props: {
             project: {},
             epicType: {},
@@ -212,7 +255,24 @@
         },
 
         methods: {
-
+             drag(ev) {
+                if(ev.target.name){
+                    localStorage.setItem("text",ev.target.name);
+                }else if(ev.target.textContent){
+                    localStorage.setItem("text",ev.target.textContent);
+                }
+            },
+            drop(event){
+                var data = localStorage.getItem("text");
+                localStorage.removeItem("text");
+                if(data && event.target.id=="epic-description"){
+                    let text=this.epicForm.definition;
+                    this.epicForm.definition= text+"<<"+data+">>";
+                }
+            },
+            setInvention(invention) {
+                this.currentInvention = invention;
+            },
             menuAttribute(option, attribute, index) {
 
                 if (option == this.UNIQ) {
@@ -253,8 +313,6 @@
                     this.epicForm.inventions.splice(index, 1);
                 }
             },
-
-
             addAttribute() {
                 if (!this.isEmptyOrSpaces(this.input.name) && !this.isEmptyOrSpaces(this.input.artifactType) && !this.isUnique(this.input.name, "name", this.epicForm.attributes)) {
                     var atribute = this.cloneObject(this.input);
@@ -358,4 +416,114 @@
         top: 0px;
         right: 80px;
     }
+    /* width */
+  ::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  /* Track */
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #fff;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4e1d00;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .drag,
+  .drop {
+    font-family: sans-serif;
+    display: inline-block;
+    border-radius: 10px;
+    background: transparent;
+    color: #000;
+    position: relative;
+    padding: 2px;
+    min-width: 80px;
+    text-align: center;
+    vertical-align: top;
+  }
+
+  .drag {
+    cursor: grab !important;
+    color: #000;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  .drag:hover {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .drop {
+    background: transparent;
+    color: #000;
+  }
+
+  .scrolling {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    min-height: 90px;
+  }
+
+  .close {
+    cursor: pointer;
+  }
+
+  .labelPrj {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+  }
+
+  .invention {
+    margin-top: 3px;
+    transition: 0.3s;
+  }
+
+  .invention:hover {
+    font-size: 1em;
+    margin-top: -5px;
+  }
+
+  .min-invention {
+    cursor: default;
+    margin-top: 3px;
+    transition: 0.3s;
+  }
+
+  .min-invention:hover {
+    font-size: 1em;
+    margin-top: -5px;
+  }
+
+  .miniPrj {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: capitalize;
+    color: #000;
+    display: inline-block;
+    border-radius: 5px;
+    background: #e4d6c0;
+    position: relative;
+    padding: 8px;
+    min-width: 20px;
+    border-right: 1px solid #906538;
+    border-bottom: 1px solid #4e1d00;
+    text-align: center;
+    vertical-align: top;
+  }
 </style>

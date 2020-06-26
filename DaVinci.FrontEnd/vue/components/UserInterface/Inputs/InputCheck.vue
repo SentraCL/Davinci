@@ -1,14 +1,14 @@
 <template>
   <span>
     <div class="input-group">
-      <div class="onoffswitch">
+      <div class="onoffswitch" :class="disableonoff?'disableonoffswitch':''">
         <input v-if="!inactive" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" :id="id" v-model="optionSN" @click="change" >
         <input v-if="inactive" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" :id="id" v-model="optionSN" disabled>
         <label class="onoffswitch-label" :for="id">
           <span class="onoffswitch-inner"></span>
         </label>
       </div>
-      <span class="input-group-addon titleCheck">
+      <span class="input-group-addon titleCheck" :class="disableonoff?'disableonoffswitch':''">
         <strong v-bind:class="{'lock': inactive }">{{label}}</strong>
       </span>
     </div>
@@ -17,11 +17,12 @@
 </template>
 <script>
   export default {
-    name: "switch-check",
+    name: "input-check",
     inheritAttrs: false,
     props: {
       label: String,
       inactive: Boolean,
+      disableonoff:Boolean,
       value: {}
     },
     data: function () {
@@ -50,6 +51,8 @@
         this.$emit("change");
         this.$emit("update");
       }
+
+
     }
   };
 </script>
@@ -59,6 +62,10 @@
     position: relative; 
     top:5px;
     left:5px;
+  }
+
+  .disableonoffswitch{
+    background-color: #f2ece1!important;
   }
 
   .onoffswitch {

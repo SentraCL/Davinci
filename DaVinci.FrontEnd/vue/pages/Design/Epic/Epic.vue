@@ -19,6 +19,7 @@
       <div class="card-body">
 
       </div>
+      
       <div class="card-footer">
         <span class="click" @click="createNew()"><span class="ti-new-window"></span> Crear nuevo tipo de <strong>Epico</strong></span>
       </div>
@@ -30,6 +31,7 @@
       <div class="col-md-3" v-for="(epicType, index) in epicTypes" :key="index">
         <card style="background-color:khaki;">
           <drop-menu :title="tasktitle" style="float:left;top:-10px;" v-on:change="menuEpicType(option,epicType,index)" :options="epicOptions" :option.sync="option"></drop-menu>
+          
           <template slot="header">
             <span class="card-title">
               <h5><strong> {{epicType.name}}</strong></h5>
@@ -46,22 +48,6 @@
 
     </div>
     <epic-design v-if="task==EDIT" :epicType="epicForm" :inventions="inventions" v-on:back="listEpic();" :project="project"></epic-design>
-
-    <div class="row">
-        <div class="col-md-12">
-          <div class="scrolling">
-            <span class="col-lg-6" v-on:mouseover="setInvention(invention)" :title="invention.resume" v-for="invention in filterInventions" v-bind:key="invention">
-              <drag class="drag invention" :transfer-data="{ invention }">
-                <img :src="invention.icon" width="64px" />
-                <br />
-                <span class="labelPrj">{{invention.name}}</span>
-              </drag>
-            </span>
-          </div>
-        </div>
-      </div>
-
-
   </div>
   
 </template>
@@ -172,7 +158,18 @@
           //console.log(JSON.stringify(epicForm));
         }
       },
-
+      drag(ev) {
+        if(ev.target.name){
+          localStorage.setItem("text",ev.target.name);
+        }else if(ev.target.textContent){
+          localStorage.setItem("text",ev.target.textContent);
+        }
+      },
+      drop(ev){
+        ev.preventDefault();
+        var data= ev.dataTransfer.getData("text");
+        ev.target.innerHtml=document.getElementById(data).dataset.value;
+      },
       async  getEpicTypes() {
         await this.axios.get(`/api/project/${this.project.code}/design/epic`).then(rs => {
           this.epicTypes = rs.data == null ? [] : rs.data;
@@ -186,4 +183,115 @@
     }
   };
 </script>
-<style></style>
+<style>
+/* width */
+  ::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  /* Track */
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #fff;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4e1d00;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .drag,
+  .drop {
+    font-family: sans-serif;
+    display: inline-block;
+    border-radius: 10px;
+    background: transparent;
+    color: #000;
+    position: relative;
+    padding: 2px;
+    min-width: 80px;
+    text-align: center;
+    vertical-align: top;
+  }
+
+  .drag {
+    cursor: grab !important;
+    color: #000;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  .drag:hover {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .drop {
+    background: transparent;
+    color: #000;
+  }
+
+  .scrolling {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    min-height: 90px;
+  }
+
+  .close {
+    cursor: pointer;
+  }
+
+  .labelPrj {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+  }
+
+  .invention {
+    margin-top: 3px;
+    transition: 0.3s;
+  }
+
+  .invention:hover {
+    font-size: 1em;
+    margin-top: -5px;
+  }
+
+  .min-invention {
+    cursor: default;
+    margin-top: 3px;
+    transition: 0.3s;
+  }
+
+  .min-invention:hover {
+    font-size: 1em;
+    margin-top: -5px;
+  }
+
+  .miniPrj {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: capitalize;
+    color: #000;
+    display: inline-block;
+    border-radius: 5px;
+    background: #e4d6c0;
+    position: relative;
+    padding: 8px;
+    min-width: 20px;
+    border-right: 1px solid #906538;
+    border-bottom: 1px solid #4e1d00;
+    text-align: center;
+    vertical-align: top;
+  }
+</style>

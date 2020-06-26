@@ -5,7 +5,8 @@ import (
 	"log"
 	"strconv"
 	"time"
-
+	"strings"
+	
 	util "../util"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -15,17 +16,46 @@ type ProjectModel struct {
 }
 
 //GetAll , Retorna todos los proyectos
-func (pm *ProjectModel) GetAll() []Project {
-	session, err := GetSession()
-	defer session.Close()
-	projectDAO := session.DB(DataBaseName).C(ProjectColl)
-	var results []Project
-	err = projectDAO.Find(nil).All(&results)
-	if err != nil {
-		log.Fatal("Error al obtener los proyectos .", err)
+func (pm *ProjectModel) GetAll(user string) []Project {
+		session, err := GetSession()
+		defer session.Close()
+
+		projectDAO := session.DB(DataBaseName).C(ProjectColl)
+		var results []Project
+		userDAO := session.DB(DataBaseName).C(UserColl)
+		userResult := User{}
+
+		err = userDAO.Find(bson.M{"username": user}).One(&userResult)
+		if err != nil {
+			log.Fatal("Error al obtener el usuario .", err)
+		}
+
+		orQuery := []bson.M{}
+		for _, data := range userResult.Enterprises {
+			temp:=bson.M{"enterprise":data}
+			orQuery=append(orQuery,temp)	
+		}
+
+		err = projectDAO.Find(bson.M{"$or":orQuery}).All(&results)
+		if err != nil {
+			log.Fatal("Error al obtener los proyectos .", err)
+		}
+
+		return results
 	}
-	return results
+	
+
+//getUserHash : retorna el usuario ligado al hash en caso de ser un hash valido
+func getUserHash(loginHash string) string{
+	user:=""
+	dcode:= util.DavinciCode{}
+	decodeHash:=dcode.Decript(loginHash)
+	if strings.Index(decodeHash,":")>0{
+		user=strings.Split(decodeHash,":")[1]
+	}
+	return user
 }
+
 
 //Drop , Guarda cualquier cambio en el proyecto
 func (pm *ProjectModel) Drop(project *Project) bool {
@@ -88,6 +118,7 @@ func (pm *ProjectModel) Save(project *Project) bool {
 			upsertdata := bson.M{
 				"$set": bson.M{
 					"author":        project.Author,
+					"enterprise":    project.Enterprise,
 					"name":          project.Name,
 					"alias":         project.Alias,
 					"resume":        project.Resume,

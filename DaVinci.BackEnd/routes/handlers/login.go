@@ -26,6 +26,7 @@ func (h *Handler) Login(responseW http.ResponseWriter, request *http.Request) {
 	login := models.Login{}
 	decoder.Decode(&login)
 	login.Online = false
+	fmt.Println(login.User);
 	if !util.IsEmpty(login.User) && !util.IsEmpty(login.Pass) {
 		login.RemoteAddr = request.RemoteAddr
 		cookieHash := h.UpSetCookie(login.User, responseW, DavinciCookieName)
@@ -90,6 +91,12 @@ func (h *Handler) GetUserAlias(request *http.Request, nameCookie string) (userNa
 		}
 	}
 	return userName
+}
+
+//Status : retorna el usuario logeado sin entregar la clave
+func (h *Handler) getUser( request *http.Request) string {
+	userOnline := h.GetUserAlias(request, DavinciCookieName)
+	return userOnline
 }
 
 //Status : Ver si se ve la url

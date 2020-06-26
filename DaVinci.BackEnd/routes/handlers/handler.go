@@ -22,6 +22,8 @@ var cookieHandler = securecookie.New(
 
 var sesionCtrl = controllers.SessionController{}
 var projectCtrl = controllers.ProjectController{}
+var userCtrl = controllers.UserController{}
+var enterpriseCtrl = controllers.EnterpriseController{}
 var inventionCtrl = controllers.InventionController{}
 var dcCtrl = controllers.DesignController{}
 

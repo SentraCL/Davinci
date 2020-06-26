@@ -102,7 +102,8 @@ func (h *Handler) GetAllProject(responseW http.ResponseWriter, request *http.Req
 	if !h.isDavinciOnline(request) {
 		return
 	}
-	projects := projectCtrl.GetAll()
+	user := h.getUser(request)
+	projects := projectCtrl.GetAll(user)
 	request.Header.Set("Content-Type", "application/json")
 	h.ResponseJSON(responseW, projects)
 }
@@ -294,16 +295,32 @@ func (h *Handler) GetAllProjectInventions(responseW http.ResponseWriter, request
 	h.ResponseJSON(responseW, inventions)
 }
 
+
 //SaveUserIntoProjectByFormPost , Guarda un usuario en un proyecto
-func (h *Handler) SaveUserIntoProjectByFormPost(responseW http.ResponseWriter, request *http.Request) {
+func (h *Handler) SaveUserIntoProjectByFormPost(responseW http.ResponseWriter, request *http.Request)  {
 
 	postData := h.getPostValues(request)
 	log.Println("REQUEST postData >>", postData["name"])
+	isDesign := false
+	if(postData["isDesign"]=="1"){
+		isDesign=true
+	}
 	params := mux.Vars(request)
 	projectCode := params["project"]
 	log.Print("Project Code  : " + projectCode)
-	var res = projectCtrl.AddUser(projectCode, postData["name"], postData["pass"])
-	log.Println("Resultado ", res)
+	var res=false	
+	if(isDesign){
+		res = userCtrl.AddUser(postData["name"], postData["pass"],isDesign)
+		log.Println("Resultado ", res)
+		if(res){
+			res = projectCtrl.AddUser(projectCode, postData["name"], postData["pass"],isDesign)
+			log.Println("SubResultado ", res)
+		}
+	}else{
+		res = projectCtrl.AddUser(projectCode, postData["name"], postData["pass"],isDesign)
+		log.Println("SubResultado ", res)
+	}
+	h.ResponseJSON(responseW, res)
 }
 
 //DeleteUserIntoProjectByFormDelete , Elimina un usuario del proyecto

@@ -6,9 +6,11 @@ import (
 
 var sesionModel = models.SessionModel{}
 var typeRefModel = models.TypeRefModel{}
+var enterpriseModel = models.EnterpriseModel{}
 var artifactModel = models.ArtifactModel{}
 var inventionModel = models.InventionModel{}
 var projectModel = models.ProjectModel{}
+var userModel = models.UserModel{}
 
 type EpicExportRequest struct {
 	ID         string   `json:"id"`

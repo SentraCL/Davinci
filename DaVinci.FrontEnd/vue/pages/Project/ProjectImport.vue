@@ -57,7 +57,7 @@
 
                 <!--<input-text :label="nameProject" v-model="importProject.project.Name"></input-text><br />-->
 
-                <!-- <i class="ti-briefcase"></i><strong>{{importProject.project.Company}}</strong>-->
+                <!-- <i class="ti-briefcase"></i><strong>{{importProject.project.Enterprise}}</strong>-->
 
 
                 <i class="ti-wand"></i>&nbsp; Inventos Cargados:

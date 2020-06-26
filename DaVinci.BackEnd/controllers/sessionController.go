@@ -47,3 +47,4 @@ func (sc *SessionController) CheckHashOnline(user string, loginHash string) bool
 	}
 	return isValid
 }
+

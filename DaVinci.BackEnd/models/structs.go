@@ -4,10 +4,11 @@ import "time"
 
 //User : Definicion de Collection User para DB
 type User struct {
-	UserName     string
-	Password     string
-	LastTime     time.Time
-	HistoryLogin []Session
+	UserName     string `bson:"username"`
+	Password     string `bson:"password"`
+	LastTime     time.Time `bson:"lasttime"`
+	Enterprises []string	`bson:"enterprise"`
+	HistoryLogin []Session `bson:"historylogin"`
 }
 
 //Session : Instancias de Sesion
@@ -16,6 +17,14 @@ type Session struct {
 	Date        time.Time
 	DavinciCode string
 	Online      bool
+}
+
+//Enterprise : Definicion de Collection Enterprise para DB
+type Enterprise struct {
+	EnterpriseId string 		`bson:"_id"`
+	Name     	 string 		`bson:"name"`
+	Direction 	 string 		`bson:"direction"`
+	Rut     	 string 		`bson:"rut"`
 }
 
 //Contact : Referencias de un Contacto.
@@ -40,6 +49,8 @@ type Repository struct {
 	WareHouse     []DataInvention `bson:"data"`
 }
 
+
+
 //Project : Instancias de Sesion
 type Project struct {
 	Code          string        `bson:"_id"`
@@ -47,7 +58,7 @@ type Project struct {
 	Name          string        `bson:"name"`
 	Alias         string        `bson:"alias"`
 	Resume        string        `bson:"resume"`
-	Company       string        `bson:"company"`
+	Enterprise       string        `bson:"enterprise"`
 	Date          time.Time     `bson:"date"`
 	Administrator Contact       `bson:"administrator"`
 	Avatar64      string        `bson:"avatar64"`
@@ -63,6 +74,7 @@ type UserProject struct {
 	Code     string `bson:"_id"`
 	UserName string `bson:"user"`
 	Password string `bson:"password"`
+	IsDesign bool 	`bson:"isDesign"` 
 }
 
 //UserStories : Historias de usuarios del proyecto y tipos de epicos

@@ -11,7 +11,7 @@ import (
 )
 
 //AddUser , Guarda los nuevos usuarios de un proyecto
-func (pm *ProjectModel) AddUser(projectCode string, user string, pass string) {
+func (pm *ProjectModel) AddUser(projectCode string, user string, pass string, isDesign bool) {
 	session, err := GetSession()
 	defer session.Close()
 	projectCollector := session.DB(DataBaseName).C(ProjectColl)
@@ -19,7 +19,7 @@ func (pm *ProjectModel) AddUser(projectCode string, user string, pass string) {
 	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 	if err == nil {
 		dcode := util.DavinciCode{}
-		var user = bson.M{"_id": dcode.Encript(user), "user": user, "password": pass}
+		var user = bson.M{"_id": dcode.Encript(user), "user": user, "password": pass, "isDesign":isDesign}
 		projectCollector.Update(
 			//Where
 			bson.M{"_id": projectCode},

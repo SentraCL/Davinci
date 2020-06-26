@@ -23,6 +23,9 @@ func (r *Router) Routers() *mux.Router {
 	route := mux.NewRouter()
 	handlers := &handlers.Handler{}
 	handlers.SetPathPublicHTML(r.PublicHTML)
+	//Enterprise
+	route.HandleFunc("/api/enterprise/", handlers.GetEnterpriseByToken).Methods("GET")
+	
 	//Login
 	route.HandleFunc("/api/", handlers.Status).Methods("GET")
 	route.HandleFunc("/api/login/", handlers.Login).Methods("POST")
@@ -40,6 +43,9 @@ func (r *Router) Routers() *mux.Router {
 	route.HandleFunc("/api/project/getAll/", handlers.GetAllProject).Methods("POST")
 	route.HandleFunc("/api/project/inventions/", handlers.GetAllProjectInventions).Methods("POST")
 	route.HandleFunc("/api/project/avatar/{alias}.png", handlers.GetAvatarProject)
+
+	//User
+	route.HandleFunc("/api/user/save",handlers.SaveUser).Methods("POST")
 
 	//User Project
 	route.HandleFunc("/api/project/{project}/user/save/", handlers.SaveUserIntoProjectByFormPost).Methods("POST")

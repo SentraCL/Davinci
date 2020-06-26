@@ -25,9 +25,9 @@ func (pc *ProjectController) GetUserStoryByCodeVersion(projectCode string, uscod
 }
 
 //AddUser agrega un usuario al proyecto
-func (pc *ProjectController) AddUser(projectCode string, user string, pass string) bool {
+func (pc *ProjectController) AddUser(projectCode string, user string, pass string, isDesign bool) bool {
 	log.Println("Controller - AddUser ", projectCode)
-	projectModel.AddUser(projectCode, user, pass)
+	projectModel.AddUser(projectCode, user, pass,isDesign)
 	return true
 }
 

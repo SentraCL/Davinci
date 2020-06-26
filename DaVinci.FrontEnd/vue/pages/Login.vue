@@ -27,11 +27,11 @@
 
                         <div class="panel">
                             <div class="col-md-12">
-                                <input-text :label="title.alias" removeSpace name="user" v-model="login.alias" autocomplete="off">
+                                <input-text :label="title.alias" removeSpace name="user" @keyup.enter.native="doLogin" v-model="login.alias" autocomplete="off">
                                 </input-text>
                             </div>
                             <div class="col-md-12">
-                                <input-text :label="title.pass" name="password" v-model="login.password" type="password" autocomplete="off">
+                                <input-text :label="title.pass" name="password" v-model="login.password" @keyup.enter.native="doLogin" type="password" autocomplete="off">
                                 </input-text>
                             </div>
                             <div class="col-md-12 ">
@@ -100,7 +100,6 @@
                         "user": this.login.alias,
                         "pass": this.login.password
                     }).then(rs => {
-
                         if (rs.data.Online) {
                             sessionStorage.setItem("loginHash", rs.data.DavinciCode);
                             window.location.href = "/"; //+ rs.data.DavinciCode

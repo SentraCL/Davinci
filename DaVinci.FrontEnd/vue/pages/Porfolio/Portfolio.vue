@@ -36,7 +36,7 @@
           <span class="card-body">
             <h2 v-html="titles.currentProject"></h2>
             <div class="col-md-12">
-              <h3>{{projectContext.company}}</h3>
+              <h3>{{projectContext.enterprise}}</h3>
               <blockquote v-html="projectContext.resume"></blockquote>
             </div>
           </span>
@@ -335,7 +335,7 @@
         this.projectContext = {
           name: project.name,
           resume: project.resume,
-          company: project.company,
+          enterprise: project.enterprise,
           admin: project.admin,
           email: project.email,
           inventions: upInventions,
