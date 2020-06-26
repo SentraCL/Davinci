@@ -17,25 +17,25 @@
                 <div class="col-md-2"> </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('csv')">
-                        <img width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
                         <center>CSV</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('xlsx')">
-                        <img width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
                         <center>Excel</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('txt')">
-                        <img width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
                         <center>Text</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('xml')">
-                        <img width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/subDomain/DataExcel.png" alt="">
                         <center>XML</center>
                     </button>
                 </div>
@@ -45,9 +45,9 @@
 
         <span v-if="step==1">
 
-            <combo-simple label="Tipo de Datos" v-on:update="setDataType()" :value.sync="dataTypeId"
-                class="input-item" :list="dataTypeList" keyValue="id" keyLabel="name"></combo-simple>
-                Atributo unico es : {{dataType}}
+            <combo-simple label="Tipo de Datos" v-on:update="setDataType()" :value.sync="dataTypeId" class="input-item"
+                :list="dataTypeList" keyValue="id" keyLabel="name"></combo-simple>
+            Atributo unico es : {{dataType.principalKey}}
         </span>
     </div>
 
@@ -64,29 +64,38 @@
 
         data() {
             return {
-                step: 0,                
-                dataTypeList: {},                
+                step: 0,
+                dataTypeList: {},
                 dataType: {},
-                dataTypeId:""
+                dataTypeId: "",
+                inventions: {}
             }
         },
 
         methods: {
             setDataType() {
-                console.log(this.dataTypeId);
+              console.log("id" + this.dataTypeId);
                 /*
                 for dataTypeList
                 encotrai el quetiene el id= dataTypeId, ese item
                 lo igualai a dataType=item
                 */
-                console.log(this.dataTypeList)
+                this.dataTypeList.forEach(dList => {
+                   if(this.dataTypeId === dList.id){
+                       this.dataType = dList;
+                   }
+                })
+
+                //console.log("typeList" + JSON.stringify(this.dataTypeList))
             },
             async loadFile(typeFile) {
                 if (typeFile == "csv") {
                     this.step = 1;
                     if (Object.keys(this.dataTypeList).length == 0) {
                         this.dataTypeList = await this.getAllDataTypes();
+                        this.inventions = await this.getAllInventions();
                         console.log(JSON.stringify(this.dataTypeList))
+                        console.log(JSON.stringify(this.inventions))
                     }
                 }
             },
@@ -101,4 +110,10 @@
         width: 800px;
         min-height: 600px;
     }
+    /*.img{
+        width:  100px;
+        height: 100px;
+        object-fit:scale-down;
+        margin-right: 10px;
+    }*/
 </style>
