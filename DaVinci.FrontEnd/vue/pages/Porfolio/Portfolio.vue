@@ -4,14 +4,17 @@
       <small>
         <span class="ti-hand-open"></span>Arrastre los inventos hacia los proyectos donde desea que persistan.
       </small>
+      
       <div class="row">
-        <div class="col-md-2">
-          <label-list @clicked="filterByEnterprise" label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name"></label-list>
-        </div>
-      </div>
+      <div class="col-md-4">
       <h6>
         <input-text :label="titles.inventions" :value.sync="inventionName" autocomplete="off" v-if="projects.length>0"></input-text>
       </h6>
+      </div>
+      <div class="col-md-8 text-right">
+          <label-list @clicked="filterByEnterprise" label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name"></label-list>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-12">
           <div class="scrolling">

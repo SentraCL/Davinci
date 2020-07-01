@@ -6,9 +6,9 @@
           <div class="epic-title">
             <span class="epic-reference" v-html="reference"></span>
             <!--<a title="Cerrar" @click="close"><i class="ti-close"></i></a>-->
-            <a class="btn btn-xs e-btn" title="Cerrar" @click="remove"><i class="ti-close"></i></a>
-            <a class="btn btn-xs e-btn" title="Deshacer" @click="undo"><i class="ti-reload"></i></a>
-            <a class="btn btn-xs e-btn" title="Crear" @click="save"><i class="ti-save"></i></a>
+            <a class="btn btn-xs e-btn btn-custom-border" title="Cerrar" @click="remove"><i class="ti-close"></i></a>
+            <a class="btn btn-xs e-btn btn-custom-border" title="Deshacer" @click="undo"><i class="ti-reload"></i></a>
+            <a class="btn btn-xs e-btn btn-custom-border" title="Crear" @click="save"><i class="ti-save"></i></a>
           </div>
         </div>
       </template>
@@ -512,5 +512,8 @@
   .e-btn:hover {
     top: -5px;
     background-color: var(--sub-button) !important;
+  }
+  .btn-custom-border{
+    border-radius: 9px 9px 0px 0px!important;
   }
 </style>

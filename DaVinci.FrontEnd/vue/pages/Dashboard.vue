@@ -6,9 +6,16 @@
         <button class="btn" @click="doImport()"><i class="fa fa-folder"></i></button>
       </div>
       -->
+      <div class="row">
+      <div class="col-md-4">
       <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off" v-if="projects.length>0">
       </input-text>
-    
+        </div>
+      
+      <div class="col-md-8 text-right">
+          <label-list @clicked="filterByEnterprise" label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name"></label-list>
+        </div>
+        </div>
     </h6>
     <br/>
     <div class="card-group" v-if="ready">
@@ -22,6 +29,7 @@
             <center v-if="proItem.isNew">
               <button v-if="filterProject.length!=1" class="btn btn-xs btn-round btn-info" @click="createProject(proItem)">Crear Proyecto.</button>
             </center>
+            
           </span>
         </project-item>
       </div>
@@ -76,6 +84,8 @@
         projectName: "",
         ready: false,
         viewCreate: false,
+        enterprise:[],
+        filter:[],
         projects: [],
         editProject: false
       }
@@ -90,7 +100,8 @@
       }
 
     },
-    created() {
+    async created() {
+      await this.getAllEnterprise();
       this.loadProjects();
       this.proItem = this.templateNewProject();
     },
@@ -117,17 +128,20 @@
         return html;
       },
       filterProject() {
-
+        let projects=[]
+        this.projects.forEach(project=>{
+          if(!this.filter.includes(project.enterprise)){
+            projects.push(project);  
+          }
+        })
         if (this.editProject) {
-          return this.projects.filter(this.equalsName);
+          return projects.filter(this.equalsName);
         }
 
         if (this.viewCreate) {
           return [this.templateNewProject()]
         }
-
-
-        var fproject =this.cloneObject(this.projects.filter(this.filterName));
+        var fproject =this.cloneObject(projects.filter(this.filterName));
 
         //Agregar proyecto vacio y nuevo, al inicio          
         if (this.isNameProjectUniq() && this.projectName.length>0) {
@@ -136,13 +150,17 @@
           fproject.unshift(newProject);
         }
 
-
-
         return fproject;
       }
     },
     methods: {
-
+        async getAllEnterprise(){
+              await this.axios
+         .get("/api/enterprise/" )
+         .then(rs => {
+            this.enterprise=rs.data;
+            })  
+            },
        showDescription(){
         
         var dots = document.getElementById("dots");
@@ -159,6 +177,9 @@
          moreText.style.display = "inline";
     }
     },
+      filterByEnterprise(list){
+        this.filter=list;
+      },
       equalsName(project) {
         return (project.name == this.projectName)
       },

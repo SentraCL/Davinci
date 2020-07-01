@@ -1,8 +1,18 @@
 <template>
     <div>
         <h6>
-            <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off"></input-text>
+        <div class="row">
+            <div class="col-md-4">
+                <input-text :label="titles.projects" :value.sync="projectName" autocomplete="off"></input-text>
+            </div>
+            
+            <div class="col-md-8 text-right">
+                <label-list @clicked="filterByEnterprise" label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name"></label-list>
+            </div>
+        </div>
         </h6>
+
+
         <div v-if="ready">
             <div v-if="filterProject.length>=1 && option==-1">
               
@@ -80,6 +90,8 @@
                 inventions: {},
                 projectCode: String,
                 ready: false,
+                enterprise:[],
+                filter:[],
                 projects: [],
                 project: {},
                 titles: {
@@ -95,6 +107,7 @@
             }
         },
         async mounted() {
+            await this.getAllEnterprise();
             await this.loadProjects();
         },
 
@@ -117,19 +130,27 @@
                 return html;
             },
             filterProject() {
+                
+                let projects=[]
+                this.projects.forEach(project=>{
+                if(!this.filter.includes(project.enterprise)){
+                    projects.push(project);  
+                }
+                })
                 var fproject =
-                    this.projectName.length == 0 ? this.cloneObject(this.projects) : [];
+                    this.projectName.length == 0 ? this.cloneObject(projects) : [];
                 var namesProjects = [];
                 if (fproject.length == 0) {
-                    for (var p in this.projects) {
+                    for (var p in projects) {
                         if (
                             this.projects[p].name
                                 .toUpperCase()
                                 .indexOf(this.projectName.toUpperCase()) > -1
+                                && !this.filter.includes(projects[p].enterprise)
                         ) {
-                            this.projects[p].isNew = false;
-                            fproject.push(this.projects[p]);
-                            namesProjects.push(this.projects[p].name.toUpperCase());
+                            projects[p].isNew = false;
+                            fproject.push(projects[p]);
+                            namesProjects.push(projects[p].name.toUpperCase());
                         }
                     }
                 }
@@ -137,6 +158,16 @@
             }
         },
         methods: {
+            async getAllEnterprise(){
+              await this.axios
+            .get("/api/enterprise/" )
+            .then(rs => {
+                this.enterprise=rs.data;
+                })  
+            },
+            filterByEnterprise(list){
+                this.filter=list;
+            },
             async CreateUserStories(proItem) {
                 this.projectCode = proItem.code;
                 await this.loadInventionsByProjectCode(this.projectCode);

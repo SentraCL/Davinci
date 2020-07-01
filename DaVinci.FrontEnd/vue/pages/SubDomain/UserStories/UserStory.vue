@@ -12,17 +12,17 @@
               label class="input-item" :list="versions" keyValue="version" keyLabel="ref" :value.sync="currentVer">
             </combo-simple>
           </small>
-          <a class="btn btn-xs us-btn" title="Cerrar" @click="remove">
+          <a class="btn btn-xs us-btn btn-custom-border" title="Cerrar" @click="remove">
             <i class="ti-close"></i>
           </a>
-          <a class="btn btn-xs us-btn" v-if="currentVer!=lastVersion" title="No es posible Editar">
+          <a class="btn btn-xs us-btn btn-custom-border" v-if="currentVer!=lastVersion" title="No es posible Editar">
             <i class="ti-lock"></i>
           </a>
-          <a class="btn btn-xs us-btn" v-if="isUserStoryExist && currentVer==lastVersion && versions.length>0"
+          <a class="btn btn-xs us-btn btn-custom-border" v-if="isUserStoryExist && currentVer==lastVersion && versions.length>0"
             title="Guardar" @click="save">
             <i class="ti-save"></i>
           </a>
-          <a class="btn btn-xs us-btn" v-if="currentVer==lastVersion" title="Crear Nueva Version" @click="create">
+          <a class="btn btn-xs us-btn btn-custom-border" v-if="currentVer==lastVersion" title="Crear Nueva Version" @click="create">
             <i class="ti-wand"></i>
           </a>
         </div>
@@ -571,5 +571,9 @@
   .us-btn:hover {
     top: -5px;
     background-color: var(--sub-button) !important;
+  }
+
+  .btn-custom-border{
+    border-radius: 12px 12px 0px 0px;
   }
 </style>

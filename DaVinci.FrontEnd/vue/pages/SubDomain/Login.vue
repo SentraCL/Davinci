@@ -25,11 +25,11 @@
                         <br />
                         <div class="panel">
                             <div class="col-md-12">
-                                <input-text :label="title.alias" removeSpace name="user" v-model="login.alias">
+                                <input-text :label="title.alias" removeSpace @keyup.enter.native="doLogin" name="user" v-model="login.alias">
                                 </input-text>
                             </div>
                             <div class="col-md-12">
-                                <input-text :label="title.pass" name="password" v-model="login.password" type="password" autocomplete="off">
+                                <input-text :label="title.pass" name="password" v-model="login.password" @keyup.enter.native="doLogin" type="password" autocomplete="off">
                                 </input-text>
                             </div>
                             <div class="col-md-12 ">
