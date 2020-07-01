@@ -4,6 +4,11 @@
       <small>
         <span class="ti-hand-open"></span>Arrastre los inventos hacia los proyectos donde desea que persistan.
       </small>
+      <div class="row">
+        <div class="col-md-2">
+          <label-list @clicked="filterByEnterprise" label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name"></label-list>
+        </div>
+      </div>
       <h6>
         <input-text :label="titles.inventions" :value.sync="inventionName" autocomplete="off" v-if="projects.length>0"></input-text>
       </h6>
@@ -99,6 +104,7 @@
   import PorfolioManager from "./PorfolioManager.vue";
   export default {
     name: "Porfolio",
+    
     components: {
       ProjectItem,
       PorfolioManager
@@ -115,23 +121,30 @@
         } else return false;
       },
       */
+     
       filtersProjects: function () {
         var filtersProjects = [];
         if (this.projectName == "") {
-          return this.projects;
+          for (var i in this.projects){
+            var pro = this.projects[i];
+            if(!this.filter.includes(pro.enterprise)){
+              filtersProjects.push(pro);
+            }
+          }
+          return filtersProjects;
         }
         if (!this.isProjectSelect) {
           for (var i in this.projects) {
             var pro = this.projects[i];
-            if (
-              pro.name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1
-            ) {
+            if (!this.filter.includes(pro.enterprise) && pro.name.toUpperCase().indexOf(this.projectName.toUpperCase()) > -1) {
               filtersProjects.push(pro);
             }
           }
         } else {
-          var projectSelect = this.cloneObject(this.projectContext);
-          filtersProjects.push(projectSelect);
+            var projectSelect = this.cloneObject(this.projectContext);
+            if(!this.filter.includes(pro.enterprise)){
+              filtersProjects.push(projectSelect);
+            }
         }
         return filtersProjects;
       },
@@ -158,7 +171,11 @@
             if (include) {
               inv.resume = `${inv.name} : Depende de ${invCount} inventos para funcionar: ${artiNames}`;
             }
-            filterInventions.push(inv);
+            
+            if(!this.filter.includes(inv.enterprise)){
+              //inventionsPerPage.push(inventionPerPage);
+              filterInventions.push(inv);
+            }
           }
         }
         return filterInventions;
@@ -171,6 +188,7 @@
       return {
         isWorkingInAProject: false,
         isProjectSelect: false,
+        selectedEnterprise:"",
         errDelAlert: {
           show: false,
           close: false,
@@ -186,18 +204,31 @@
         projectName: "",
         projectContext: {},
         inventionName: "",
+        filter:[],
         loadInvention: false,
+        enterprise:[],
         inventionVOs: [],
         projects: [],
         currentInvention: {},
         projectInventions: {}
       };
     },
-    async created() {
+    async created() {      
+      await this.getAllEnterprise();
       await this.getInventions();
       await this.loadProjects();
     },
     methods: {
+      async getAllEnterprise(){
+              await this.axios
+         .get("/api/enterprise/" )
+         .then(rs => {
+            this.enterprise=rs.data;
+            })  
+            },
+      filterByEnterprise(list){
+        this.filter=list;
+      },
       isNameProjectUniq() {
         var unique = true;
         this.projects.forEach(project => {

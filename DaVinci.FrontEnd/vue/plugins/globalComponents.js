@@ -1,6 +1,7 @@
 import {
   InputText,
   ComboSimple,
+  LabelList,
   Button,
   RadioButton,
   SelectTableList,
@@ -37,6 +38,7 @@ const GlobalComponents = {
     Vue.component("select-table", SelectTableList);
     Vue.component("side-panel", SidePanel);
     Vue.component("combo-simple", ComboSimple);
+    Vue.component("label-list", LabelList);
     Vue.component("find-box", FindBoxList);
     Vue.component("h-tabs", HorizontalTabs);
     Vue.component("v-tabs", VerticalTabs);

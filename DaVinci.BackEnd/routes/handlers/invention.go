@@ -3,12 +3,31 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-
+	"fmt"
+	"io/ioutil"	
 	models "../../models"
 )
 
 //GetAllInventions : Retorna todos los inventos!!
 func (h *Handler) GetAllInventions(responseW http.ResponseWriter, request *http.Request) {
+	inventionVOs := inventionCtrl.GetAll()
+	//fmt.Println(util.StringifyJSON(inventionVOs))
+	h.ResponseJSON(responseW, inventionVOs)
+}
+
+//GetAllInventions : Retorna todos los inventos!!
+func (h *Handler) GetAllInventionsFiltered(responseW http.ResponseWriter, request *http.Request) {
+	postData := h.getPostValues(request)
+	fmt.Println(postData)
+
+	b, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(b)
+	fmt.Println(request)
+	fmt.Println(request.Body)
+	fmt.Println(request.GetBody)
 
 	inventionVOs := inventionCtrl.GetAll()
 	//fmt.Println(util.StringifyJSON(inventionVOs))

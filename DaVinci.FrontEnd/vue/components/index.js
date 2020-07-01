@@ -5,6 +5,7 @@ import SwitchBox from "./UserInterface/Inputs/SwitchBox.vue";
 import InputText from "./UserInterface/Inputs/InputText.vue";
 import FindBoxList from "./UserInterface/Inputs/FindBoxList.vue";
 import SelectTableList from "./UserInterface/Inputs/SelectTableList.vue";
+import LabelList from "./UserInterface/Inputs/LabelList.vue";
 
 import ModalDialog from "./UserInterface/Alert/ModalDialog.vue";
 
@@ -31,6 +32,7 @@ import SessionWatch from "./Utils/SessionWatch.vue";
 
 let components = {
   ComboSimple,
+  LabelList,
   Pagination,
   SidePanel,
   Accordion,
@@ -59,6 +61,7 @@ export default components;
 
 export {
   ComboSimple,
+  LabelList,
   HorizontalTabs,
   VerticalTabs,
   DavinciTable,

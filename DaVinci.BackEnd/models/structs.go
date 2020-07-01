@@ -25,6 +25,7 @@ type Enterprise struct {
 	Name     	 string 		`bson:"name"`
 	Direction 	 string 		`bson:"direction"`
 	Rut     	 string 		`bson:"rut"`
+	Disable		 bool
 }
 
 //Contact : Referencias de un Contacto.
@@ -91,15 +92,16 @@ type Epics struct {
 
 //Invention : Inventos para crear contexto a historias de usuario.
 type Invention struct {
-	Code      string     `bson:"_id"`
-	Name      string     `bson:"name"`
-	KeyLabel  string     `bson:"key_label"`
-	Icon      string     `bson:"icon"`
-	KeyValue  string     `bson:"key_value"`
-	Date      time.Time  `bson:"date"`
-	Artifacts []Artifact `bson:"artifacts"`
-	Origin 	  Origin 	 `bson:"origin"`
-	Author string 	`json:"author" bson:"author"`
+	Code      	string     	`bson:"_id"`
+	Enterprise	string      `bson:"enterprise"`
+	Name      	string     	`bson:"name"`
+	KeyLabel  	string     	`bson:"key_label"`
+	Icon      	string     	`bson:"icon"`
+	KeyValue  	string     	`bson:"key_value"`
+	Date      	time.Time  	`bson:"date"`
+	Artifacts 	[]Artifact 	`bson:"artifacts"`
+	Origin 	  	Origin 	 	`bson:"origin"`
+	Author 		string 		`json:"author" bson:"author"`
 }
 
 type Origin struct{
@@ -126,18 +128,19 @@ type TypeRef struct {
 
 //InventionVO : Representacion Front-END de inventos
 type InventionVO struct {
-	Code      string          `json:"code"`
-	Name      string          `json:"name"`
-	Artifacts []ArtifactVO    `json:"artifacts"`
-	Title     string          `json:"title"`
-	Subtitle  string          `json:"subtitle"`
-	Slots     string          `json:"slots"`
-	Icon      string          `json:"icon"`
-	KeyLabel  string          `json:"keyLabel"`
-	KeyValue  string          `json:"keyValue"`
-	Data      []DataInvention `json:"WareHouse"`
-	Author 	  string 	      `json:"author"`
-	Origin    Origin 		  `json:"origin"`
+	Code      	string          `json:"code"`
+	Name      	string          `json:"name"`
+	Artifacts 	[]ArtifactVO    `json:"artifacts"`
+	Title     	string          `json:"title"`
+	Subtitle  	string          `json:"subtitle"`
+	Enterprise  string     		`json:"enterprise"`
+	Slots     	string          `json:"slots"`
+	Icon      	string          `json:"icon"`
+	KeyLabel  	string          `json:"keyLabel"`
+	KeyValue  	string          `json:"keyValue"`
+	Data      	[]DataInvention `json:"WareHouse"`
+	Author 	  	string 	      	`json:"author"`
+	Origin    	Origin 		  	`json:"origin"`
 }
 
 

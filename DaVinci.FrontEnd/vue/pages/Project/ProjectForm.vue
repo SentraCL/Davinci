@@ -115,7 +115,6 @@
             }
         },
         data() {
-            console.log(this.project)
             return {
                 delAlert: {
                     mensaje: "",
@@ -157,13 +156,22 @@
             },
             async updateProject() {
                 var status = false;
-                console.log("projectForm",this.projectForm)
-                await this.axios.post("/api/project/save/", this.projectForm).then(rs => {
-                    status = rs.data;
-                });
-                this.$emit("save");
-
-                this.alertSuccess(`Proyecto ${this.projectForm.name} , Guardado.`);
+                if(this.projectForm.admin==""){
+                    this.alertError("El campo gestor responsable no debe estar vacio.");
+                }
+                if(this.projectForm.email==""){
+                    this.alertError("El campo email no debe estar vacio y debe tener un formato valido.");
+                }
+                if(this.projectForm.enterprise!=""){    
+                    await this.axios.post("/api/project/save/", this.projectForm).then(rs => {
+                        status = rs.data;
+                    });
+                    this.$emit("save");
+                    this.alertSuccess(`Proyecto ${this.projectForm.name} , Guardado.`);
+                }else{
+                    this.alertError(`Debe de elegir una empresa.`);
+                }
+                
             },
 
             back() {

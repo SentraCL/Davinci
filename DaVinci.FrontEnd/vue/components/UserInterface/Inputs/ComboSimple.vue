@@ -1,6 +1,6 @@
 <template>
     <span :class="inputClass">
-        <select :disabled="inactive" class="input_field input_field--davinci" v-model="option" :title="placeholder" @blur="change" @change="change" style="cursor:pointer">
+        <select :disabled="inactive" class="input_field input_field--davinci" :id="idValue" v-model="option" :title="placeholder" @blur="change" @change="change" style="cursor:pointer">
             <option class=".ui_option" v-for="item in list" :key="item[keyValue]" v-bind:value="item[keyValue]" :selected="item[keyValue] == value">{{showKey?item[keyValue] + ' : ':''}}{{item[keyLabel]}}</option>
         </select>
         <label class="input_label input_label--davinci">
@@ -20,6 +20,7 @@
             inactive: Boolean,
             keyLabel: String,
             keyValue: String,
+            idValue:String,
             list: {}
         },
         watch: {

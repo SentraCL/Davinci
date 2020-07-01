@@ -29,7 +29,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <span><i class="ti-info"></i> Descripcion del proposito del EPICO, este texto se ocupara de referencia para conocer el propisito que busca este tipo de epico. </span>
+                                        <span><i class="ti-info"></i> Descripcion del proposito del EPICO, este texto se ocupara de referencia para conocer el proposito que busca este tipo de epico. </span>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="col-md-12">

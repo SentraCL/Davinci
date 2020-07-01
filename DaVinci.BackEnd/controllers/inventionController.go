@@ -110,7 +110,8 @@ func (ic *InventionController) TranslateBOToRequest(invention model.Invention) m
 
 	inVO.KeyLabel = invention.KeyLabel
 	inVO.KeyValue = invention.KeyValue
-
+	inVO.Enterprise= invention.Enterprise
+	
 	inVO.Title = invention.Name
 	inVO.Subtitle = invention.Name
 	inVO.Slots = invention.Code
