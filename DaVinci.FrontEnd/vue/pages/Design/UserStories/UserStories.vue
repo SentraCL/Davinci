@@ -50,7 +50,7 @@
 </template>
 <script>
 
-  import userStoriesDesign from "./userStoriesItem.vue";
+  import userStoriesDesign from "./UserStoriesItem.vue";
 
   export default {
     name: "user-stories",
