@@ -17,25 +17,25 @@
                 <div class="col-md-2"> </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('csv')">
-                        <img class="img" width="70px" src="@./assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/SubDomain/DataExcel.png" alt="">
                         <center>CSV</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('xlsx')">
-                        <img class="img" width="70px" src="@./assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/SubDomain/DataExcel.png" alt="">
                         <center>Excel</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('txt')">
-                        <img class="img" width="70px" src="@./assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/SubDomain/DataExcel.png" alt="">
                         <center>Text</center>
                     </button>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-success" @click="loadFile('xml')">
-                        <img class="img" width="70px" src="@./assets/img/subDomain/DataExcel.png" alt="">
+                        <img class="img" width="70px" src="@/assets/img/SubDomain/DataExcel.png" alt="">
                         <center>XML</center>
                     </button>
                 </div>
