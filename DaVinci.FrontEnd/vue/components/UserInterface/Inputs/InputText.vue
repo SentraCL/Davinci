@@ -73,22 +73,22 @@
         },
         methods: {
             format: function (text) {
-
-                if (this.capitalize) {
-                    text = text.charAt(0).toUpperCase() + text.slice(1);
-                }
-
-                if (this.alphabetic) {
-                    text = text.replace(/[^a-z-A-Z]/gi, '')
-                }
-                if (this.alphanumeric) {
-                    text = text.replace(/[^a-z0-9]/gi, '')
-                }
-                if (this.numeric) {
-                    text = text.replace(/[^0-9a-z-A-Z]/g, '')
-                }
-                if (this.removeSpace) {
-                    text = text.replace(/\s/g, '')
+                if(text!==undefined){
+                    if (this.capitalize) {
+                        text = text.charAt(0).toUpperCase() + text.slice(1);
+                    }
+                    if (this.alphabetic) {
+                        text = text.replace(/[^a-z-A-Z]/gi, '')
+                    }
+                    if (this.alphanumeric) {
+                        text = text.replace(/[^a-z0-9]/gi, '')
+                    }
+                    if (this.numeric) {
+                        text = text.replace(/[^0-9a-z-A-Z]/g, '')
+                    }
+                    if (this.removeSpace) {
+                        text = text.replace(/\s/g, '')
+                    }
                 }
                 return text;
             },

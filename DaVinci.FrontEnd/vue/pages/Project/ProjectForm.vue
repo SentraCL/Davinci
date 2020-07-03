@@ -30,6 +30,10 @@
                                 </input-text>
                             </div>
                             <div class="col-md-6">
+                                
+                                <!--<find-box :context.sync="enterprise" :target.sync="projectForm.enterprise" default="Empresa" > </find-box>-->
+                                
+                                
                                 <combo-simple label="Empresa" :list="enterprise" keyValue="EnterpriseId" keyLabel="Name" :value.sync="projectForm.enterprise"></combo-simple>
                             </div>
                         </div>

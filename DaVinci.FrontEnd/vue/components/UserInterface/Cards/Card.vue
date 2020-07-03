@@ -9,7 +9,7 @@
         <p class="card-category" v-if="subTitle">{{ subTitle }}</p>
       </slot>
     </div>
-    <div class="card-body" v-if="$slots.default">
+    <div class="card-body custom-card" v-if="$slots.default">
       <slot></slot>
     </div>
     <slot name="raw-content"></slot>
@@ -28,4 +28,8 @@
     }
   };
 </script>
-<style></style>
+<style>
+.custom-card{
+    padding: 15px 15px 20px 15px !important;
+}
+</style>

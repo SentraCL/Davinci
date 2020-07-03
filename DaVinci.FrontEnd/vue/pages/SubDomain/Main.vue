@@ -183,7 +183,7 @@
         this.sidePanel.show = true;
       },
       doLoadData(){
-        this.doActivePanel('loadData');
+        //this.doActivePanel('loadData');
         this.sidePanel.show = true;
       },
       doFindUserStory() {
