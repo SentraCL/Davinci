@@ -184,7 +184,7 @@
       },
       doLoadData(){
         //this.doActivePanel('loadData');
-        this.sidePanel.show = true;
+        //this.sidePanel.show = true;
       },
       doFindUserStory() {
         this.doActivePanel('userStories');
