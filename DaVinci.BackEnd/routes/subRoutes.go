@@ -35,7 +35,9 @@ func (r *Router) SubRouters() *mux.Router {
 	route.HandleFunc("/davinci/{project}/datatype/getAll/", handlers.GetAllDataTypes).Methods("GET")
 	route.HandleFunc("/davinci/{project}/datatype/get/{id}/", handlers.GetDataTypeByID).Methods("GET")
 	route.HandleFunc("/davinci/{project}/datatype/{id}/icon.png", handlers.GetIconDataTypeByID).Methods("GET")
-
+	
+	route.HandleFunc("/davinci/{project}/repository/save/", handlers.SaveRepositoryData).Methods("POST")
+	
 	//Project
 	route.HandleFunc("/davinci/{project}/code", handlers.GetCode).Methods("GET")
 	route.HandleFunc("/davinci/{project}/epics", handlers.GetEpicsProject).Methods("GET")

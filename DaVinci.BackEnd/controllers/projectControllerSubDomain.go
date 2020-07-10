@@ -95,6 +95,11 @@ func (pc *ProjectController) SaveDataType(projectCode string, dataType models.Da
 	return dataType
 }
 
+//SaveRepositoryData Guarda la informacion generada para los tipos de dato
+func (pc *ProjectController) SaveRepositoryData(projectCode string, dataType models.TestData) string {
+	return projectModel.SaveRepositoryData(projectCode, &dataType)
+}
+
 //GetAllDataTypes Retorna todos los tipos de inventos por proyecto
 func (pc *ProjectController) GetAllDataTypes(projectCode string) []models.DataType {
 	dataTypes := projectModel.GetAllDataTypes(projectCode)

@@ -103,6 +103,8 @@ Vue.mixin({
 
     },
 
+    
+
     alertCustom: function (custom) {
       Vue.use(VueToast);
       Vue.$toast.open(

@@ -97,7 +97,7 @@
         </span>
         <!--<button class="btn btn-success" v-if="step==1" @click="finishStep">Cargar Archivo</button>-->
       </tab-content>
-      <tab-content title="Finalisszar" style="white-space:nowrap;">
+      <tab-content title="Finalizar" style="white-space:nowrap;">
         <span v-if="step==1" class="row">
 
           <div class="col-4">

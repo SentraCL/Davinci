@@ -372,6 +372,16 @@ func (h *Handler) GetDataTypeByID(responseW http.ResponseWriter, request *http.R
 	}
 }
 
+func (h *Handler) SaveRepositoryData(responseW http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+	projectName := params["project"]
+	dataType := models.TestData{}
+	decoder := json.NewDecoder(request.Body)
+	decoder.Decode(&dataType)
+	salida := projectCtrl.SaveRepositoryData(projectName, dataType)
+	h.ResponseJSON(responseW,salida)	
+}
+
 //GetIconDataTypeByID , Imagen en base64
 func (h *Handler) GetIconDataTypeByID(w http.ResponseWriter, r *http.Request) {
 	if h.isOnline(r) {
@@ -404,4 +414,5 @@ func (h *Handler) GetIconDataTypeByID(w http.ResponseWriter, r *http.Request) {
 			h.ResponseJSON(w, h.ResponseError)
 		}
 	}
+	
 }

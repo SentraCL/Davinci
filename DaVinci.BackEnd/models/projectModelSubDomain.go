@@ -423,6 +423,69 @@ func (pm *ProjectModel) GetAllEpics(projectCode string) []Epic {
 
 }
 
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
+
+//SaveTestData, Guarda toda la informacion no duplicada
+func (pm *ProjectModel) SaveRepositoryData(projectCode string, dataType *TestData) string {
+	session, err := GetSession()
+	defer session.Close()
+	projectCollector := session.DB(DataBaseName).C(ProjectColl)
+	projectResult := Project{}
+	dcode := util.DavinciCode{}
+	id:=dcode.Encript(projectCode)
+	err = projectCollector.Find(bson.M{"_id": id}).One(&projectResult)
+
+	if err == nil {
+		dataTypes := projectResult.DataStored.Repository
+		position:=0
+		encontrado:=false
+			for index, dataTypeDB := range dataTypes {
+				position=position+1
+				dataType.Date = time.Now()
+				if dataTypeDB.ID == dataType.ID {
+					newRepo := dataTypeDB.Atributes	
+					insertados:=0
+					for _,atrib:=range dataType.Atributes{
+						if(!stringInSlice(atrib,newRepo)){
+							newRepo=append(newRepo,atrib)
+							insertados++
+						}
+					}
+					dataType.Atributes=newRepo
+					encontrado=true
+					if(insertados>0){
+						projectCollector.Update(
+							//Where
+							bson.M{"_id": id},
+							//Set
+							bson.M{"$set": bson.M{"dataStored.repository." + strconv.Itoa(index): dataType}})
+							return "Se han agregado "+strconv.Itoa(insertados)+" datos para el tipo de dato existente."
+						}
+					}else{
+						return "No se pueden agregar datos duplicados."
+					}
+				}
+				if(position==0||encontrado==false){
+					dataType.Date = time.Now()
+					projectCollector.Update(
+						//Where
+						bson.M{"_id": id},
+						//Set
+						bson.M{"$set": bson.M{"dataStored.repository."+strconv.Itoa(position): dataType}})
+						return "Se ha ingresado informacion para un nuevo tipo de dato."
+				}
+	}
+	//fmt.Println("SAVE [NOK]", err)
+	return "No se pudo agregar la informacion ingresada."
+}
+
 //SaveDataType , Guarda cualquier cambio en el proyecto
 func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) bool {
 	session, err := GetSession()
@@ -433,7 +496,7 @@ func (pm *ProjectModel) SaveDataType(projectCode string, dataType *DataType) boo
 	//fmt.Println("ID=", dataType.ID)
 
 	//fmt.Println("MODEL>> projectCode:", projectCode)
-
+	
 	err = projectCollector.Find(bson.M{"_id": projectCode}).One(&projectResult)
 
 	if err == nil {
