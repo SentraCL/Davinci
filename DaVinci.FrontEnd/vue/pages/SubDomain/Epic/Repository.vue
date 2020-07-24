@@ -9,8 +9,8 @@
                     <div>
                         <h6><i class="ti-package"></i> Epicos</h6>
                         <hr />
-                        <span v-for="epicType in types">
-                            <strong>({{repository[epicType].length}}) {{epicType}}</strong>
+                        <span v-bind:key="epicType" v-for="(epicType,index) in types">
+                            <a class="epicfilter" v-on:click="changeValue(epicType,index)" :value.sync="epicType"><strong>({{repository[epicType].length}}) {{epicType}}</strong></a>
                             <br />
                         </span>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="category-epic">
                         <h5><i class="ti-dropbox"></i>Actividades </h5>
                         <card>
-                            <epic-table :reference="refColum" :value.sync="epicRef" :epics.sync="repository[epicIndex]" v-on:select="showActivities()"></epic-table>
+                            <epic-table  v-if="isActive" :reference="refColum" :value.sync="epicRef" :epics.sync="repository[epicIndex]" v-on:select="showActivities()"></epic-table>
                         </card>
                     </div>
                 </div>
@@ -50,7 +50,8 @@
                 types: [],
                 epicIndex: "",
                 epicRef: "",
-                refColum: ""
+                refColum: "",
+                isActive:true
             }
         },
         async mounted() {
@@ -67,12 +68,28 @@
                     }
                 });
             });
-
             this.types = Object.keys(this.repository);
             this.epicIndex = this.types[0]
             //console.log(JSON.stringify(this.repository));
         },
         methods: {
+            async changeValue(epic,index){
+                this.epicRef=this.types[index];
+                this.refColum=this.types[index];
+                this.isActive=false;
+                this.epicIndex=epic;
+                this.$emit("update:idEpic", this.epicRef);
+                this.$emit("update");
+                console.log(this.repository)
+                console.log(this.types)
+                console.log(this.epicRef)
+                console.log(this.refColum)
+                console.log(this.types[index])
+                await this.reload();
+            },
+            async reload() {
+                this.isActive=true;
+            },
             toClose() {
                 //this.findUserStories();
                 this.$emit("toClose");
@@ -97,6 +114,14 @@
         text-align: left;
         padding: 15px;
         overflow: hidden;
+    }
+    
+    .epicfilter{
+        cursor: pointer;
+    }
+    .epicfilter:hover{
+        color:#2634dbe6 !important;
+
     }
 
     .custom-resizer>.pane~.pane {}

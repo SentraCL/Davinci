@@ -181,6 +181,7 @@ func (pc *ProjectController) Save(projectRQ models.ProjectRequest) bool {
 	return false
 }
 
+
 //Drop : delete all references and Project!!
 func (pc *ProjectController) Drop(projectRQ models.ProjectRequest) bool {
 	project := pc.translateRequestToBO(projectRQ)

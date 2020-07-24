@@ -84,6 +84,8 @@ func (h *Handler) SaveProject(responseW http.ResponseWriter, request *http.Reque
 	decoder := json.NewDecoder(request.Body)
 	decoder.Decode(&projectRQ)
 	projectCtrl.Save(projectRQ)
+	dcCtrl.VerifyBasic(projectRQ.Code)
+
 }
 
 //DropProject : Elimina un proyecto.
@@ -290,11 +292,15 @@ func (h *Handler) GetAllProjectInventions(responseW http.ResponseWriter, request
 	if !h.isDavinciOnline(request) {
 		return
 	}
-	postData := h.getPostValues(request)
-	inventions := projectCtrl.GetAllInventions(postData["projectCode"])
+	params := mux.Vars(request)
+	projectCode := params["project"]
+	if(projectCode==""){
+		postData := h.getPostValues(request)
+		projectCode=postData["projectCode"]
+	}
+	inventions := projectCtrl.GetAllInventions(projectCode)
 	h.ResponseJSON(responseW, inventions)
 }
-
 
 //SaveUserIntoProjectByFormPost , Guarda un usuario en un proyecto
 func (h *Handler) SaveUserIntoProjectByFormPost(responseW http.ResponseWriter, request *http.Request)  {
@@ -310,7 +316,7 @@ func (h *Handler) SaveUserIntoProjectByFormPost(responseW http.ResponseWriter, r
 	log.Print("Project Code  : " + projectCode)
 	var res=false	
 	if(isDesign){
-		res = userCtrl.AddUser(postData["name"], postData["pass"],isDesign)
+		res = userCtrl.AddUser(postData["name"], postData["pass"],isDesign,postData["enterprise"])
 		log.Println("Resultado ", res)
 		if(res){
 			res = projectCtrl.AddUser(projectCode, postData["name"], postData["pass"],isDesign)

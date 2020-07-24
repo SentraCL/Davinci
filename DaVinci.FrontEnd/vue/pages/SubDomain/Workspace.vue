@@ -2,11 +2,11 @@
 
   <div>
     <slot name="task-area">
-      <div v-for="task,index in tasks" track-by="id" :key="index">
+      <div v-for="(task,index) in tasks" track-by="id" :key="index">
 
         <div id="lastItem" v-if="index==(tasks.length-1)"></div>
         <epic v-if="task.isEpic && task.exist" :epic.sync="task.epic" v-on:remove="removeTask(index)" :form.sync="task.form" v-on:save="loadEpics()" :idUS.sync="idUS" v-on:sendToWorkSpace="takeUST"></epic>
-        <user-story v-if="task.isUserStory  && task.exist" :userStory.sync="task.userStory" v-on:remove="removeTask(index)" :idUS.sync="idUS" v-on:sendToWorkSpace="takeUST"></user-story>
+        <user-story :task.sync="task" v-if="task.isUserStory  && task.exist" :userStory.sync="task.userStory" v-on:remove="removeTask(index)" :idUS.sync="idUS" v-on:sendToWorkSpace="takeUST"></user-story>
       </div>
 
     </slot>
@@ -39,7 +39,8 @@
         countEP: 1,
         countUS: 1,
         //projectCode: "",
-        idUS: ""
+        idUS: "",
+        epics:{}
       }
     },
 
@@ -52,13 +53,13 @@
       async findEpic(id) {
         var epic = {}
         var epics = await this.getEpics();
+        this.epics=epics
         epics.forEach(epicache => {
           if (epicache.id == id) {
             epic = epicache;
           }
         });
         var itemType = {};
-
         var epicTypes = await this.getTypesOfEpics();
 
         epicTypes.forEach(typepic => {

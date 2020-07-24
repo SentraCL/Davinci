@@ -25,6 +25,7 @@ func (r *Router) Routers() *mux.Router {
 	handlers.SetPathPublicHTML(r.PublicHTML)
 	//Enterprise
 	route.HandleFunc("/api/enterprise/", handlers.GetEnterpriseByToken).Methods("GET")
+	route.HandleFunc("/api/project/{project}/enterprise", handlers.GetProjectEnterprise).Methods("GET")
 	
 	//Login
 	route.HandleFunc("/api/", handlers.Status).Methods("GET")

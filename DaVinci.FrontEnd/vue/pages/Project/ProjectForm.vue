@@ -156,6 +156,7 @@
               await this.axios
          .get("/api/enterprise/" )
          .then(rs => {
+           console.log(rs.data)
             this.enterprise=rs.data;
             })  
             },

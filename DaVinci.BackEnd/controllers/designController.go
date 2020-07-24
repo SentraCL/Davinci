@@ -12,12 +12,26 @@ type DesignController struct {
 }
 
 //SaveProject : Guarda proyectos.
-func (dc *DesignController) SaveEpicType(epicTypeReq models.EpicTypeRequest) string {
+func (dc *DesignController) SaveEpicType(epicTypeReq models.EpicTypeRequest,status bool) string {
 	projectCode := epicTypeReq.ProjectCode
 	epicType := dc.RQtoBO(epicTypeReq)
 	fmt.Println("Controller BO : ", util.StringifyJSON(epicType))
-	projectModel.SaveEpicType(projectCode, epicType)
-	return epicType.Code
+	projectModel.SaveEpicType(projectCode, epicType,status)
+	return epicType.Code	
+}
+
+func (dc *DesignController) VerifyBasic(projectCode string) {
+	//save pred epics
+	epicTypeReq:= models.EpicTypeRequest{}
+	epicTypeReq.ProjectCode=projectCode
+	epicTypeReq.Name="Predeterminado"
+	epicTypeReq.Reference=""
+	epicTypeReq.Definition="Plantilla de epico predeterminado"
+	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Como","1i2c1c1f",""})
+	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Quiero","20661j652063225h60",""})
+	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Para","20661j652063225h60",""})
+
+	dc.SaveEpicType(epicTypeReq,true)
 }
 
 func (dc *DesignController) RQtoBO(epicTypeReq models.EpicTypeRequest) models.EpicType {

@@ -7,7 +7,8 @@
                 </div>
                 <div class="col-md-12">
                     <input-text label="Titulo del Epico" alphabetic capitalize name="name" v-model="epicForm.name" autocomplete="off"> </input-text>
-                    <drop-menu :title="epicTitle" class="epicMenu" v-on:change="epicManager(epicMenu.option)" :options="epicMenu.options" :option.sync="epicMenu.option"></drop-menu>
+                    <drop-menu v-if="!edit" :title="epicTitle" class="epicMenu" v-on:change="epicManager(epicMenu.option)" :options="epicMenu.options" :option.sync="epicMenu.option"></drop-menu>
+                    <drop-menu v-if="edit" :title="epicTitle" class="epicMenu" v-on:change="epicManager(epicEditMenu.option)" :options="epicEditMenu.options" :option.sync="epicEditMenu.option"></drop-menu>
                 </div>
 
                 
@@ -33,7 +34,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="col-md-12">
-                                            <textarea id="epic-description" rows="5" class="form-control border-input" @dragover.prevent @drop.stop.prevent="drop" title="Definicion del Epico" v-model="epicForm.definition">
+                                            <textarea :id="'epic-description-'+epicForm.Code" rows="5" class="form-control border-input" @dragover.prevent @drop.stop.prevent="drop" title="Definicion del Epico" v-model="epicForm.definition">
                                             </textarea>
                                         </div>
                                     </div>
@@ -143,7 +144,9 @@
         props: {
             project: {},
             epicType: {},
-            inventions: {}
+            inventions: {},
+            allEpic:{},
+            edit:false
         },
 
         data() {
@@ -155,6 +158,7 @@
                 ADD: 4,
                 BACK: 5,
                 UNIQ: 6,
+                NEWEDIT:7,
 
                 renderComponent: true,
 
@@ -181,6 +185,16 @@
                     option: -1,
                     options: [
                         { html: `<span><i style="color:green" class="ti-save"></i> Guardar Epico</span>`, option: 3 },
+                        { html: `<span><i style="color:brown" class="ti-control-backward"></i> Volver</span>`, option: 5 },
+                        //{ html: `<span><i style="color:blue" class="ti-save"></i> Mover</span>`, option: 2 },
+                        //{ html: `<span><i style="color:red" class="ti-save"></i> Eliminar</span>`, option: 0 },
+                    ]
+                },
+
+                epicEditMenu: {
+                    option: -1,
+                    options: [
+                        { html: `<span><i style="color:green" class="ti-save"></i> Editar Epico</span>`, option: 7 },
                         { html: `<span><i style="color:brown" class="ti-control-backward"></i> Volver</span>`, option: 5 },
                         //{ html: `<span><i style="color:blue" class="ti-save"></i> Mover</span>`, option: 2 },
                         //{ html: `<span><i style="color:red" class="ti-save"></i> Eliminar</span>`, option: 0 },
@@ -250,6 +264,8 @@
                 });
                 this.dataInvention[inv.code] = values;
             }
+            console.log("Inventions",this.inventions)
+            console.log("dataInvention",this.dataInvention)
             await this.addDefaultArtifactToAttributes();
             await this.addInventionsToAttributes();
         },
@@ -265,11 +281,27 @@
             drop(event){
                 var data = localStorage.getItem("text");
                 localStorage.removeItem("text");
-                if(data && event.target.id=="epic-description"){
-                    let text=this.epicForm.definition;
-                    this.epicForm.definition= text+"<<"+data+">>";
+                if(data && event.target.id.includes("epic-description")){
+                    if(this.epicForm.definition==""){
+                        this.epicForm.definition=" ";
+                    }
+                    if(this.epicForm.definition==undefined||this.epicForm.definition=="undefined"){
+                        let text=this.epicForm.definition;
+                        this.epicForm.definition= " <<"+data+">>";
+                        let span =document.getElementById(event.target.id);
+                        let txt = document.createTextNode(text+"<<"+data+">>");
+                        span.appendChild(txt);
+                    }else{
+                        let text=this.epicForm.definition;
+                        this.epicForm.definition= text+"<<"+data+">>";
+                        let span =document.getElementById(event.target.id);
+                        span.text=""
+                        let txt = document.createTextNode(text+"<<"+data+">>");
+                        span.appendChild(txt);
+                    }
                 }
             },
+            
             setInvention(invention) {
                 this.currentInvention = invention;
             },
@@ -322,8 +354,10 @@
                         name: "",
                         artifactType: ""
                     };
-                } else {
-                    this.alertInfo("NOOO!!!.");
+                } else if(this.isEmptyOrSpaces(this.input.name) || this.isEmptyOrSpaces(this.input.artifactType)){
+                    this.alertInfo("Los atributos deben de tener un nombre y un tipo.");
+                } else{
+                    this.alertInfo("Los atributos deben de tener nombres unicos entre ellos.");
                 }
             },
             getNameInventionByCode(code) {
@@ -341,17 +375,32 @@
                     if (this.isEmptyOrSpaces(this.invention.name)) {
                         this.invention.name = this.getNameInventionByCode(this.invention.code);
                     }
+                    let encontrado=false;
                     var invention = this.cloneObject(this.invention);
-                    this.epicForm.inventions.push(invention);
-                    this.invention = {
-                        code: "",
-                        name: "",
-                        //icon: "",
-                        // type: "",
-                        value: ""
-                    };
-                } else {
-                    this.alertInfo("NOOO!!!.");
+                    //Verifica si el nombre existe dentro del listado de inventos
+                    this.epicForm.inventions.forEach(value=>{
+                        if(value.name==this.invention.name){
+                            encontrado=true;
+                        }
+                    });
+                    //Si no existe lo agrega y limpia los campos
+                    if(!encontrado){
+                        this.epicForm.inventions.push(invention);
+                        this.invention = {
+                            code: "",
+                            name: "",
+                            //icon: "",
+                            // type: "",
+                            value: ""
+                        };
+                    }else{
+                        //En caso contrario, indica que los nombres deben de ser unicos.
+                        this.alertInfo("Las actividades deben de tener nombres unicos entre ellos.");
+                    }
+                } else if(this.isEmptyOrSpaces(this.invention.code)){
+                    this.alertInfo("Las actividades deben de tener asociado un tipo de invento.");
+                } else{
+                    this.alertInfo("Las actividades deben de tener nombres unicos entre ellos.");
                 }
             },
 
@@ -362,6 +411,40 @@
 
                 if (option == this.NEW) {
                     //console.log(JSON.stringify(this.epicForm, 4, null));
+                    console.log(this.epicForm)
+                    if(this.epicForm.name.trim()==""){
+                        this.alertInfo("No se puede dejar el nombre del titulo del Epico en blanco.");
+                    }else if(this.epicForm.definition.trim()==""){
+                        this.alertInfo("No se puede dejar la descripcion del Epico en blanco.")
+                    }else {
+                        let encontrado=false;
+                        this.allEpic.forEach(value=>{
+                            if(value.name==this.epicForm.name){
+                                encontrado=true;
+                            }
+                        });
+                        if(!encontrado){
+                            var epicType = {
+                                name: this.epicForm.name,
+                                projectCode: this.project.code,
+                                reference: this.epicForm.reference,
+                                definition: this.epicForm.definition,
+                                attributes: this.epicForm.attributes,
+                                inventions: this.epicForm.inventions
+                            }
+                            await this.axios.post(`/api/project/${this.project.code}/design/epic`, epicType).then(rs => {
+                                this.alertInfo("Epico Guardado");
+                            });
+                        }else{
+                            this.alertInfo("Ya existe un tipo de Epico con dicho nombre, cada nombre debe de ser unico.")
+                        }
+                    }
+                }
+
+                if (option == this.NEWEDIT) {
+                    //console.log(JSON.stringify(this.epicForm, 4, null));
+                    console.log(this.epicForm);
+                    console.log(this.allEpic);
                     var epicType = {
                         name: this.epicForm.name,
                         projectCode: this.project.code,

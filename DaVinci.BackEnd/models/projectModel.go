@@ -25,9 +25,11 @@ func (pm *ProjectModel) GetAll(user string) []Project {
 		userDAO := session.DB(DataBaseName).C(UserColl)
 		userResult := User{}
 
+		log.Println("user: "+user)
 		err = userDAO.Find(bson.M{"username": user}).One(&userResult)
 		if err != nil {
-			log.Fatal("Error al obtener el usuario .", err)
+			log.Println("Error al obtener el usuario .", err)
+			return nil
 		}
 
 		orQuery := []bson.M{}
@@ -162,26 +164,32 @@ func (pm *ProjectModel) GetProjectByCode(projectCode string) Project {
 }
 
 //SaveEpicType , Almacena tipos de Epicos
-func (pm *ProjectModel) SaveEpicType(projectCode string, epicType EpicType) {
+func (pm *ProjectModel) SaveEpicType(projectCode string, epicType EpicType,isBasic bool) {
 	session, err := GetSession()
 	defer session.Close()
 	projectClr := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 
-	//fmt.Println("MODEL>> projectCode:", projectCode)
+	fmt.Println("MODEL>> projectCode:["+projectCode+"]")
+	fmt.Println("MODEL>> epicType:", epicType)
+	fmt.Println("MODEL>> isBasic:", isBasic)
 
-	err = projectClr.Find(bson.M{"_id": projectCode}).One(&projectResult)
+	err = projectClr.Find(bson.M{"_id": strings.Trim(projectCode," ")}).One(&projectResult)
+	fmt.Println("MODEL>> projectResult:", projectResult)
 	epicTypes := projectResult.Epics.Types
 	find := false
 	for index, epicTyped := range epicTypes {
+		fmt.Println("MODEL>> epicTyped:", epicTyped)
 		if epicTyped.Code == epicType.Code {
 			find = true
 			fmt.Println("UPDATE [OK]")
-			projectClr.Update(
-				//Where
-				bson.M{"_id": projectCode},
-				//Set
-				bson.M{"$set": bson.M{"epics.types." + strconv.Itoa(index): epicType}})
+			if(!isBasic){
+				projectClr.Update(
+					//Where
+					bson.M{"_id": projectCode},
+					//Set
+					bson.M{"$set": bson.M{"epics.types." + strconv.Itoa(index): epicType}})
+			}
 		}
 	}
 	if !find {
@@ -300,6 +308,7 @@ func (pm *ProjectModel) GetInventions(pid ProjectInventionData) []DataInvention 
 
 	if err == nil {
 		for _, repo := range projectResult.Repository {
+			
 			log.Println("repo.InventionCode", repo.InventionCode)
 			log.Println("pid.InventionCode", pid.InventionCode)
 

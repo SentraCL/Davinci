@@ -313,7 +313,6 @@
                 var projects = []
                 await this.axios.post("/api/project/getAll/").then(rs => {
                     projects = rs.data;
-                    console.log(projects);
                 });
                 var copyName = this.copyProject.name;
                 var filter = projects.filter(function (project) {

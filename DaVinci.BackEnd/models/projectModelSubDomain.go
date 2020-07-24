@@ -362,14 +362,11 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 
 		//fmt.Println("MODEL>> repository:", util.StringifyJSON(epicRepository))
 
-		dcode := util.DavinciCode{}
-		idCoded := dcode.Encript(epic.Code)
-
 		//fmt.Println("MODEL>> epic.ID	:", epic.ID)
 		//fmt.Println("MODEL>> epic.Code	:", epic.Code)
-
-		if epic.ID != idCoded || epic.ID == "" {
-			epic.ID = idCoded
+		epicId:=epic.ID.Hex()
+		if  epicId == "" {
+			epic.ID = bson.NewObjectId()
 			epic.Date = time.Now()
 			if err == nil {
 				newRepo := []Epic{}
@@ -388,7 +385,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		} else {
 			for index, epicDB := range epicRepository {
 				epic.Date = time.Now()
-				if epicDB.Code == epic.Code {
+				if epicDB.ID == epic.ID {
 					//fmt.Println(epic.ID, " UPDATE [OK] =>", epic.Code)
 					projectCollector.Update(
 						//Where

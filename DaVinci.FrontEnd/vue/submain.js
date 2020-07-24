@@ -250,6 +250,7 @@ Vue.mixin({
       });
       return dataTypes;
     },
+    //trae los inv en contexto del proeycto
     async getAllInventions() {
       var invents = [];
       var projectCode = await this.getCodeProject();
@@ -289,6 +290,7 @@ Vue.mixin({
       var projectName = pathname.split("/")[2];
       await this.axios.get(`/davinci/${projectName}/epics`).then(rs => {
         epics = rs.data;
+        console.log(epics)
       });
       return epics;
     },

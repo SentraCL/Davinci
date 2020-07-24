@@ -5,7 +5,7 @@
       <div class="card-header">
         <div class="typo-line">
           <p class="category">
-            <img width="128px" :src="project.avatar" />
+            <img width="128px" class="avatarEpico" :src="project.avatar" />
             <br />
 
           </p>
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <epic-design v-if="task==NEW" :epicType="epicForm" v-on:back="listEpic();" :inventions="inventions" :project="project"></epic-design>
+    <epic-design v-if="task==NEW" :edit="false" :epicType="epicForm" :allEpic="epicTypes" v-on:back="listEpic();" :inventions="inventions" :project="project"></epic-design>
 
     <div class="card-group" v-if="task==NONE">
       <div class="col-md-3" v-for="(epicType, index) in epicTypes" :key="index">
@@ -47,7 +47,7 @@
       </div>
 
     </div>
-    <epic-design v-if="task==EDIT" :epicType="epicForm" :inventions="inventions" v-on:back="listEpic();" :project="project"></epic-design>
+    <epic-design v-if="task==EDIT" :edit="true"  :allEpic="epicTypes" :epicType="epicForm" :inventions="inventions" v-on:back="listEpic();" :project="project"></epic-design>
   </div>
   
 </template>
@@ -293,5 +293,10 @@
     border-bottom: 1px solid #4e1d00;
     text-align: center;
     vertical-align: top;
+  }
+
+  .avatarEpico{
+    vertical-align: middle;
+    max-height: 100px;
   }
 </style>

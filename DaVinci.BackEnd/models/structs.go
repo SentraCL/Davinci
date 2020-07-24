@@ -1,6 +1,7 @@
 package models
 
 import "time"
+import "gopkg.in/mgo.v2/bson"
 
 //User : Definicion de Collection User para DB
 type User struct {
@@ -298,7 +299,7 @@ type Step struct {
 
 //Epic : Epicos del proyecto
 type Epic struct {
-	ID           string       `json:"id" bson:"_id"`
+	ID           bson.ObjectId       `json:"id" bson:"_id"`
 	EpicTypeCode string       `json:"type" bson:"epictype"`
 	Code         string       `json:"code" bson:"code"`
 	Attributes   []Attributes `json:"attributes" bson:"attributes"`

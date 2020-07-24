@@ -48,19 +48,47 @@
                 <div class="col-md-12">
                     <h6>Seleccione el tipo de dato</h6>
                 </div>
-                <div class="col-md-6">
-                <combo-simple label="Tipo de Datos" v-on:update="setDataType()" :value.sync="dataTypeId" class="input-item"
-                :list="dataTypeList" keyValue="id" keyLabel="name"></combo-simple>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <combo-simple label="Tipo de Datos" v-on:update="setDataType()" :value.sync="dataTypeId" class="input-item"
+                            :list="dataTypeList" keyValue="id" keyLabel="name"></combo-simple>
+                        </div>
+                        <div class="col-md-3">
+                            <h5>Atributo unico es : {{dataType.principalKey}}</h5>
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3"></div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                <h5>Atributo unico es : {{dataType.principalKey}}</h5>
-            </div>
+                <hr>
+                <div class="col-md-12">
+                    <div class="row">
+                    <div class="col-md-3">
+                    <combo-simple label="Invento" v-on:update="setInvent()" :value.sync="inventionId" class="input-item"
+                    :list="inventions" keyValue="id" keyLabel="name"></combo-simple>
+                    </div>
+
+                    <div class="col-md-3" :key="artifact.name" v-for="artifact in artifacts">
+                        <div class="col-md-12">
+                            <input-text disabled :label="artifact.name" v-model="artifact.name">{{artifact.name}}</input-text>
+                        </div>
+                        <div class="col-md-12" v-if="dataHeader">
+                            <combo-simple v-if="dataHeader.length>0" label="Cabecera" :value.sync="artifact.header" v-on:change="changeDataFile(artifact)" class="input-item"
+                            :list="dataHeader" keyValue="name" keyLabel="name"></combo-simple>
+                        </div>
+                    </div>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <h6>Seleccione el archivo a subir</h6>
                 </div>
                 <div class="col-md-12">
                 <input class="form-control-file" :accept="accept"  type="file" id="DavinciFile" name="DavinciFile" ref="fileProject"
                     v-on:input="handleFileUpload()" />
+                </div>
+                <div class="col-md-12">
+                    <davinci-table :key="dataFileKey" v-if="dataFile.length>0&&isRenderTable" :data="dataFile"></davinci-table>
                 </div>
           </div>
 
@@ -103,34 +131,40 @@
             return {
                 step: 0,
                 dataTypeList: {},
+                dataHeader:{},
+                dataFile:[],
+                dataFileKey:0,
                 dataType: {},
                 dataTypeId: "",
+                invention:{},
+                inventionId:"",
+                inventionsLength: 0,
                 inventions: {},
                 accept:"",
                 cantidad:0,
-                dataList:[],
+                artifacts:[],
+                dataList:{},
                 projectName:"",
                 projectOK: false,
                 file: "",
                 doContinue: false,
-                labelUpload: "Subir Data",
-                error: false,
-                errorMessage: "",
-                importProject: {},
-                invToRename: {},
-                nameExist: !this.isEmptyOrSpaces(this.nameProject),
-                invents: {},
-                epicLength: 0,
-                userStorieLength: 0,
-                inventsLength: 0,
-                nextBool:true
+                nextBool:true,
+                isRenderTable:true
             }
         },
         async mounted() {
             this.projectName = this.getProjectDomain();
         },
         methods: {
-            
+            changeDataFile(artifact){
+                console.log("artifact",artifact)
+                console.log("datafile",this.dataFile)
+                this.dataFileKey++;
+                this.isRenderTable=false;
+                this.$nextTick(() => {
+                    this.isRenderTable=true; 
+                });
+            },
             getHeader(sheet) {
             const XLSX = xlsx;
             const headers = [];
@@ -167,7 +201,7 @@
                 if(this.step==0){
                     this.dataType={}
                     this.cantidad=0
-                    this.dataList=[]
+                    this.dataList={}
                     this.dataTypeList= {}
                     this.dataTypeId= ""
                     this.inventions= {}
@@ -188,7 +222,7 @@
                     this.nextBool=true
                 }
                 if(this.step==2){
-                   this.getData();
+                   //this.getData();
                 }
             },
             dupCheck(o, val){
@@ -203,6 +237,8 @@
             },
             getKeyCase(o,val){
                 for(var prop in o){
+                    console.log("prop",prop)
+                    console.log("val",val)
                     if(prop.toLowerCase()===val.toLowerCase()){
                         return prop;
                     }
@@ -219,6 +255,10 @@
                     this.importXml();
                 }
             },
+            setArtifacts(artifacts){
+                this.artifacts=artifacts
+                console.log(this.artifacts)
+            },
             importXml(){
                 var parseString = require('xml2js').parseString;
                 const file=this.file;
@@ -228,33 +268,62 @@
                 let column=[]
                 let position=0;
                 let encontrado=false;
-                this.dataList=[]
+                this.dataList={}
                 this.cantidad=0
                 let index=0
 
+                const artifacts=this.artifacts
+                let salida={}
+                let compare=this.getKeyCase
+                let setArtifacts=this.setArtifacts
+                console.log(this.artifacts)
                 reader.addEventListener('load', function(){
                     try{
-                self.xml = reader.result;
-                parseString(self.xml, function (err, result) {
-                self.events = result.Workbook.Worksheet[0]["ss:Table"][0]["Row"]
-                self.events.forEach(value=>{
-                    if(encontrado && value.Cell[position]&& value.Cell[position].Data[0]["_"] && value.Cell[position].Data[0]["_"].trim()!=""){
-                        self.dataList.push(value.Cell[position].Data[0]["_"]);
-                        self.cantidad++;
-                    }
-                    if(value.Cell[position]&&index==0){
-                        value.Cell.forEach(function (cell, cont){
-                        if(cell.Data[0]["_"].toLowerCase==dataKey.toLowerCase){
-                            position=cont;
-                            encontrado=true;            
+                        console.log("reader")
+                        self.xml = reader.result;
+                        console.log(artifacts)
+                        parseString(self.xml, function (err, result) {
+                        console.log(artifacts)
+                            if(result.Workbook){
+                                self.events = result.Workbook.Worksheet[0]["ss:Table"][0]["Row"]
+                                self.events.forEach(value=>{
+                                    if(encontrado && value.Cell[position]&& value.Cell[position].Data[0]["_"] && value.Cell[position].Data[0]["_"].trim()!=""){
+                                        self.dataList.push(value.Cell[position].Data[0]["_"]);
+                                        self.cantidad++;
+                                    }
+                                    if(value.Cell[position]&&index==0){
+                                        value.Cell.forEach(function (cell, cont){
+                                        if(cell.Data[0]["_"].toLowerCase()==dataKey.toLowerCase()){
+                                            position=cont;
+                                            encontrado=true;            
+                                            }
+                                        });
+                                    }
+                                    index++;
+                                });
+                            }else if(result["data-set"]){
+                                self.events=result["data-set"].record
+                                for(let i=0;i<artifacts.length;i++){
+                                        let key=compare(self.events[0],artifacts[i].name)
+                                        console.log("before if",key)
+                                        if(key){
+                                            artifacts[i].position=key
+                                            console.log("entro")
+                                        }
+                                    }
+                                    console.log("post for",artifacts)
+                                self.events.forEach(value=>{
+                                    
+                                });
+                                setArtifacts(artifacts)
+                                console.log(result["data-set"].record)
+                            }else{
+                                return alert("No se pudo leer correctamente el archivo xml.")
                             }
-                        })
-                    }
-                    index++;
-                })
-                });
-                } catch (e) {
-                    return alert("Error de lectura");;
+                        });
+                    } catch (e) {
+                        console.log(e)
+                        return alert("Error de lectura");;
                     }
                 });
                 reader.readAsText(file);
@@ -270,30 +339,52 @@
                     let column=[]
                     let position=0;
                     let encontrado=false;
-                    this.dataList=[]
+                    this.dataList={}
                     this.cantidad=0
                     let index=0
+                    let temp={};
                     row.forEach(value=>{
                         column=value.split("\t")
-                        if(encontrado && column[position] && column[position].trim()!=""){
-                            this.dataList.push(column[position]);
+                        if(encontrado&&column[position] && column[position].trim()!=""){
+                            temp={}
+                            this.artifacts.forEach(artifact=>{
+                                if(artifact.value!=""&&artifact.position!=""){
+                                    temp[artifact.name]=column[artifact.position]
+                                }
+                            });
+                            if(!this.dataList||!this.dataList[column[position]]){
+                                this.dataList[column[position]]=[];
+                            }
+                            this.dataList[column[position]].push({
+                                type:temp
+                            })
                             this.cantidad++;
                         }
                         if(index==0){
+                            let artifacts=this.artifacts
                             column.forEach(function(key,cont){
-                                if(key.toLowerCase==dataKey.toLowerCase){
+                                if(key.toLowerCase()==dataKey.toLowerCase()){
                                     position=cont;
                                     encontrado=true;
                                 }
+                                for (var i=0;i<artifacts.length;i++){
+                                    if(artifacts[i].value!=""
+                                    &&artifacts[i].value.toLowerCase()===key.toLowerCase()
+                                    &&artifacts[i].position==""){
+                                        artifacts[i].position=cont;
+                                    }
+                                }
                             });
+                            this.artifacts=artifacts
                         }
                         index++;
                     });
                     } catch (e) {
+                        console.log(e)
                     return alert("Error de lectura");;
                     }
                 }
-                fileReader.readAsBinaryString(file);
+                fileReader.readAsText(file);
             },
             importCsv(){
                 const file=this.file;
@@ -306,30 +397,66 @@
                     let column=[]
                     let position=0;
                     let encontrado=false;
-                    this.dataList=[]
+                    this.dataList={}
                     this.cantidad=0
                     let index=0
+                    let type=this.dataType.name
+                    let temp={};
+                    let dataTemp={}
                     row.forEach(value=>{
                         column=value.split(",")
+                        this.dataFile=[]
                         if(encontrado){
-                            this.dataList.push(column[position]);
+                            temp={}
+                            dataTemp={}
+                            this.artifacts.forEach(artifact=>{
+                                if(artifact.value!=""&&artifact.position!=""){
+                                    temp[artifact.name]=column[artifact.position]
+                                    if(artifact.header&&artifact.header!=""){
+                                        dataTemp[artifact.header]=column[artifact.position]
+                                    }
+                                }
+                            });
+                            this.dataFile.push(dataTemp);
+                            console.log("push datafile",this.dataFile)
+                            if(!this.dataList||!this.dataList[column[position]]){
+                                this.dataList[column[position]]=[];
+                            }
+                            this.dataList[column[position]].push({
+                                type:temp
+                            })
                             this.cantidad++;
                         }
                         if(index==0){
+                            let artifacts=this.artifacts
+                            let headers=[]
                             column.forEach(function(key,cont){
-                                if(key.toLowerCase==dataKey.toLowerCase){
+                                headers.push({"name":key})
+                                console.log(key)
+                                if(key.toLowerCase()==dataKey.toLowerCase()){
                                     position=cont;
                                     encontrado=true;
                                 }
+                                for (var i=0;i<artifacts.length;i++){
+                                    if(artifacts[i].value!=""
+                                    &&artifacts[i].value.toLowerCase()===key.toLowerCase()
+                                    &&artifacts[i].position==""){
+                                        artifacts[i].position=cont;
+                                    }
+                                }
                             });
+                            console.log(headers)
+                            this.dataHeader=headers
+                            this.artifacts=artifacts
                         }
                         index++;
                     });
                     } catch (e) {
+                        console.log(e)
                     return alert("Error de lectura");;
                     }
                 }
-                fileReader.readAsBinaryString(file);
+                fileReader.readAsText(file);
             },
             importExcel() {
                 const files=this.file
@@ -351,17 +478,36 @@
                     for (var i = 0; i < ws.length; i++) {
                         excellist.push(ws[i]);
                     }
+                    for (var i=0;i<this.artifacts.length;i++){
+                        if(this.artifacts[i].value!=""&&this.dupCheck(excellist[0],this.artifacts[i].value)){
+                            let key=this.getKeyCase(excellist[0],this.artifacts[i].value);
+                            this.artifacts[i].position=key;
+                        }
+                    }
                     if(this.dupCheck(excellist[0],this.dataType.principalKey)){
                         let key=this.getKeyCase(excellist[0],this.dataType.principalKey);
                         this.dataList=[]
                         this.cantidad=0
+                        let type=this.dataType.name
                         excellist.forEach(value=>{
-                            this.dataList.push(value[key]);
+                            let temp={};
+                            this.artifacts.forEach(artifact=>{
+                                if(artifact.value!=""&&artifact.position!=""){
+                                    temp[artifact.name]=value[artifact.position]
+                                }
+                            });
+                            if(!this.dataList||!this.dataList[value[key]]){
+                                this.dataList[value[key]]=[];
+                            }
+                            this.dataList[value[key]].push({
+                                type:temp
+                            })
                             this.cantidad++;
                         });
                     }
                     
                     } catch (e) {
+                        console.log(e)
                     return alert("Error de lectura");;
                     }
                 };
@@ -378,13 +524,33 @@
                    if(this.dataTypeId === dList.id){
                        this.dataType = dList;
                    }
-                   if(Object.keys(this.dataType).length!=0&&this.file!=""){
+                   if(Object.keys(this.dataType).length!=0&&this.file!=""&&Object.keys(this.invention).length!=0){
                         this.nextBool=false;
                     }
                 })
                 
 
                 //console.log("typeList" + JSON.stringify(this.dataTypeList))
+            },
+            setInvent() {
+                this.inventions.forEach(invention => {
+                    this.artifacts=[]
+                   if(this.inventionId === invention.id){
+                       this.invention = invention;
+                       this.invention.artifacts.forEach(art=>{
+                           this.artifacts.push({
+                               code:art.code,
+                               name:art.name,
+                               position:"",
+                               value:""
+                           }
+                           )
+                       })
+                   }
+                   if(Object.keys(this.dataType).length!=0&&this.file!=""&&Object.keys(this.invention).length!=0){
+                        this.nextBool=false;
+                    }
+                })
             },
             async loadFile(typeFile) {
                 this.nextBool=false;
@@ -401,6 +567,8 @@
                 if (Object.keys(this.dataTypeList).length == 0) {
                         this.dataTypeList = await this.getAllDataTypes();
                         this.inventions = await this.getAllInventions();
+                        console.log(this.inventions);
+                        console.log(this.dataTypeList);
                     }
             },
             async save(){
@@ -408,8 +576,10 @@
                 var json = {
                     atributes: this.dataList,
                     id:this.dataType.id,
-                    dataType:this.dataType
+                    dataType:this.dataType,
+                    artifacts:this.artifacts
                     }
+                console.log(json)
                 await me.axios.post(`/davinci/${this.projectName}/repository/save/`,json).then(rs => {
                     this.toClose()
                     return alert(rs.data)
@@ -418,12 +588,7 @@
             toClose() {
                 this.$emit("toClose");
             },
-            ready() {
-        return this.doContinue;
-      },
       openFile() {
-        this.invToRename = {}
-        this.error = false;
         if (this.step == 0) {
           this.$refs.fileProject.value = null;
           document.getElementById("DavinciFile").click();
@@ -433,14 +598,14 @@
             
       async handleFileUpload(event) {
         this.file = this.$refs.fileProject.files[0];
-        if(Object.keys(this.dataType).length!=0&&this.file!=""){
+        if(Object.keys(this.dataType).length!=0&&this.file!=""&&Object.keys(this.invention).length!=0){
             this.nextBool=false;
         }
-        this.labelUpload = "Desea subir otro archivo.";
         if (this.file) {
             var readFile = new FileReader();
             let data={"data":this.file}
           };
+          this.getData();
         }
 
         }

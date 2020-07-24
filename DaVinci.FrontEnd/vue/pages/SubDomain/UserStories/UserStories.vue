@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-tabs :tabs="userStoriesTab" :activeIndex="0">
-            <div :slot="us.slots" class="card-body" v-for="us,index of userStoriesTab" :key="index" style="min-height: 500px;">
+            <div :slot="us.slots" class="card-body " v-for="us,index of userStoriesTab" :key="index" style="min-height: 500px;">
                 <h5><button class="btn btn-success" @click="take(us.slots)"><i class="ti-share"></i> {{us.slots}}</button></h5>
                 <small><strong>{{us.date}}</strong> creado por <strong>{{us.userStory.author}}</strong></small>
 

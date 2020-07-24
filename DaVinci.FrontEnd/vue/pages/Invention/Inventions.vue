@@ -57,8 +57,8 @@
         selectedDate: "",
         name: "",
         enterprise:[],
-        inventionVOs: [],
         filter:[],
+        inventionVOs: [],
         refresh: true
       }
     },
@@ -109,6 +109,7 @@
               await this.axios
          .get("/api/enterprise/" )
          .then(rs => {
+           console.log(rs.data)
             this.enterprise=rs.data;
             })  
             },

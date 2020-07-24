@@ -29,6 +29,7 @@
     </span>
 </template>
 <script>
+    import screen from '../../index';
     export default {
         name: "default",
         inheritAttrs: false,

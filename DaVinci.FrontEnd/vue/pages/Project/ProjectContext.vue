@@ -128,21 +128,27 @@
           this.alertError("El nombre de usuario debe de ser mayor a 4 caracteres.");
           return false;
         }
+        let enterprise=""
+        await this.axios.get("/api/project/"+this.project.code+"/enterprise").then(rs=>{
+          console.log("enterprise",rs.data)
+          enterprise=rs.data
+        });
+
          await this.axios
          .get("/api/project/"+ this.project.code + "/users")
          .then(rs => {
             var cloneUser = this.cloneObject(_newUser);
+            cloneUser.enterprise=enterprise
             var userExist = false;
             status = rs.data;
             var users = rs.data;
             for(var i = 0; i < users.length; i++){
-             console.log(users[i].UserName);
-             
               if(users[i].UserName.localeCompare(cloneUser.name) == 0 ){
                userExist = true;
              }
             }
             
+
             if(!userExist){
               if(cloneUser.isDesign){
                 cloneUser.isDesign="1";

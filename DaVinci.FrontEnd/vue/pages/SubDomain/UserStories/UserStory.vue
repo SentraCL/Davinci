@@ -30,6 +30,15 @@
     </template>
     <div style="padding-left:16px">
       <h-tabs :tabs="UsTabs" viewScoped v-if="showForm" v-on:loadTab="similarUserStories()">
+        <span slot="epic">
+          <combo-simple label="Epico" v-if="epics.length>0" :list="epics" keyLabel="date" keyValue="id" :value.sync="epicSelected" ></combo-simple>
+          <hr>
+          <invention-form v-if="epicSelected!=-1" :projectCode="projectCode" :invention.sync="epics.attributes" :values.sync="attributes"></invention-form>
+          <!--
+          <vue-json-pretty :path="'res'" :data="userStoryForm.us">
+          </vue-json-pretty>
+          -->
+        </span>
         <span slot="dat">
           <h5>Descripcion del {{userStory.usType.title}}</h5>
           <textarea :disabled="currentVer!=lastVersion" class="ta8" placeholder="Descripcion" id="txtDescripcion"
@@ -64,14 +73,6 @@
             <us-step :inactive="currentVer!=lastVersion" :steps.sync="steps"></us-step>
           </div>
         </span>
-        <span slot="epic">
-          Pendiente..
-          <br />
-          <!--
-          <vue-json-pretty :path="'res'" :data="userStoryForm.us">
-          </vue-json-pretty>
-          -->
-        </span>
       </h-tabs>
       <span class="btn btn-xs btn-success" @click="exportXML">Exportar XML</span>
     </div>
@@ -101,7 +102,6 @@
         this.similarUserStories("");
       }
     },
-
     data() {
       var _userStoryCode = "";
       var _userStoryForm = {};
@@ -113,6 +113,7 @@
         _steps = this.cloneObject(this.userStory.steps);
         _codeOK = true;
       }
+      this.fillEpics();
       return {
         CREATE: 0,
         SAVE: 1,
@@ -125,6 +126,10 @@
 
         versions: [],
         keys: [],
+        attributes:{},
+        epics: {},
+        epicSelected:-1,
+        projectCode:{},
 
         idHTML: "",
         isUserStoryExist: _codeOK,
@@ -139,19 +144,24 @@
         values: {},
         UsTabs: [
           {
+            title: `<i class="ti-clipboard"></i> Epico`,
+            slot: "epic",
+            id: 0
+          },
+          {
             title: `<i class="ti-clipboard"></i> Atributos`,
             slot: "dat",
-            id: 0
+            id: 1
           },
           {
             title: `<i class="ti-check-box"></i> Pre-condicion`,
             slot: "pre",
-            id: 1
+            id: 2
           },
           {
             title: `<i class="ti-menu-alt"></i> Paso a paso`,
             slot: "step",
-            id: 2
+            id: 3
           }
         ]
       };
@@ -186,21 +196,30 @@
           this.currentVer = ver.version;
         }
         this.lastVersion = this.currentVer;
-
+      console.log("epics",this.task)
+        /*
         this.UsTabs.push({
           title: `<i class="ti-folder"></i> Epicos`,
           slot: "epic",
           id: 3
         });
+        */
       }
     },
 
     methods: {
+      async fillEpics(){
+          this.epics = await this.getEpics();
+          this.projectCode = await this.getCodeProject();
+      },
       exportXML() {      
-        var  preConditions = ``;
+        if(this.userStory.us){
+
+          var  preConditions = ``;
         var lastVersionIndex = this.userStory.us.lastVersionIndex;
         var num = this.currentVer.match(/\d+/g);
         var currentVer = num[0] - 1;
+
         var userStoryExport = this.userStory.us.versions[currentVer];
         userStoryExport.preConditions.forEach(pc=>{
           preConditions += `${pc.name} : ${pc.value} \n`
@@ -261,6 +280,9 @@
         this.alertInfo(
           `Se ha descargado ${filename}.`
         );        
+        }else{
+          this.alertInfo("Debe de versionar la historia de usuario antes de poder exportar.");
+        }
       },
 
       code() {

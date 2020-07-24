@@ -18,10 +18,11 @@ func (em *EnterpriseModel) GetEnterprise( user string) []Enterprise{
 	
 	userResult := User{}
 	enterpriseResult:=[]Enterprise{}
-	
+	log.Println("user: "+user)
 	err = userDAO.Find(bson.M{"username": user}).One(&userResult)
 	if err != nil {
-		log.Fatal("Error al obtener el usuario .", err)
+		log.Println("Error al obtener el usuario .", err)
+		return nil
 	}
 
 	orQuery := []bson.M{}
@@ -36,4 +37,19 @@ func (em *EnterpriseModel) GetEnterprise( user string) []Enterprise{
 	}
 		
 	return enterpriseResult
+}
+
+//GetEnterprise , Retorna una lista de empresas
+func (em *EnterpriseModel) GetProjectEnterprise(project string) string{
+	session, err := GetSession()
+	defer session.Close()
+	projectDAO := session.DB(DataBaseName).C(ProjectColl)
+
+	projectResult := Project{}
+	log.Println("project: "+project)
+	err = projectDAO.Find(bson.M{"_id": project}).One(&projectResult)
+	if err != nil {
+		log.Println("Error al obtener la empresa .", err)
+	}
+	return projectResult.Enterprise
 }

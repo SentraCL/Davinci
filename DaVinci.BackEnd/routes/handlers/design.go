@@ -19,7 +19,7 @@ func (h *Handler) SaveEpicType(responseW http.ResponseWriter, request *http.Requ
 	fmt.Println(util.StringifyJSON(epicType))
 	decoder := json.NewDecoder(request.Body)
 	decoder.Decode(&epicType)
-	code := dcCtrl.SaveEpicType(epicType)
+	code := dcCtrl.SaveEpicType(epicType,false)
 	h.ResponseJSON(responseW, code)
 }
 

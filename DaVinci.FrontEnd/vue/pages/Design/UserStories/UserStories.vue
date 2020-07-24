@@ -5,7 +5,7 @@
       <div class="card-header">
         <div class="typo-line">
           <p class="category">
-            <img width="128px" :src="project.avatar" />
+            <img width="128px" class="avatarEpico" :src="project.avatar" />
             <br />
 
           </p>
@@ -138,4 +138,9 @@
     }
   };
 </script>
-<style></style>
+<style>
+  .avatarEpico{
+    vertical-align: middle;
+    max-height: 100px;
+  }
+  </style>

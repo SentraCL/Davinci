@@ -27,6 +27,6 @@ func (h *Handler) SaveUser(responseW http.ResponseWriter, request *http.Request)
 	if(postData["isDesign"]=="1"){
 		isDesign=true
 	}
-	var res = userCtrl.AddUser(postData["name"], postData["pass"],isDesign)
+	var res = userCtrl.AddUser(postData["name"], postData["pass"],isDesign,postData["enterprise"])
 	log.Println("Resultado ", res)
 }

@@ -59,6 +59,8 @@ func main() {
 		http.Handle("/davinci/", r.SubRouters())
 		http.Handle("/", http.FileServer(http.Dir(config.PublicHTML)))
 		fmt.Println("Davinci in port :", port)
+		
+		
 
 		if strings.ToUpper(https) == "Y" {
 			fmt.Println("HTTPS [OK]")

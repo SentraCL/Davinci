@@ -31,7 +31,7 @@
             </card>
 
 
-            <accordion :title="activity.title" animation='bottomToTop' v-for="activity,index in epicForm.activityList" :key="index">
+            <accordion :title="activity.title" animation='bottomToTop' v-for="(activity,index) in epicForm.activityList" :key="index">
               <activity-form :epic="epicForm" v-on:saveUserStories="setUserStories(index)" :activity.sync="epicForm.activityList[index]" :idUS.sync="idUS" v-on:found="sendToWorkpace()"></activity-form>
             </accordion>
           </span>
@@ -52,10 +52,15 @@
     },
     computed: {
       reference() {
-        if (this.isEmptyOrSpaces(this.attributes[this.keyValue])) {
-          return `${this.epic.name} sin referencia <small>(Ingrese el ${this.keyValue})</small>`;
-        } else {
-          return `<strong style="color:yellow">${this.epic.name}</strong> : ${this.attributes[this.keyValue]}`;
+        console.log(this.epic)
+        console.log(this.attributes)
+        console.log(this.keyValue)
+        if (this.isEmptyOrSpaces(this.attributes[this.keyValue])&&!this.keyValue) {
+          return `Epico: <strong style="color:yellow">${this.epic.name}</strong>`;
+        } else if(this.isEmptyOrSpaces(this.attributes[this.keyValue])){
+          return `Epico: ${this.epic.name} sin referencia <small>(Ingrese el ${this.keyValue})</small>`;
+          }else{
+          return `Epico: <strong style="color:yellow">${this.epic.name}</strong> - ${this.attributes[this.keyValue]}`;
         }
       }
     },
@@ -209,7 +214,7 @@
             })
           })
 
-
+          console.log("form epic",this.epic)
           for (var ref in this.epic.epicForm.attributes) {
             var artifactType = this.epic.epicForm.attributes[ref].artifactType;
             var name = this.epic.epicForm.attributes[ref].name
@@ -443,7 +448,7 @@
         var epicDB = {
           id: this.epic.id,
           code: epicId,
-          attributes: attributesDB,
+          attributes:attributesDB,
           type: this.epic.type,
           author: this.getUserOnline(),
           activities: activities

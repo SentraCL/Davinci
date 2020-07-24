@@ -42,7 +42,7 @@ func (r *Router) SubRouters() *mux.Router {
 	route.HandleFunc("/davinci/{project}/code", handlers.GetCode).Methods("GET")
 	route.HandleFunc("/davinci/{project}/epics", handlers.GetEpicsProject).Methods("GET")
 	route.HandleFunc("/davinci/typeref/{ref}/", handlers.GetTypeRef).Methods("GET")
-	route.HandleFunc("/davinci/invention/{project}/{ref}/", handlers.GetInventionByProject).Methods("GET")
+	//route.HandleFunc("/davinci/invention/{project}/{ref}/", handlers.GetInventionByProject).Methods("GET")
 	route.HandleFunc("/davinci/invention/{project}/all/", handlers.GetAllProjectInventions).Methods("GET")
 
 	route.HandleFunc("/davinci/{project}/epic/export/{type}", handlers.ExportEpicProject).Methods("POST")

@@ -87,7 +87,7 @@
         ],
         pages: [{
           to: '/dashboard',
-          name: 'Pizarra',
+          name: 'Proyectos',
           icon: 'ti-blackboard'
         }, {
           to: '/inventions',

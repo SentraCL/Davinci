@@ -162,6 +162,9 @@
               await this.axios
             .get("/api/enterprise/" )
             .then(rs => {
+                if(rs==null){
+                    this.$router.push("login");
+                }
                 this.enterprise=rs.data;
                 })  
             },
@@ -196,8 +199,8 @@
 
             async reload() {
                 this.option = -1;
-                this.projectName = "";
-                await this.loadProjects();
+                    this.projectName = "";
+                    await this.loadProjects();
             },
 
             async loadProjects() {

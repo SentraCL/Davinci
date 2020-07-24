@@ -311,6 +311,7 @@
                 inventionEmpty.id = this.NEW;
                 var cleanInputs = {}
                 inventionEmpty.form = this.currentForm;
+                console.log("inv",this.project.inventions)
                 for (var i in this.currentForm.artifacts) {
                     var input = this.currentForm.artifacts[i]
                     cleanInputs[input.name] = ""
@@ -527,6 +528,8 @@
                         invDataTAB.id = key;
                         invDataTAB.update = data[key + "_date"][0].substring(0, 19);
                         this.repository[inv.code][key] = invDataTAB;
+
+                        console.log("invDataTAB",invDataTAB)
                     }
 
                     sessionStorage.setItem(inv.code + this.project.code, JSON.stringify(comboInv));
