@@ -83,8 +83,9 @@ func (h *Handler) SaveProject(responseW http.ResponseWriter, request *http.Reque
 	projectRQ := models.ProjectRequest{}
 	decoder := json.NewDecoder(request.Body)
 	decoder.Decode(&projectRQ)
-	projectCtrl.Save(projectRQ)
-	dcCtrl.VerifyBasic(projectRQ.Code)
+	fmt.Println(projectRQ)
+	_,code:=projectCtrl.Save(projectRQ)
+	dcCtrl.VerifyBasic(code)
 
 }
 

@@ -58,7 +58,7 @@
         </span>
         <span class="btn-group">
           <button class="btn btn-info" round @click="back">
-            <i class="ti-blackboard"></i> Ver todos los Projectos
+            <i class="ti-blackboard"></i> Ver todos los Proyectos
           </button>
         </span>
       </div>

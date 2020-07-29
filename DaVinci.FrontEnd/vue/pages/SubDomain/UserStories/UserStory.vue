@@ -31,15 +31,35 @@
     <div style="padding-left:16px">
       <h-tabs :tabs="UsTabs" viewScoped v-if="showForm" v-on:loadTab="similarUserStories()">
         <span slot="epic">
-          <combo-simple label="Epico" v-if="epics.length>0" :list="epics" keyLabel="date" keyValue="id" :value.sync="epicSelected" ></combo-simple>
+          <combo-simple label="Seleccione un Epico" v-if="epics.length>0" @change="value()" :list="epics" keyLabel="code" keyValue="id" :value.sync="epicSelected" ></combo-simple>
           <hr>
-          <invention-form v-if="epicSelected!=-1" :projectCode="projectCode" :invention.sync="epics.attributes" :values.sync="attributes"></invention-form>
+          <div class="row" v-if="epicSelected!=-1">
+              <div class="col-md-12" v-for="(epic,index) in epics" :key="index">
+                <div v-if="epic.id&&epic.id==epicSelected">
+                <div class="col-md-12" v-for="(input) in epic.attributes" :key="'A'+input.name">
+                  <div v-if="input.code!='20661j652063225h60'" class="col-md-12"> 
+                    <div class="row">
+                      <div class="col-md-4"><label class="input_label input_label--davinci special-label">{{input.name}}</label></div>
+                      <div class="col-md-8"><span class="input_field input_field--davinci " v-if="true">{{input.value}}</span></div>
+                    </div> 
+                  </div>
+                </div>
+                <div class="col-md-12">
+                <h-tabs :tabs="textAreaTabs" viewScoped>
+                    <span :slot="input.name" v-for="(input) in epic.attributes" :key="input.name" v-if="input.code=='20661j652063225h60'">
+                        <textarea disabled rows="5" class="form-control border-input" v-model="input.value"></textarea>
+                    </span>
+                </h-tabs>
+                </div>
+              </div>
+            </div>
+          </div>
           <!--
           <vue-json-pretty :path="'res'" :data="userStoryForm.us">
           </vue-json-pretty>
           -->
         </span>
-        <span slot="dat">
+        <span slot="dat" :disabled="epicSelected==''">
           <h5>Descripcion del {{userStory.usType.title}}</h5>
           <textarea :disabled="currentVer!=lastVersion" class="ta8" placeholder="Descripcion" id="txtDescripcion"
             v-model="userStoryForm.fields.description"></textarea>
@@ -52,8 +72,8 @@
             <i>Ultima Modificación {{dateFormat}}</i>
           </small>
         </span>
-        <span slot="pre">
-          <div style="min-height: 300px;">
+        <span slot="pre" :disabled="epicSelected==''">
+          <div style="min-height: 300px;" >
             <pre-condition v-on:update="similarUserStories()" :inactive="currentVer!=lastVersion"
               :codeFormat.sync="userStory.usType.codeFormat" :preconditions.sync="userStoryForm.preConditions"
               :values.sync="values"></pre-condition>
@@ -68,7 +88,7 @@
             </div>
           </div>
         </span>
-        <span slot="step">
+        <span slot="step" :disabled="epicSelected==''">
           <div style="min-height: 300px;">
             <us-step :inactive="currentVer!=lastVersion" :steps.sync="steps"></us-step>
           </div>
@@ -114,6 +134,15 @@
         _codeOK = true;
       }
       this.fillEpics();
+      
+        console.log("attributes",this.attributes);
+        console.log("epics",this.epics);
+        console.log("epicSelected",this.epicSelected);
+        console.log("projectCode",this.projectCode);
+        console.log("form",this.form);
+        console.log("artifacts",this.artifacts);
+        console.log("_userStoryCode",_userStoryCode);
+        console.log("_steps",_steps);
       return {
         CREATE: 0,
         SAVE: 1,
@@ -130,6 +159,8 @@
         epics: {},
         epicSelected:-1,
         projectCode:{},
+        form:[],
+        artifacts:{},
 
         idHTML: "",
         isUserStoryExist: _codeOK,
@@ -141,6 +172,7 @@
         codeSimil: "",
         userStoryCode: _userStoryCode,
         userStoriesSimil: [],
+        textAreaTabs:[],
         values: {},
         UsTabs: [
           {
@@ -196,7 +228,11 @@
           this.currentVer = ver.version;
         }
         this.lastVersion = this.currentVer;
-      console.log("epics",this.task)
+        this.epicSelected=this.userStoryForm.epic;
+        console.log("this.userStoryForm",this.userStoryForm);
+        console.log("formm",this.form);
+        console.log("artifactsm",this.artifacts);
+
         /*
         this.UsTabs.push({
           title: `<i class="ti-folder"></i> Epicos`,
@@ -208,9 +244,35 @@
     },
 
     methods: {
+      value(){
+        this.textAreaTabs=[]
+        if(this.epicSelected!=-1){
+          this.epics.forEach(value=>{
+            if(value.id==this.epicSelected){
+              let cont=0;
+            value.attributes.forEach(att=>{
+              if(att.code=="20661j652063225h60"){
+                this.textAreaTabs.push({
+                  title: `<i class="ti-clipboard"></i> ${att.name}`,
+                slot: att.name,
+                id: cont
+              });
+              cont++;
+              }
+            })
+          }
+        })
+
+        }
+      },
       async fillEpics(){
           this.epics = await this.getEpics();
           this.projectCode = await this.getCodeProject();
+          this.artifacts= await this.getArtifacts();
+          this.value();
+      },
+      getArtifacts(){
+
       },
       exportXML() {      
         if(this.userStory.us){
@@ -400,9 +462,15 @@
       },
 
       async create() {
+        if(this.epicSelected==-1){
+          return this.alertInfo("Debe de seleccionar un Epico para poder versionar la historia de usuario.");
+        }
         await this.sendToDB(this.CREATE);
       },
       async save() {
+        if(this.epicSelected==-1){
+          return this.alertInfo("Debe de seleccionar un Epico para poder guardar la historia de usuario.");
+        }
         await this.sendToDB(this.SAVE);
       },
       async sendToDB(action) {
@@ -486,6 +554,7 @@
         var userStoryTO = {
           id: version == 0 ? "" : this.userStoryCode,
           type: this.userStory.usType.code,
+          epic:this.epicSelected,
           LastVersionIndex: version,
           code: {
             value: version == 0 ? codeEmpty : this.userStoryCode,
@@ -539,6 +608,10 @@
   };
 </script>
 <style scoped>
+  .special-label{
+    left:10px;
+    color: #000;
+  }
   .topnav {
     overflow: hidden;
     color: #000;

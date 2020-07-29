@@ -60,7 +60,7 @@ type RepositoryRef struct {
 	LastTime      time.Time `json:"lastTime"`
 }
 
-//ProjectRequest : Representacion de un Projecto desde Front-END
+//ProjectRequest : Representacion de un Proyecto desde Front-END
 type ProjectRequest struct {
 	Code       string          `json:"code"`
 	Name       string          `json:"name"`
@@ -73,6 +73,18 @@ type ProjectRequest struct {
 	Repository []RepositoryRef `json:"repository"`
 	Users      []UserProject   `bson:"users"`
 }
+
+//EnterpriseRequest : Representacion de una Empresa desde Front-END
+type EnterpriseRequest struct {
+	EnterpriseId string 	`json:"EnterpriseId"`
+	Name       	string      `json:"Name"`
+	Direction   string      `json:"Direction"`
+	Rut      	string      `json:"Rut"`
+	Description string  	`json:"Description"`
+	Avatar64   	string	    `json:"Avatar"`
+    Status       int        `json:"status"`
+}
+
 
 //Login , Credenciales de usuario
 type Login struct {

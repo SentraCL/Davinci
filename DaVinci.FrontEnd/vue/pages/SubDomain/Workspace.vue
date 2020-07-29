@@ -190,6 +190,7 @@
           userStory: {
             title: rsUS.id,
             usType: itemType,
+            epic:rsUS.epic,
             us: rsUS,
             fields: lastVersionUS.fields,
             preConditions: lastVersionUS.preConditions,

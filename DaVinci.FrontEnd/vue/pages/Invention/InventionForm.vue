@@ -54,7 +54,6 @@
             var format = this.formatForm();
             var _form = format.form;
             var  _inputs= format.inputs;
-            console.log("inputs",format.inputs)
             var _textTabs = format.textTabs;
             var _selectTabs = format.selectTabs;
             this.$emit("update:values", _form);

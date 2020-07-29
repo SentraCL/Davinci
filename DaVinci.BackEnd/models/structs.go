@@ -7,6 +7,7 @@ import "gopkg.in/mgo.v2/bson"
 type User struct {
 	UserName     string `bson:"username"`
 	Password     string `bson:"password"`
+	Role     string `bson:"role"`
 	LastTime     time.Time `bson:"lasttime"`
 	Enterprises []string	`bson:"enterprise"`
 	HistoryLogin []Session `bson:"historylogin"`
@@ -25,7 +26,10 @@ type Enterprise struct {
 	EnterpriseId string 		`bson:"_id"`
 	Name     	 string 		`bson:"name"`
 	Direction 	 string 		`bson:"direction"`
+	Description  string 		`bson:"description"`
+	Avatar 	 	 string 		`bson:"avatar"`
 	Rut     	 string 		`bson:"rut"`
+    Status       int            `bson:"status"`
 	Disable		 bool
 }
 
@@ -261,6 +265,7 @@ type Fields struct {
 type UserStory struct {
 	ID               string         `json:"id" bson:"id"`
 	Code             UsCode         `json:"code" bson:"code"`
+	Epic			 string 		`json:"epic" bson:"epic"`
 	Type             string         `json:"type" bson:"type"`
 	LastVersionIndex int            `json:"lastVersionIndex" bson:"lastVersionIndex"`
 	Versions         []SubUserStory `json:"versions" bson:"versions"`
@@ -301,6 +306,7 @@ type Step struct {
 type Epic struct {
 	ID           bson.ObjectId       `json:"id" bson:"_id"`
 	EpicTypeCode string       `json:"type" bson:"epictype"`
+	Name		 string		  `json:"name" bson:"name"`
 	Code         string       `json:"code" bson:"code"`
 	Attributes   []Attributes `json:"attributes" bson:"attributes"`
 	Author       string       `json:"author" bson:"author"`

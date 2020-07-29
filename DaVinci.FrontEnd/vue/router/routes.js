@@ -6,6 +6,7 @@ import Login from "../pages/Login.vue";
 
 // Paginas Oficiales
 import Dashboard from "../pages/Dashboard.vue";
+import Enterprise from "../pages/Enterprise/Enterprises.vue";
 import Design from "../pages/Design/Design.vue";
 import Portfolio from "../pages/Porfolio/Portfolio.vue";
 import Inventions from "../pages/Invention/Inventions.vue";
@@ -16,6 +17,11 @@ const routes = [
     component: DavinciMain,
     redirect: "/davinci",
     children: [
+      {
+        path: "/enterprise",
+        name: "Empresas",
+        component: Enterprise
+      },
       {
         path: "dashboard",
         name: "Proyectos",

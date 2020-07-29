@@ -154,14 +154,14 @@
         methods: {
             async getAllEnterprise(){
               await this.axios
-         .get("/api/enterprise/" )
-         .then(rs => {
-           console.log(rs.data)
-            this.enterprise=rs.data;
-            })  
+                .get("/api/enterprise/" )
+                .then(rs => {
+                    this.enterprise=rs.data;
+                    })  
             },
             async updateProject() {
-                var status = false;
+                    var status = false;
+                    console.log("projectForm",this.projectForm)
                 if(this.projectForm.admin==""){
                     this.alertError("El campo gestor responsable no debe estar vacio.");
                 }
@@ -196,7 +196,6 @@
                     status = rs.data;
                 });
                 this.$emit("back");
-                
                 this.alertInfo("Proyecto Eliminado")
             },
             changeAvatar() {

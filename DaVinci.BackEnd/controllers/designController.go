@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 
 	models "../models"
 	util "../util"
@@ -22,16 +23,29 @@ func (dc *DesignController) SaveEpicType(epicTypeReq models.EpicTypeRequest,stat
 
 func (dc *DesignController) VerifyBasic(projectCode string) {
 	//save pred epics
-	epicTypeReq:= models.EpicTypeRequest{}
-	epicTypeReq.ProjectCode=projectCode
-	epicTypeReq.Name="Predeterminado"
-	epicTypeReq.Reference=""
-	epicTypeReq.Definition="Plantilla de epico predeterminado"
-	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Como","1i2c1c1f",""})
-	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Quiero","20661j652063225h60",""})
-	epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Para","20661j652063225h60",""})
+	log.Println("VerifyBasic >>",projectCode)
 
-	dc.SaveEpicType(epicTypeReq,true)
+	epics:=dc.GetAllEpicType(projectCode)
+	encontrado:=false
+	fmt.Println(epics)
+	for _, epicTyped := range epics{
+		if(epicTyped.Name=="Predeterminado"){
+			encontrado=true
+			break
+		}
+	}
+	fmt.Println("encontrado",encontrado)
+	if(!encontrado){
+		epicTypeReq:= models.EpicTypeRequest{}
+		epicTypeReq.ProjectCode=projectCode
+		epicTypeReq.Name="Predeterminado"
+		epicTypeReq.Reference=""
+		epicTypeReq.Definition="Plantilla de epico predeterminado"
+		epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Como","1i2c1c1f",""})
+		epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Quiero","20661j652063225h60",""})
+		epicTypeReq.Attributes=append(epicTypeReq.Attributes,models.AttributeEpic{"Para","20661j652063225h60",""})
+		dc.SaveEpicType(epicTypeReq,true)
+	}
 }
 
 func (dc *DesignController) RQtoBO(epicTypeReq models.EpicTypeRequest) models.EpicType {

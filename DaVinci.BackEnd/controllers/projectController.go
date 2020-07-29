@@ -173,12 +173,13 @@ func (pc *ProjectController) FiltersInventionsFromProject(project models.Project
 }
 
 //Save : Upsert Project!!
-func (pc *ProjectController) Save(projectRQ models.ProjectRequest) bool {
+func (pc *ProjectController) Save(projectRQ models.ProjectRequest) (bool,string) {
 	project := pc.translateRequestToBO(projectRQ)
-	if projectModel.Save(&project) {
-		return true
+	status,code:=projectModel.Save(&project)
+	if status {
+		return true,code
 	}
-	return false
+	return false,code
 }
 
 

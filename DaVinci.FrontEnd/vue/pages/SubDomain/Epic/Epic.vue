@@ -15,6 +15,10 @@
       <div style="padding-left:16px">
         <h-tabs :tabs="epicTab" viewScoped>
           <span slot="epic" style="min-height: 400px;">
+            <div class="col-md-12">
+            <input-text label="Identificador de Epico" v-model="epicName"></input-text>
+            </div>
+            <hr class="customhr">
             <invention-form v-if="showEpicAtrs" :projectCode="projectCode" :invention.sync="epicForm.attributes" :values.sync="attributes"></invention-form>
 
             <!--<small>{{epic.definition}}</small>-->
@@ -52,9 +56,6 @@
     },
     computed: {
       reference() {
-        console.log(this.epic)
-        console.log(this.attributes)
-        console.log(this.keyValue)
         if (this.isEmptyOrSpaces(this.attributes[this.keyValue])&&!this.keyValue) {
           return `Epico: <strong style="color:yellow">${this.epic.name}</strong>`;
         } else if(this.isEmptyOrSpaces(this.attributes[this.keyValue])){
@@ -90,11 +91,11 @@
           }
 
         ],
-
+        epicName:"",
         epicForm: {},
         values: {},
         projectCode: "",
-        showForm: false
+        showForm: false,
       }
     },
 
@@ -417,6 +418,10 @@
         var activities = []
 
 
+        if (this.epicName.trim() == "") {
+          this.alertInfo("No ha ingresado el identificador del Epico");
+          return false;
+        }
         if (this.attributes[this.keyValue] == "") {
           this.alertInfo("No ha ingresado el Codigo del Epico");
           return false;
@@ -447,7 +452,8 @@
 
         var epicDB = {
           id: this.epic.id,
-          code: epicId,
+          name:this.epicName,
+          code: this.epicName,
           attributes:attributesDB,
           type: this.epic.type,
           author: this.getUserOnline(),
@@ -520,5 +526,9 @@
   }
   .btn-custom-border{
     border-radius: 9px 9px 0px 0px!important;
+  }
+
+  .customhr{
+    border-color:#b6b6b6!important
   }
 </style>

@@ -105,7 +105,7 @@ func (pm *ProjectModel) Create(project *Project) bool {
 }
 
 //Save , Guarda cualquier cambio en el proyecto
-func (pm *ProjectModel) Save(project *Project) bool {
+func (pm *ProjectModel) Save(project *Project) (bool,string) {
 	session, err := GetSession()
 	defer session.Close()
 	projectDAO := session.DB(DataBaseName).C(ProjectColl)
@@ -137,13 +137,13 @@ func (pm *ProjectModel) Save(project *Project) bool {
 				//Set
 				upsertdata,
 			)
-			return true
+			return true,project.Code
 		}else{
 			log.Println("Error, Code no puede ir vacio.")
-			return false
+			return false,project.Code
 		}
 	}
-	return false
+	return false,project.Code
 }
 
 //GetProjectByCode : Retorna un Projecto por su ID
@@ -178,8 +178,10 @@ func (pm *ProjectModel) SaveEpicType(projectCode string, epicType EpicType,isBas
 	fmt.Println("MODEL>> projectResult:", projectResult)
 	epicTypes := projectResult.Epics.Types
 	find := false
+	cont:=-1
 	for index, epicTyped := range epicTypes {
 		fmt.Println("MODEL>> epicTyped:", epicTyped)
+		cont=index
 		if epicTyped.Code == epicType.Code {
 			find = true
 			fmt.Println("UPDATE [OK]")
@@ -201,8 +203,8 @@ func (pm *ProjectModel) SaveEpicType(projectCode string, epicType EpicType,isBas
 				//Where
 				bson.M{"_id": projectCode},
 				//Set
-				bson.M{"$set": bson.M{"epics": bson.M{"types": epicTypes}}},
-			)
+				bson.M{"$set": bson.M{"epics.types." + strconv.Itoa(cont+1): epicType}})
+			
 		} else {
 			fmt.Println("SAVE [NOK]")
 		}
@@ -329,7 +331,7 @@ func (pm *ProjectModel) GetInventions(pid ProjectInventionData) []DataInvention 
 	return dataInventions
 }
 
-//DelInvention , Elimina inveto hacia el repositorio de projectos.
+//DelInvention , Elimina inveto hacia el repositorio de proyectos.
 func (pm *ProjectModel) DelInvention(pid ProjectInventionData) {
 	session, err := GetSession()
 	defer session.Close()

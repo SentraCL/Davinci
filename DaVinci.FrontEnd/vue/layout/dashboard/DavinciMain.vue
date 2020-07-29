@@ -4,7 +4,8 @@
       <side-bar>
         <!-- Seteo de arreglo para SideBar -->
         <template slot="links">
-          <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages" :key="index" />
+          <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages"  v-if="role=='admin' && link.name=='Empresas'" :key="index" />
+          <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages" v-if="link.name!='Empresas'"   :key="index" />
         </template>
         <mobile-menu>
           <!-- MENU TOP PARA MOBIL -->
@@ -26,7 +27,8 @@
 
         <content-footer>
           <template slot="links">
-            <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages" :key="index" />
+            <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages" v-if="role=='admin' && link.name=='Empresas'" :key="index" />
+            <sidebar-link :to="link.to" :name="link.name" :icon="link.icon" v-for="(link, index) in pages" v-if="link.name!='Empresas'"  :key="index" />
           </template>
         </content-footer>
       </div>
@@ -61,9 +63,11 @@
       DashboardContent,
       MobileMenu
     },
-    data() {
-      return {
 
+    data() {
+      let rol=this.getRole();
+      return {
+        role:rol,
         notifications: [{
           url: '#',
           subject: 'Ayuda con un nuevo Tipo de Plan de Prueba.',
@@ -86,25 +90,46 @@
 
         ],
         pages: [{
+          to: '/enterprise',
+          name: 'Empresas',
+          icon: 'ti-home',
+          rol:'admin'
+        },{
           to: '/dashboard',
           name: 'Proyectos',
-          icon: 'ti-blackboard'
+          icon: 'ti-blackboard',
+          rol:'any'
         }, {
           to: '/inventions',
           name: 'Inventos',
-          icon: 'ti-ruler-pencil'
+          icon: 'ti-ruler-pencil',
+          rol:'any'
         }, {
           to: '/portfolio',
           name: 'Portafolio',
-          icon: 'fa fa-suitcase'
+          icon: 'fa fa-suitcase',
+          rol:'any'
         }, {
           to: '/design',
           name: 'Diseño',
-          icon: 'ti-write'
+          icon: 'ti-write',
+          rol:'any'
         }]
       }
     },
     methods: {
+      async getRole(){
+        return await this.getUserRoleByHash(sessionStorage.getItem("loginHash"));
+      },
+      async getUserRoleByHash(hash) {
+        var url = `/api/user/${hash}/get`;
+        await this.axios.get(url,{"loginHash": hash}).then(rs => {
+            this.role=rs.data;
+            return rs.data;
+        });
+        return "any";
+      },
+
       toggleSidebar() {
         if (this.$sidebar.showSidebar) {
           this.$sidebar.displaySidebar(false);

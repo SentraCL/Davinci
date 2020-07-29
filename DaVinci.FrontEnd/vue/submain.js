@@ -290,7 +290,7 @@ Vue.mixin({
       var projectName = pathname.split("/")[2];
       await this.axios.get(`/davinci/${projectName}/epics`).then(rs => {
         epics = rs.data;
-        console.log(epics)
+        console.log("epics",epics)
       });
       return epics;
     },

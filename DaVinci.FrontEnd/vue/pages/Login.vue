@@ -101,6 +101,7 @@
                         "pass": this.login.password
                     }).then(rs => {
                         if (rs.data.Online) {
+                            sessionStorage.setItem("username",this.login.alias);
                             sessionStorage.setItem("loginHash", rs.data.DavinciCode);
                             window.location.href = "/"; //+ rs.data.DavinciCode
 

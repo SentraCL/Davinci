@@ -30,3 +30,19 @@ func (em *UserModel) AddUser( user string, pass string, isDesign bool,enterprise
 	}
 	return salida
 }
+
+//findRoleUserByName, retorna el rol del usuario por su nombre
+func (em *UserModel) FindRoleUserByName(user string) string{
+	session, err := GetSession()
+	defer session.Close()
+	userCollector := session.DB(DataBaseName).C(UserColl)
+	userResult := User{}
+	rol:="any"
+	err = userCollector.Find(bson.M{"username": user}).One(&userResult)
+	log.Println("err",err)
+	log.Println("userResult",userResult	)
+	if err == nil {	
+		rol=userResult.Role
+	}
+	return rol
+}

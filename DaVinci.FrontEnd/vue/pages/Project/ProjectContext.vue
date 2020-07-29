@@ -15,7 +15,7 @@
               <span v-if="tab.slots=='NewUser'">
                 <!--Nuevo usuario-->
                 <input-text alphabetic removeSpace  type="text" id="inputNombre" label="Nombre" v-model="tab.usuarioVO.name"></input-text>
-                <input-text removeSpace  type="password" id="inputPass" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <input-text   removeSpace  type="password" id="inputPass" label="Password" v-model="tab.usuarioVO.pass"></input-text>
                 <check-box :disableonoff="true" :value.sync="tab.usuarioVO.isDesign" id="inputDesign" label="Diseñador"></check-box>
                 <hr />
 
@@ -25,11 +25,11 @@
               </span>
               <span v-if="tab.slots==tab.usuarioVO.name">
                 <input-text  type="text" label="Nombre" :isInactive="true" v-model="tab.usuarioVO.name"></input-text>
-                <input-text type="password" label="Password" v-model="tab.usuarioVO.pass"></input-text>
+                <input-text :isInactive="tab.usuarioVO.disable" type="password" label="Password" v-model="tab.usuarioVO.pass"></input-text>
                 <check-box :disableonoff="true" v-model="tab.usuarioVO.isDesign" label="Diseñador"></check-box>
                 <hr />
                 <div class="btn-toolbar">
-                  <d-button type="info" round @click.native.prevent="saveTab(tab.usuarioVO)">
+                  <d-button type="info" :disabled="tab.usuarioVO.disable" round @click.native.prevent="saveTab(tab.usuarioVO)">
                     <span style="color:darkgreen" class="ti-back-left"></span> Guardar Usuario
                   </d-button>
                   <d-button type="danger" round @click.native.prevent="deleteUser()">
@@ -77,6 +77,15 @@
 
     created() {
       this.userTabs = this.getTemplateNewUserTab();
+      if(sessionStorage.getItem("username")&&this.userTabs.length==1&&this.project.isNew){
+        let name=sessionStorage.getItem("username");
+        var userUpdate = {};
+        userUpdate.name = name;
+        userUpdate.pass = "";
+        userUpdate.isDesign = true;
+        userUpdate.disable=true;
+        this.addNewUserTab(userUpdate)
+      }
     },
 
     data() {
@@ -120,25 +129,28 @@
         this.$emit("update");
       },
       async addNewUserTab(_newUser) {
-        if(document.getElementById("inputNombre").value == '' || document.getElementById("inputPass").value ==''){
-          this.alertError("No puedes dejar campos sin valor.");
+        if(_newUser.name == ''){
+          this.alertError("No puedes dejar el campo de nombre sin valor.");
           return false;
         }
-        if(document.getElementById("inputNombre").value.length< 5){
+        if(_newUser.pass ==''&& !_newUser.disable){
+          this.alertError("No puedes dejar el campo de Password.");
+          return false;
+        }
+        if(_newUser.name.length< 5&&!_newUser.disable){
           this.alertError("El nombre de usuario debe de ser mayor a 4 caracteres.");
           return false;
         }
         let enterprise=""
         await this.axios.get("/api/project/"+this.project.code+"/enterprise").then(rs=>{
-          console.log("enterprise",rs.data)
-          enterprise=rs.data
+          enterprise=rs.data;
         });
 
          await this.axios
          .get("/api/project/"+ this.project.code + "/users")
          .then(rs => {
             var cloneUser = this.cloneObject(_newUser);
-            cloneUser.enterprise=enterprise
+            cloneUser.enterprise=enterprise;
             var userExist = false;
             status = rs.data;
             var users = rs.data;
@@ -165,7 +177,7 @@
                       .post("/api/project/" + this.project.code + "/user/save/", cloneUser)
                       .then(rs => {
                       status = rs.data;
-                      if(status){
+                      if(status&&!cloneUser.disable){
                         this.userTabs.push( {
                         id: -1,
                         slots: cloneUser.slots,

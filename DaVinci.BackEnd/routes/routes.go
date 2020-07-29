@@ -25,7 +25,11 @@ func (r *Router) Routers() *mux.Router {
 	handlers.SetPathPublicHTML(r.PublicHTML)
 	//Enterprise
 	route.HandleFunc("/api/enterprise/", handlers.GetEnterpriseByToken).Methods("GET")
+	route.HandleFunc("/api/enterprise/getAll", handlers.GetAllEnterprises).Methods("GET")
 	route.HandleFunc("/api/project/{project}/enterprise", handlers.GetProjectEnterprise).Methods("GET")
+	route.HandleFunc("/api/enterprise/save/", handlers.SaveEnterprise).Methods("POST")
+	route.HandleFunc("/api/enterprise/drop/", handlers.DropEnterprise).Methods("POST")
+	route.HandleFunc("/api/enterprise/recovery/", handlers.RecoveryEnterprise).Methods("POST")
 	
 	//Login
 	route.HandleFunc("/api/", handlers.Status).Methods("GET")
@@ -44,9 +48,10 @@ func (r *Router) Routers() *mux.Router {
 	route.HandleFunc("/api/project/getAll/", handlers.GetAllProject).Methods("POST")
 	route.HandleFunc("/api/project/inventions/", handlers.GetAllProjectInventions).Methods("POST")
 	route.HandleFunc("/api/project/avatar/{alias}.png", handlers.GetAvatarProject)
-
+	
 	//User
 	route.HandleFunc("/api/user/save",handlers.SaveUser).Methods("POST")
+	route.HandleFunc("/api/user/{hash}/get",handlers.GetRoleByHash).Methods("GET")
 
 	//User Project
 	route.HandleFunc("/api/project/{project}/user/save/", handlers.SaveUserIntoProjectByFormPost).Methods("POST")

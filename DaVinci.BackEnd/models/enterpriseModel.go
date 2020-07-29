@@ -9,7 +9,7 @@ import (
 type EnterpriseModel struct {
 }
 
-//GetEnterprise , Retorna una lista de empresas
+//GetEnterprise , Retorna una lista de empresas del usuario
 func (em *EnterpriseModel) GetEnterprise( user string) []Enterprise{
 	session, err := GetSession()
 	defer session.Close()
@@ -38,8 +38,20 @@ func (em *EnterpriseModel) GetEnterprise( user string) []Enterprise{
 		
 	return enterpriseResult
 }
+//GetAllEnterprises , Retorna una lista de todas las empresas
+func (em *EnterpriseModel) GetAllEnterprises() []Enterprise{
+	session, err := GetSession()
+	defer session.Close()
+	enterpriseDAO := session.DB(DataBaseName).C(EnterpriseColl)
+	enterpriseResult:=[]Enterprise{}
+	err = enterpriseDAO.Find(nil).All(&enterpriseResult)
+	if err != nil {
+		log.Fatal("Error al obtener las empresas.", err)
+	}
+	return enterpriseResult
+}
 
-//GetEnterprise , Retorna una lista de empresas
+//GetEnterprise , Retorna una lista de las empresas del proyecto
 func (em *EnterpriseModel) GetProjectEnterprise(project string) string{
 	session, err := GetSession()
 	defer session.Close()
@@ -52,4 +64,60 @@ func (em *EnterpriseModel) GetProjectEnterprise(project string) string{
 		log.Println("Error al obtener la empresa .", err)
 	}
 	return projectResult.Enterprise
+}
+
+//Save , Guarda cualquier cambio de la empresa
+func (em *EnterpriseModel) Save(enterprise *Enterprise) (bool) {
+	session, err := GetSession()
+	defer session.Close()
+	enterpriseDAO := session.DB(DataBaseName).C(EnterpriseColl)
+	if enterprise.EnterpriseId=="" {
+		enterprise.Status=1
+		enterprise.EnterpriseId=bson.NewObjectId().Hex()
+	}
+	log.Println("enterpriseId",enterprise.EnterpriseId)
+	if err == nil {
+			upsertdata := bson.M{
+				"$set": bson.M{
+					"description":   enterprise.Description,
+					"name":          enterprise.Name,
+					"direction":     enterprise.Direction,
+					"rut":        	 enterprise.Rut,
+					"avatar":      	 enterprise.Avatar,
+					"status":		 enterprise.Status,
+				}}
+
+			enterpriseDAO.UpsertId(
+				//Where
+				enterprise.EnterpriseId,
+				//Set
+				upsertdata,
+			)
+			return true
+	}
+	return false
+}
+
+//Drop , Realiza un borrado logico de la empresa
+func (em *EnterpriseModel) Drop(enterprise *Enterprise) bool {
+	session, err := GetSession()
+	defer session.Close()
+	enterpriseDAO := session.DB(DataBaseName).C(EnterpriseColl)
+	if err == nil {
+		enterpriseDAO.Update(bson.M{"_id": enterprise.EnterpriseId}, bson.M{"$set": bson.M{"status": 0}})
+		return true
+	}
+	return false
+}
+
+//Recovery , Recupera una empresa eliminada
+func (em *EnterpriseModel) Recovery(enterprise *Enterprise) bool {
+	session, err := GetSession()
+	defer session.Close()
+	enterpriseDAO := session.DB(DataBaseName).C(EnterpriseColl)
+	if err == nil {
+		enterpriseDAO.Update(bson.M{"_id": enterprise.EnterpriseId}, bson.M{"$set": bson.M{"status": 1}})
+		return true
+	}
+	return false
 }
