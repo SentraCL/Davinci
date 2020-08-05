@@ -157,8 +157,6 @@
         },
         methods: {
             changeDataFile(artifact){
-                console.log("artifact",artifact)
-                console.log("datafile",this.dataFile)
                 this.dataFileKey++;
                 this.isRenderTable=false;
                 this.$nextTick(() => {
@@ -237,8 +235,6 @@
             },
             getKeyCase(o,val){
                 for(var prop in o){
-                    console.log("prop",prop)
-                    console.log("val",val)
                     if(prop.toLowerCase()===val.toLowerCase()){
                         return prop;
                     }

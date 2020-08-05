@@ -96,7 +96,11 @@ func (h *Handler) DoLogin(responseW http.ResponseWriter, request *http.Request) 
 	login.MakeDavinciCODE(subCookieHash)
 
 	log.Println(request.Body)
-	if projectCtrl.LoginUser(project, login.User, login.Pass) {
+	doLogin,isDesign := projectCtrl.LoginUser(project,login.User,login.Pass)
+	if !doLogin && isDesign {
+		 doLogin=sesionCtrl.SubDoLogin(login.User,login.Pass)
+	}
+	if doLogin {
 		dcode := util.DavinciCode{}
 		cookieProjectName := dcode.Encript(project)
 		subkey := []byte(cookieProjectName)

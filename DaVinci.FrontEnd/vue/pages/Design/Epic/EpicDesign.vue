@@ -264,8 +264,6 @@
                 });
                 this.dataInvention[inv.code] = values;
             }
-            console.log("Inventions",this.inventions)
-            console.log("dataInvention",this.dataInvention)
             await this.addDefaultArtifactToAttributes();
             await this.addInventionsToAttributes();
         },
@@ -411,7 +409,6 @@
 
                 if (option == this.NEW) {
                     //console.log(JSON.stringify(this.epicForm, 4, null));
-                    console.log(this.epicForm)
                     if(this.epicForm.name.trim()==""){
                         this.alertInfo("No se puede dejar el nombre del titulo del Epico en blanco.");
                     }else if(this.epicForm.definition.trim()==""){
@@ -443,8 +440,6 @@
 
                 if (option == this.NEWEDIT) {
                     //console.log(JSON.stringify(this.epicForm, 4, null));
-                    console.log(this.epicForm);
-                    console.log(this.allEpic);
                     var epicType = {
                         name: this.epicForm.name,
                         projectCode: this.project.code,

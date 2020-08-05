@@ -117,8 +117,8 @@ func (pm *ProjectModel) Save(project *Project) (bool,string) {
 		log.Println("Project Code >>", project.Code)
 		//upsertdata := bson.M{"$set": project}
 		if (project.Code!=""){
-			upsertdata := bson.M{
-				"$set": bson.M{
+			projectdata := bson.M{
+					"_id":			 project.Code,
 					"author":        project.Author,
 					"enterprise":    project.Enterprise,
 					"name":          project.Name,
@@ -129,6 +129,40 @@ func (pm *ProjectModel) Save(project *Project) (bool,string) {
 					"repository" :   project.Repository,
 					"userStories" :  project.UserStories,
 					"epics" :        project.Epics,
+				}
+
+			projectDAO.Insert(projectdata)
+			return true,project.Code
+		}else{
+			log.Println("Error, Code no puede ir vacio.")
+			return false,project.Code
+		}
+	}
+	return false,project.Code
+}
+
+//Edit , edita un proyecto
+func (pm *ProjectModel) Edit(project *Project) bool {
+	session, err := GetSession()
+	defer session.Close()
+	projectDAO := session.DB(DataBaseName).C(ProjectColl)
+	//log.Println("response :", util.StringifyJSON(projectResult))
+	if err == nil {
+		project.Date = time.Now()
+		dcode := util.DavinciCode{}
+		project.Code = dcode.Encript(project.Alias)
+		log.Println("Project Code >>", project.Code)
+		//upsertdata := bson.M{"$set": project}
+		if (project.Code!=""){
+			upsertdata := bson.M{
+				"$set": bson.M{
+					"author":        project.Author,
+					"enterprise":    project.Enterprise,
+					"name":          project.Name,
+					"alias":         project.Alias,
+					"resume":        project.Resume,
+					"administrator": project.Administrator,
+					"avatar64":      project.Avatar64,
 				}}
 
 			projectDAO.UpsertId(
@@ -137,13 +171,13 @@ func (pm *ProjectModel) Save(project *Project) (bool,string) {
 				//Set
 				upsertdata,
 			)
-			return true,project.Code
+			return true
 		}else{
 			log.Println("Error, Code no puede ir vacio.")
-			return false,project.Code
+			return false
 		}
 	}
-	return false,project.Code
+	return false
 }
 
 //GetProjectByCode : Retorna un Projecto por su ID

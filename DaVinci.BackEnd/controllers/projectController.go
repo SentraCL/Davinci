@@ -114,7 +114,7 @@ func (pc *ProjectController) ImportProject(proIO *models.ProjectInOutRequest) {
 	//TODO : Si los inventos ya existen
 	inventionController.SaveAll(proIO.Inventions) 
 	
-	projectModel.Save(&proIO.Project)
+	projectModel.Edit(&proIO.Project)
 	
 	for _, user := range proIO.Project.Users{
 		pc.AddUser(proIO.Project.Code, user.UserName, user.Password,user.IsDesign)
@@ -180,6 +180,16 @@ func (pc *ProjectController) Save(projectRQ models.ProjectRequest) (bool,string)
 		return true,code
 	}
 	return false,code
+}
+
+//Edit : Upsert Project!!
+func (pc *ProjectController) Edit(projectRQ models.ProjectRequest) bool {
+	project := pc.translateRequestToBO(projectRQ)
+	status:=projectModel.Edit(&project)
+	if status {
+		return true
+	}
+	return false
 }
 
 

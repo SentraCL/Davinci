@@ -80,11 +80,6 @@
                 this.epicIndex=epic;
                 this.$emit("update:idEpic", this.epicRef);
                 this.$emit("update");
-                console.log(this.repository)
-                console.log(this.types)
-                console.log(this.epicRef)
-                console.log(this.refColum)
-                console.log(this.types[index])
                 await this.reload();
             },
             async reload() {
@@ -95,7 +90,6 @@
                 this.$emit("toClose");
             },
             showActivities() {
-                console.log(`epicRef = ${this.epicRef}`);
                 this.$emit("update:idEpic", this.epicRef);
                 this.$emit("update");
                 this.$emit("found");

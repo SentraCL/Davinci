@@ -38,6 +38,7 @@ func (r *Router) Routers() *mux.Router {
 	route.HandleFunc("/api/token/", handlers.IsValidHash).Methods("POST")
 	//Project
 	route.HandleFunc("/api/project/save/", handlers.SaveProject).Methods("POST")
+	route.HandleFunc("/api/project/update/", handlers.UpdateProject).Methods("POST")
 	route.HandleFunc("/api/project/drop/", handlers.DropProject).Methods("POST")
 	route.HandleFunc("/api/project/copy/", handlers.CopyProject).Methods("POST")
 	route.HandleFunc("/api/project/export/", handlers.ExportProject).Methods("POST")
@@ -51,8 +52,12 @@ func (r *Router) Routers() *mux.Router {
 	
 	//User
 	route.HandleFunc("/api/user/save",handlers.SaveUser).Methods("POST")
+	route.HandleFunc("/api/user/delete",handlers.DeleteUser).Methods("POST")
+	route.HandleFunc("/api/user/edit",handlers.EditUser).Methods("POST")
+	route.HandleFunc("/api/user/saveForm",handlers.SaveUserForm).Methods("POST")
 	route.HandleFunc("/api/user/{hash}/get",handlers.GetRoleByHash).Methods("GET")
-
+	route.HandleFunc("/api/users/getAllDomainUsers",handlers.GetAllDomainUsers).Methods("GET")
+	
 	//User Project
 	route.HandleFunc("/api/project/{project}/user/save/", handlers.SaveUserIntoProjectByFormPost).Methods("POST")
 	route.HandleFunc("/api/project/{project}/user/{userName}", handlers.DeleteUserIntoProjectByFormDelete).Methods("DELETE")

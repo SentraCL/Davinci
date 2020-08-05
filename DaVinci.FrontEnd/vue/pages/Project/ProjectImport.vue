@@ -205,7 +205,6 @@
       },
 
       isDiffInv(invA, invB) {
-        console.log("isDiffInv");
         return !((invA.code == invB.code) &&
           (invA.name == invB.name) &&
           (JSON.stringify(invA.artifacts) == JSON.stringify(invB.artifacts)) &&
@@ -342,7 +341,6 @@
               for (var i = 0; i < jsonInvents.length; i++) {
                 for (var y = 0; y < jsonImport.inventions.length; y++) {
                   if (jsonInvents[i].code == jsonImport.inventions[y].code && me.isDiffInv(jsonInvents[i], jsonImport.inventions[y])) {
-                    console.log(jsonInvents[i].name);
                     me.invToRename[jsonInvents[i].name] = jsonInvents[i].name;
                     me.error = true;
                     /*

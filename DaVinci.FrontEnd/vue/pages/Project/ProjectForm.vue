@@ -71,9 +71,14 @@
                     <d-button type="info" round @click.native.prevent="back">
                         <span style="color:darkgreen" class="ti-back-left"></span> Volver
                     </d-button>
-                    <d-button type="success" round @click.native.prevent="updateProject">
+                    <d-button type="success"  v-if="projectForm.isNew" round @click.native.prevent="saveProject">
                         <span style="color:white" class="ti-save"></span> Guardar
                     </d-button>
+                    
+                    <d-button type="success" v-if="!projectForm.isNew" round @click.native.prevent="updateProject">
+                        <span style="color:white" class="ti-save"></span> Editar
+                    </d-button>
+
                     <d-button v-if="!projectForm.isNew" type="danger" round @click.native.prevent="deleteProject">
                         <span style="color:yellow" class="ti-eraser"></span> Eliminar
                     </d-button>
@@ -161,7 +166,25 @@
             },
             async updateProject() {
                     var status = false;
-                    console.log("projectForm",this.projectForm)
+                if(this.projectForm.admin==""){
+                    this.alertError("El campo gestor responsable no debe estar vacio.");
+                }
+                if(this.projectForm.email==""){
+                    this.alertError("El campo email no debe estar vacio y debe tener un formato valido.");
+                }
+                if(this.projectForm.enterprise!=""){    
+                    await this.axios.post("/api/project/update/", this.projectForm).then(rs => {
+                        status = rs.data;
+                    });
+                    this.$emit("save");
+                    this.alertSuccess(`Proyecto ${this.projectForm.name} , Guardado.`);
+                }else{
+                    this.alertError(`Debe de elegir una empresa.`);
+                }
+                
+            },
+            async saveProject() {
+                    var status = false;
                 if(this.projectForm.admin==""){
                     this.alertError("El campo gestor responsable no debe estar vacio.");
                 }

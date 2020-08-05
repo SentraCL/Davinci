@@ -33,6 +33,25 @@ func (sm *SessionModel) IsUserValid(login *Login) bool {
 	return isValid
 }
 
+//IsSubUserValid , valida crenciales
+func (sm *SessionModel) IsSubUserValid(user string, pass string) bool {
+	//Obtener Conexion.
+	session, err := GetSession()
+	//Se ejecuta una vez salido de la funcion
+	defer session.Close()
+	userDAO := session.DB(DataBaseName).C(UserColl)
+	userResult := User{}
+
+	err = userDAO.Find(bson.M{"username": user, "password": pass}).One(&userResult)
+	isValid := false
+	if err == nil {
+		isValid = (user == userResult.UserName && pass == userResult.Password)
+	} else {
+		isValid = false
+	}
+	return isValid
+}
+
 //IsHashOnline : chequea si el hash enviado desde front-end se encuentra online
 func (sm *SessionModel) IsHashOnline(user string, DavinciCode string) bool {
 	//log.Println("SessionModel >> func (sm *SessionModel) IsHashOnline(user string, DavinciCode string) bool {")

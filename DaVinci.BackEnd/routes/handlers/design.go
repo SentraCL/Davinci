@@ -33,7 +33,7 @@ func (h *Handler) GetAllEpicType(responseW http.ResponseWriter, request *http.Re
 	h.ResponseJSON(responseW, epicTypes)
 }
 
-//SaveProject : Guarda proyectos.
+//SaveUserStoriesType : Guarda historias de usuario.
 func (h *Handler) SaveUserStoriesType(responseW http.ResponseWriter, request *http.Request) {
 	if !h.isDavinciOnline(request) {
 		return

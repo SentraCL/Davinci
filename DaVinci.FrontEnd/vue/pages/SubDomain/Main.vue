@@ -250,7 +250,6 @@
       },
      async getAllDataTypes(){
         var dataTypes = await this.GetAllDataTypes();
-        console.log(dataTypes);
       },
 
       showLog(msg) {

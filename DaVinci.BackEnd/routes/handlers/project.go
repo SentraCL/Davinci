@@ -89,6 +89,19 @@ func (h *Handler) SaveProject(responseW http.ResponseWriter, request *http.Reque
 
 }
 
+//UpdateProject : Edita un proyecto.
+func (h *Handler) UpdateProject(responseW http.ResponseWriter, request *http.Request) {
+	if !h.isDavinciOnline(request) {
+		return
+	}
+	projectRQ := models.ProjectRequest{}
+	decoder := json.NewDecoder(request.Body)
+	decoder.Decode(&projectRQ)
+	fmt.Println(projectRQ)
+	projectCtrl.Edit(projectRQ)
+
+}
+
 //DropProject : Elimina un proyecto.
 func (h *Handler) DropProject(responseW http.ResponseWriter, request *http.Request) {
 	if !h.isDavinciOnline(request) {

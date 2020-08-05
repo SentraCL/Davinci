@@ -62,6 +62,7 @@
                     <d-button v-if="enterprise.Status==1" type="success" round @click.native.prevent="updateEnterprise">
                         <span style="color:white" class="ti-save"></span> Guardar
                     </d-button>
+                    
                     <d-button v-if="enterprise.Status==0" type="success" round @click.native.prevent="recoveryEnterprise">
                         <span style="color:white" class="ti-save"></span> Restaurar
                     </d-button>

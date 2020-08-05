@@ -13,6 +13,15 @@ type User struct {
 	HistoryLogin []Session `bson:"historylogin"`
 }
 
+//UserVO : Representacion Front-END de User
+type UserVO struct {
+	UserName     string `json:"UserName" bson:"username"`
+	Password     string `json:"Password" bson:"password"`
+	Role     string `json:"Role" bson:"role"`
+	LastTime     time.Time `json:"LastTime" bson:"lasttime"`
+	Enterprises []string	`json:"Enterprises" bson:"enterprise"`
+}
+
 //Session : Instancias de Sesion
 type Session struct {
 	RemoteAddr  string

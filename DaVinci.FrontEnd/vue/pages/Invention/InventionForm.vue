@@ -72,15 +72,12 @@
                 var format = this.formatForm();
                 this.form = format.form;
                 this.inputs = format.inputs;
-                console.log("inputs",format.inputs)
                 this.textAreaTabs = format.textTabs;
                 this.selectTabs = format.selectTabs;
             },
             async form(newForm, oldValue) {
                 this.$emit("update:values", newForm);
                 this.$emit("update");
-                console.log(this.invention)
-                console.log(this.values)
             }
         },
         created() {
@@ -110,7 +107,6 @@
                     if (input.isJson) {
                         input.isEssential = false
                         var repository = JSON.parse(sessionStorage.getItem(input.typeRef + this.projectCode));
-                        console.log("repository",repository)
                         if (repository == null) {
                             input['list'] = []
                         }

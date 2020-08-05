@@ -2,7 +2,7 @@
     <span :class="inputClass">
         <!--{{inputClass}} -->
         <input :maxlength="maxlength?maxlength:255" class="input_field input_field--davinci" v-if="!isInactive" :autocomplete="autocomplete" v-model="textbox" readonly="readonly" onfocus="javascript: this.removeAttribute('readonly')" @input="$emit('input', $event.target.value)" v-bind="$attrs" :type="type" @blur="save" />
-        <span class="input_field input_field--davinci" v-if="isInactive" :class="isInactive?'disable':''">{{textbox}}</span>
+        <span class="input_field input_field--davinci" v-if="isInactive" :class="isInactive?'disable':''">{{type=="password"?"":textbox}}</span>
         <label class="input_label input_label--davinci">
             <span class="input_label-content input_label-content--davinci" :data-content="label" v-html="label"></span>
         </label>

@@ -10,6 +10,8 @@ import Enterprise from "../pages/Enterprise/Enterprises.vue";
 import Design from "../pages/Design/Design.vue";
 import Portfolio from "../pages/Porfolio/Portfolio.vue";
 import Inventions from "../pages/Invention/Inventions.vue";
+import Users from "../pages/Users/Users.vue";
+
 
 const routes = [
   {
@@ -21,6 +23,10 @@ const routes = [
         path: "/enterprise",
         name: "Empresas",
         component: Enterprise
+      },{
+        path: '/users',
+        name: 'Usuarios',
+        component: Users
       },
       {
         path: "dashboard",

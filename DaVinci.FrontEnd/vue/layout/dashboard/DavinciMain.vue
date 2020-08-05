@@ -95,6 +95,11 @@
           icon: 'ti-home',
           rol:'admin'
         },{
+          to: '/users',
+          name: 'Usuarios',
+          icon: 'ti-user',
+          rol:'admin'
+        },{
           to: '/dashboard',
           name: 'Proyectos',
           icon: 'ti-blackboard',

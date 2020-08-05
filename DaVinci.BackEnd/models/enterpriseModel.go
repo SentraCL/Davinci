@@ -38,6 +38,7 @@ func (em *EnterpriseModel) GetEnterprise( user string) []Enterprise{
 		
 	return enterpriseResult
 }
+
 //GetAllEnterprises , Retorna una lista de todas las empresas
 func (em *EnterpriseModel) GetAllEnterprises() []Enterprise{
 	session, err := GetSession()

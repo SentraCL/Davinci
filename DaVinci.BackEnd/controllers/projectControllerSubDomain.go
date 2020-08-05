@@ -46,7 +46,7 @@ func (pc *ProjectController) UpdateUser(projectCode string, code string, user st
 }
 
 //LoginUser modifica un usuario al proyecto
-func (pc *ProjectController) LoginUser(projectName string, user string, pass string) bool {
+func (pc *ProjectController) LoginUser(projectName string, user string, pass string) (bool,bool) {
 	log.Println("Controller - LoginUser ", projectName)
 	return projectModel.LoginUser(projectName, user, pass)
 }

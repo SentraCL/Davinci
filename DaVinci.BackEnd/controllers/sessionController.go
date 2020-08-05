@@ -23,6 +23,16 @@ func (sc *SessionController) DoLogin(login *models.Login) bool {
 	return isValid
 }
 
+
+// DoLogin , Valida usuario 
+func (sc *SessionController) SubDoLogin(user string, pass string) bool {
+	isValid := false
+	if sesionModel.IsSubUserValid(user,pass) {
+		isValid = true
+	}
+	return isValid
+}
+
 //DoLogout : Cierre de Sesion
 func (sc *SessionController) DoLogout(login *models.Login) {
 	sesionModel.SaveSession(login)

@@ -135,14 +135,6 @@
       }
       this.fillEpics();
       
-        console.log("attributes",this.attributes);
-        console.log("epics",this.epics);
-        console.log("epicSelected",this.epicSelected);
-        console.log("projectCode",this.projectCode);
-        console.log("form",this.form);
-        console.log("artifacts",this.artifacts);
-        console.log("_userStoryCode",_userStoryCode);
-        console.log("_steps",_steps);
       return {
         CREATE: 0,
         SAVE: 1,
@@ -229,9 +221,6 @@
         }
         this.lastVersion = this.currentVer;
         this.epicSelected=this.userStoryForm.epic;
-        console.log("this.userStoryForm",this.userStoryForm);
-        console.log("formm",this.form);
-        console.log("artifactsm",this.artifacts);
 
         /*
         this.UsTabs.push({

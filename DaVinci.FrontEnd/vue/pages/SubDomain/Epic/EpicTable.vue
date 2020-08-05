@@ -11,7 +11,7 @@
       </thead>
       <tbody>
 
-        <tr v-for="epic in epics" :key="epic.id">
+        <tr v-for="epic in epics" :key="epic.id" @click="getEpic(epic.id)">
           <!---->
           <td v-for="column,index in columns" :key="index">
 
@@ -53,6 +53,7 @@
     watch: {
       epics() {
         if (this.epics) {
+          this.columns=[]
           if (this.epics.length > 0) {
             this.epics[0].attributes.forEach(atr => {
               this.columns.push(atr.name);

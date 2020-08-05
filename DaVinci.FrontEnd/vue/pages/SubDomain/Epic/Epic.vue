@@ -127,7 +127,6 @@
       },
 
       sendToWorkpace() {
-        //console.log(`UserStory > ${this.idUS} ejecutando sendToWorkSpace`);
         this.$emit("update:idUS", this.idUS)
         this.$emit("sendToWorkSpace")
       },
@@ -215,7 +214,6 @@
             })
           })
 
-          console.log("form epic",this.epic)
           for (var ref in this.epic.epicForm.attributes) {
             var artifactType = this.epic.epicForm.attributes[ref].artifactType;
             var name = this.epic.epicForm.attributes[ref].name

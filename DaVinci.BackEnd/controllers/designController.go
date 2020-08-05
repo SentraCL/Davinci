@@ -12,7 +12,7 @@ import (
 type DesignController struct {
 }
 
-//SaveProject : Guarda proyectos.
+//SaveEpicType : Guarda tipos de epicos.
 func (dc *DesignController) SaveEpicType(epicTypeReq models.EpicTypeRequest,status bool) string {
 	projectCode := epicTypeReq.ProjectCode
 	epicType := dc.RQtoBO(epicTypeReq)
@@ -67,7 +67,7 @@ func (dc *DesignController) GetAllEpicType(projectCode string) []models.EpicType
 	return result
 }
 
-//SaveProject : Guarda proyectos.
+//SaveUserStoriesType : Guarda tipos de historias de usuarios.
 func (dc *DesignController) SaveUserStoriesType(usType models.UserStoriesType, projectCode string) string {
 	dcode := util.DavinciCode{}
 	usCode := dcode.Encript(usType.Title)

@@ -85,22 +85,28 @@ func (pm *ProjectModel) UpdateUser(projectCode string, code string, user string,
 }
 
 //LoginUser , Modifica un usuarios de un proyecto
-func (pm *ProjectModel) LoginUser(projectName string, user string, pass string) bool {
+func (pm *ProjectModel) LoginUser(projectName string, user string, pass string) (bool,bool) {
 	session, err := GetSession()
 	defer session.Close()
 	projectCollector := session.DB(DataBaseName).C(ProjectColl)
 	projectResult := Project{}
 	err = projectCollector.Find(bson.M{"alias": projectName}).One(&projectResult)
 	var result = false
+	var isDesign = false
 	if err == nil {
-
 		for _, repo := range projectResult.Users {
-			if repo.UserName == user && repo.Password == pass {
-				result = true
+			if repo.UserName == user {
+				if repo.IsDesign==false{
+					if repo.Password==pass {
+						result = true
+					}
+				}else{
+					isDesign=true
+				}
 			}
 		}
 	}
-	return result
+	return result,isDesign
 }
 
 //GetUsers retorna usuarios de un proyecto
@@ -360,10 +366,10 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		//fmt.Println("MODEL>> Epics:", util.StringifyJSON(projectResult.Epics))
 		epicRepository := projectResult.Epics.Repository
 
-		//fmt.Println("MODEL>> repository:", util.StringifyJSON(epicRepository))
+		fmt.Println("MODEL>> repository:", util.StringifyJSON(epicRepository))
 
-		//fmt.Println("MODEL>> epic.ID	:", epic.ID)
-		//fmt.Println("MODEL>> epic.Code	:", epic.Code)
+		fmt.Println("MODEL>> epic.ID	:", epic.ID)
+		fmt.Println("MODEL>> epic.Code	:", epic.Code)
 		epicId:=epic.ID.Hex()
 		if  epicId == "" {
 			epic.ID = bson.NewObjectId()
@@ -371,7 +377,8 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 			if err == nil {
 				newRepo := []Epic{}
 				newRepo = append(epicRepository, *epic)
-				//fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
+				fmt.Println("projectCode",projectCode)
+				fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
 				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
@@ -379,7 +386,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 					bson.M{"$set": bson.M{"epics.repository": newRepo}})
 				epic.Save = true
 			} else {
-				//fmt.Println("SAVE [NOK]")
+				fmt.Println("SAVE [NOK]", err)
 				return false
 			}
 		} else {
@@ -398,7 +405,7 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 		}
 		return true
 	}
-	//fmt.Println("SAVE [NOK]", err)
+	fmt.Println("SAVE [NOK]", err)
 	return false
 }
 

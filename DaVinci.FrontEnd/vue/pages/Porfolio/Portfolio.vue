@@ -227,7 +227,6 @@
               await this.axios
          .get("/api/enterprise/" )
          .then(rs => {
-           console.log(rs.data)
             this.enterprise=rs.data;
             })  
             },
@@ -312,7 +311,6 @@
       async getInventions() {
         await this.axios.get("/api/invention/all/").then(rs => {
           this.inventionVOs = rs.data;
-          console.log("inventions",this.inventionVOs)
         });
       },
       back() {
@@ -364,11 +362,9 @@
         this.projectName = project.name;
         var upInventions = [];
         upInventions = [];
-        console.log("project invention",this.projectInventions)
         for (var i in this.projectInventions[project.name]) {
           var invention = this.projectInventions[project.name][i];
           upInventions.push(invention);
-          console.log("make inventions",invention)
         }
         this.isWorkingInAProject = true;
         this.projectContext = {
@@ -381,7 +377,6 @@
           code: project.code,
           avatar: project.avatar
         };
-        console.log("projectContext",this.projectContext)
       }
     }
   };
