@@ -217,6 +217,8 @@ export default {
               await this.axios
          .get("/api/enterprise/getAll" )
          .then(rs => {
+              console.log("rs",rs)
+              console.log("enterprises",rs.data)
               this.enterprises=rs.data;
               })
             },
