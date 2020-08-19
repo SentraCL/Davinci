@@ -111,7 +111,6 @@ export default {
     },
     data(){
         this.getAllEnterprise()
-        this.getAllUser()
         return{
             selectedUser:{},
             users:[],
@@ -204,9 +203,6 @@ export default {
                 }
                 userList.push(userTemp)
               })
-              console.log("this.enterprises",this.enterprises)
-              console.log("userList",userList)
-              console.log("this.ultima",this.ultima)
               this.ultima=userList.length/this.limit;
               this.users=userList;
               this.usersList=userList.slice(0,this.limit);
@@ -218,7 +214,7 @@ export default {
          .get("/api/enterprise/getAll" )
          .then(rs => {
               this.enterprises=rs.data;
-              this.formatEnterprise()
+              this.getAllUser();
               })
             },
         reload(){

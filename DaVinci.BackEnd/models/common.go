@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"gopkg.in/mgo.v2/bson"
 
 	"gopkg.in/mgo.v2"
 
@@ -140,18 +141,18 @@ func createAdmin() bool {
 	defer session.Close()
 
 	userDB := session.DB(DataBaseName).C("User")
-
-	admin := User{}
-	//user, pass, email
-	admin.UserName = "admin"
-	admin.Password = "admin"
-
-	err = userDB.Insert(admin)
-	if err != nil {
-		return false
-	} else {
-		return true
+	encontrado:=true
+	userResult := User{}
+	err = userDB.Find(bson.M{"username": "admin"}).One(&userResult)
+	if err != nil && err.Error() == "not found" {	
+		encontrado=false
+		enterprises:=[]string{}
+		historylogin:= []string{}
+		dcode := util.DavinciCode{}
+		var user = bson.M{"_id": dcode.Encript("admin"), "username": "admin", "password": "admin", "isDesign":true,"enterprise":enterprises,"historylogin":historylogin,"role":"admin"}
+		userDB.Insert(bson.M(user))
 	}
+	return encontrado
 }
 
 //WakeUPDataBase : Levanta base de datos
