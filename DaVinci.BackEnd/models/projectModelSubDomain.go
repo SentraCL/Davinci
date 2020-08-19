@@ -365,31 +365,27 @@ func (pm *ProjectModel) SaveEpic(projectCode string, epic *Epic) bool {
 	if err == nil {
 		//fmt.Println("MODEL>> Epics:", util.StringifyJSON(projectResult.Epics))
 		epicRepository := projectResult.Epics.Repository
-
-		fmt.Println("MODEL>> repository:", util.StringifyJSON(epicRepository))
-
 		fmt.Println("MODEL>> epic.ID	:", epic.ID)
 		fmt.Println("MODEL>> epic.Code	:", epic.Code)
 		epicId:=epic.ID.Hex()
 		if  epicId == "" {
+			position:=len(projectResult.Epics.Repository)
 			epic.ID = bson.NewObjectId()
 			epic.Date = time.Now()
 			if err == nil {
-				newRepo := []Epic{}
-				newRepo = append(epicRepository, *epic)
-				fmt.Println("projectCode",projectCode)
 				fmt.Println(epic.ID, " NEW [OK] =>", epic.Code)
 				projectCollector.Update(
 					//Where
 					bson.M{"_id": projectCode},
 					//Set
-					bson.M{"$set": bson.M{"epics.repository": newRepo}})
+					bson.M{"$set": bson.M{"epics.repository."+strconv.Itoa(position): epic}})
 				epic.Save = true
 			} else {
 				fmt.Println("SAVE [NOK]", err)
 				return false
 			}
 		} else {
+			fmt.Println(epic.ID, " Old [OK] =>", epic.Code)
 			for index, epicDB := range epicRepository {
 				epic.Date = time.Now()
 				if epicDB.ID == epic.ID {
@@ -453,10 +449,14 @@ func (pm *ProjectModel) SaveRepositoryData(projectCode string, dataType *TestDat
 			for index, dataTypeDB := range dataTypes {
 				position=position+1
 				dataType.Date = time.Now()
+				fmt.Println(index)
 				if dataTypeDB.ID == dataType.ID {
+					fmt.Println(dataTypeDB)
+					fmt.Println(dataType)
 					newRepo := dataTypeDB.Atributes	
 					insertados:=0
 					for _,atrib:=range dataType.Atributes{
+						fmt.Println(atrib)
 						if(!stringInSlice(atrib,newRepo)){
 							newRepo=append(newRepo,atrib)
 							insertados++
@@ -471,11 +471,11 @@ func (pm *ProjectModel) SaveRepositoryData(projectCode string, dataType *TestDat
 							//Set
 							bson.M{"$set": bson.M{"dataStored.repository." + strconv.Itoa(index): dataType}})
 							return "Se han agregado "+strconv.Itoa(insertados)+" datos para el tipo de dato existente."
-						}
-					}else{
+						}else{
 						return "No se pueden agregar datos duplicados."
 					}
 				}
+			}				
 				if(position==0||encontrado==false){
 					dataType.Date = time.Now()
 					projectCollector.Update(
@@ -486,6 +486,7 @@ func (pm *ProjectModel) SaveRepositoryData(projectCode string, dataType *TestDat
 						return "Se ha ingresado informacion para un nuevo tipo de dato."
 				}
 	}
+
 	//fmt.Println("SAVE [NOK]", err)
 	return "No se pudo agregar la informacion ingresada."
 }

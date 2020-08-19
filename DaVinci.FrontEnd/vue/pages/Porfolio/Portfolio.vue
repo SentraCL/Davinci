@@ -67,7 +67,7 @@
         <span class="col-md-12" v-if="isWorkingInAProject && loadInvention && projectContext.inventions.length==0"><span class="ti-settings"></span> Arrastre un Invento para ser poblado.</span>
         -->
         <drop class="drop" @drop="handleDrop(proItem)">
-          <project-item v-on:clickAvatar="makeMyProject(proItem)" :project="proItem">
+          <project-item :isPortafolio="true" v-on:clickAvatar="makeMyProject(proItem)" :project="proItem">
             <span slot="description" v-if="loadInvention">
               <span v-if="projectInventions[proItem.name]" v-for="inventionPrj in projectInventions[proItem.name]">
                 <span class="miniPrj min-invention">
@@ -111,6 +111,24 @@
     components: {
       ProjectItem,
       PorfolioManager
+    },
+    filters: {
+    capitalize: function (value) {
+      if (!value) 
+        return ''
+      console.log(value)
+      let salida="";  
+      let letter="";
+      for (var index = 0; index < value.length; index++) {
+       letter=value.charAt(index);
+       console.log(letter+"-"+letter.toUpperCase())
+       if(index!=0&&letter==letter.toUpperCase()){
+          salida+=" ";
+        }
+        salida+=letter;
+      }
+      return salida; 
+      }
     },
     computed: {
       /*
@@ -470,7 +488,7 @@
   }
 
   .min-invention:hover {
-    font-size: 1em;
+    font-size: .9em;
     margin-top: -5px;
   }
 

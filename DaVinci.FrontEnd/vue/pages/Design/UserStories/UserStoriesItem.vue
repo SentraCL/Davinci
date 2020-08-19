@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-1 scrolling">
+    <div class="col-2 scrolling">
       <draggable class="dragArea  " :list="itemsInvention" :group="{ name: 'form-design', pull: 'clone', put: false }" @change="log">
         <center class="list-group-item invention" v-for="item in itemsInvention" :key="item.name">
           <img :src="item.icon" class="invention-item" :title="item.name" width="48px" /><br />
@@ -11,7 +11,7 @@
 
     <br /><br />
 
-    <div class="col-11" id="design-panel">
+    <div class="col-10" id="design-panel">
       <card>
         <drop-menu :title="userTitle" style="float:right;position:relative;" v-on:change="userStoriesOptions(user.option)" :options="user.options" :option.sync="user.option"></drop-menu>
         <h3><span class="ti-notepad"></span> {{userStoriesForm.title}} </h3>
@@ -481,13 +481,14 @@
 </script>
 <style scoped>
   #design-panel {
-    position: absolute;
+
+    /*position: absolute;
     top: 120;
     left: 30;
     min-width: 60%;
     min-height: 100px;
     margin: 8em;
-    width: 80%;
+    width: 80%;*/
   }
 
   .fondo {
@@ -514,6 +515,15 @@
     margin-top: 3px;
     transition: .3s;
     font-size: 12px;
+  }
+
+  .list-group-item{
+    position: relative; 
+    /* display: block; */
+    border-top-width: 2px!important;
+    padding: 0.75rem 0.5rem; 
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
   }
 
   .invention:hover {

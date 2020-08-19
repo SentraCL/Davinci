@@ -21,6 +21,7 @@ func (r *Router) SubRouters() *mux.Router {
 	route.HandleFunc("/davinci/{project}/isOnline", handlers.IsOnline).Methods("GET")
 	route.HandleFunc("/davinci/{project}/user/changePassword/", handlers.UpdatePasswordUserByFormPut).Methods("PUT")
 	route.HandleFunc("/davinci/{project}/addStep", handlers.AddStep).Methods("POST")
+	route.HandleFunc("/davinci/token/{projectCode}", handlers.IsValidSubHash).Methods("POST")
 
 	//Context
 	route.HandleFunc("/davinci/{project}/epicTypes", handlers.GetEpicTypesProject).Methods("GET")
@@ -47,6 +48,7 @@ func (r *Router) SubRouters() *mux.Router {
 
 	route.HandleFunc("/davinci/{project}/epic/export/{type}", handlers.ExportEpicProject).Methods("POST")
 	route.HandleFunc("/davinci/{project}/epic", handlers.SaveEpicProject).Methods("POST")
+
 
 	return route
 }

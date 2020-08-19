@@ -76,7 +76,10 @@ func (h *Handler) Logout(responseW http.ResponseWriter, request *http.Request) {
 func (h *Handler) isDavinciOnline(request *http.Request) bool {
 	//TODO : Es solo cortesia , hacer mas seguro.
 	session, _ := store.Get(request, "cookie-name")
+	fmt.Println("session",session)
 	auth, isOnline := session.Values["authenticated"].(bool)
+	fmt.Println("isOnline",isOnline)
+	fmt.Println("auth",auth)
 	//user := h.GetUserAlias(request, DavinciCookieName)
 	return auth && isOnline
 }

@@ -21,7 +21,7 @@
       </table>
     </div>
     <hr />
-    <div class="row">
+    <div class="row" v-if="!Inactive">
       <uib-pagination v-if="isPagination" @change="changePage()" firstText="«" lastText="»" previousText="‹" nextText="›" :total-items="data.length" v-model="toPage" :itemsPerPage="pagination.itemsPerPage" :max-size="15" :boundary-links="true">
       </uib-pagination>
     </div>
@@ -39,9 +39,13 @@
       data: Array,
       columns: Array,
       filterKey: String,
-      pagination: {}
+      pagination: {},
+      Inactive:false
     },
     data: function () {
+      console.log("data",this.data)
+      console.log("columns",this.columns)
+      console.log("filterKey",this.filterKey)
       var sortOrders = {};
       var _headers = [];
       if (this.columns == null) {

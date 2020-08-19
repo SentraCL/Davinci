@@ -87,8 +87,8 @@
                                             <br />
 
                                             <span>
-                                                <small v-if="!artifact.isEssential && artifact.isList">Lista de Artectos : {{ artifact.nickName }}</small>
-                                                <small v-if="!artifact.isEssential && !artifact.isList">Artecto : {{ artifact.nickName }}</small>
+                                                <small v-if="!artifact.isEssential && artifact.isList">Lista de Artefactos : {{ artifact.nickName }}</small>
+                                                <small v-if="!artifact.isEssential && !artifact.isList">Artefacto : {{ artifact.nickName }}</small>
 
 
                                                 <small v-if="artifact.isEssential">{{ artifact.nickName }}</small>
@@ -128,7 +128,7 @@
                                 <center>
                                     <img src="@/assets/img/MonaLisa.png" width="120px">
                                     <hr />
-                                    Esta es la vista que tendra al ser visualizada en la aplicacion final.
+                                    Esta es la vista final que tendra el artefacto al ser visualizado en la aplicacion.
                                 </center>
                             </div>
 
@@ -137,7 +137,7 @@
                                 <span class="row">
                                     <div class="col-md-2"></div>
                                     <div class="col-md-10">
-                                        <artifact-form :title="titleForm" :inputs="artifactForm.artifacts"></artifact-form>
+                                        <artifact-form :title="titleForm" :isDisabled="true" :inputs="artifactForm.artifacts"></artifact-form>
                                     </div>
                                 </span>
                             </div>
@@ -191,7 +191,7 @@
 
         </m-dialog>
 
-        <m-dialog id="iconsGallery" :title="iconDialog.title" :show.sync="iconDialog.show" :isClose.sync="iconDialog.close">
+        <m-dialog id="iconsGallery" :title="iconDialog.title" :show.sync="iconDialog.show" :specialClose="true" :isClose.sync="iconDialog.close">
             <div slot="dialog">
                 <img class="col-xl-2 btn btn-success iconArtifact" :src="urlIcon" v-for="urlIcon,index in icons" @click="setIcon(index)" />
             </div>
@@ -369,7 +369,10 @@
         },
 
         methods: {
-
+            closeIcon(){
+                console.log("closeIcon")
+                this.iconDialog.close=true;
+            },
             saveEdit() {
                 this.editDialog.artifact.typeName = this.getNameByKey(this.editDialog.artifact.code, "typeName")
                 this.editDialog.artifact.nickName = this.getNameByKey(this.editDialog.artifact.code, "nickName")

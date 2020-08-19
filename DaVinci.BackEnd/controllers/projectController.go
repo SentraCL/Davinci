@@ -255,13 +255,17 @@ func (pc *ProjectController) GetInventions(projectCode string, inventionCode str
 func (pc *ProjectController) GetAllInventions(projectCode string) []models.InventionVO {
 	log.Println("Controller - Trayendo inventos desde ", projectCode)
 	repos := projectModel.GetAllInventions(projectCode)
+	log.Println("repos",repos)
 	invCtrol := InventionController{}
 	inventions := []models.InventionVO{}
 	for _, repository := range repos {
 		invention := inventionModel.GetInventionByCode(repository.InventionCode)
+		log.Println("invention",invention)
 		inventionVO := invCtrol.TranslateBOToRequest(invention)
+		log.Println("inventionVO",inventionVO)
 		inventionVO.Data = repository.WareHouse
 		inventions = append(inventions, inventionVO)
 	}
+	log.Println("inventions",inventions)
 	return inventions
 }

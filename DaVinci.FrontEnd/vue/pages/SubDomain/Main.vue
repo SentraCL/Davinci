@@ -1,5 +1,7 @@
 <template>
   <div id="WORKSPACE" class="wrapper ">
+    
+    <session-watch :isSubDomain="true"></session-watch>
     <hsc-menu-style-white class="wallpaper st-container">
       <hsc-menu-bar id="SUBDOMAIN-MENU" class="st-menu main-menu always-on-top">
         <img src="@/assets/img/davinci-logo.png" width="24px" />
@@ -129,6 +131,7 @@
     },
 
     async mounted() {
+      console.log("mounted main")
       await this.loadEpics();
       await this.getContextCSS();
       this.typeOfEpics = await this.getTypesOfEpics();

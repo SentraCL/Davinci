@@ -63,8 +63,10 @@ func (um *UserModel) EditUser( user string, pass string, enterprises []string,ro
 
 	log.Println("userResult:",userResult)
 	log.Println("Error:",err)
+	dcode := util.DavinciCode{}
+	log.Println("user:",user)
+	log.Println("dcode.Encript(user):",dcode.Encript(user))
 	if err == nil {	
-		dcode := util.DavinciCode{}
 		if(pass==""){
 			userCollector.Update(bson.M{"_id": dcode.Encript(user)}, bson.M{"$set": bson.M{"username": user,"enterprise":enterprises,"role":rol}})
 		}else{

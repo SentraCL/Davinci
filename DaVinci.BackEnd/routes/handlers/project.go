@@ -303,16 +303,27 @@ func (h *Handler) GetInventionByProject(responseW http.ResponseWriter, request *
 
 //GetAllProjectInventions , Obtiene el listado de todos los inventos segun contexto de proyecto.
 func (h *Handler) GetAllProjectInventions(responseW http.ResponseWriter, request *http.Request) {
-	if !h.isDavinciOnline(request) {
-		return
-	}
+	fmt.Println("GetAllProjectInventions")
+	status:=h.isDavinciOnline(request)
+	fmt.Println("inOnline",status)
+
+
+	//if !status {
+	//	fmt.Println("Sali")
+	//	return
+	//}
+	
+	
 	params := mux.Vars(request)
 	projectCode := params["project"]
+	fmt.Println("projectCode",projectCode)
 	if(projectCode==""){
 		postData := h.getPostValues(request)
 		projectCode=postData["projectCode"]
-	}
+		fmt.Println("projectCode",projectCode)
+	}	
 	inventions := projectCtrl.GetAllInventions(projectCode)
+	fmt.Println("inventions",inventions)
 	h.ResponseJSON(responseW, inventions)
 }
 

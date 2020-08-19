@@ -2,7 +2,7 @@
 
     <span v-if="show">
         <!-- The Modal -->
-        <div :id="id" class="fixedmodal" >
+        <div :id="id" @click="toSpecialClose()" class="fixedmodal" >
 
             <!-- Modal content -->
             <div class="fixedmodal-content" v-if="show">
@@ -39,7 +39,8 @@
             time: Number,
             title: String,
             isClose: Boolean,
-            show: Boolean
+            show: Boolean,
+            specialClose:Boolean
         },
         data() {
             var _isclose = this.isClose;
@@ -89,6 +90,11 @@
             }
         },
         methods: {
+            toSpecialClose(){
+                if(this.specialClose){
+                    this.toClose();
+                }
+            },
             toClose: function () {
                 var fixedmodal = document.getElementById(this.id);
                 if (fixedmodal){

@@ -2,6 +2,7 @@
     <span :class="inputClass">
         <div class="labeltags">
             <ul class="labelul">
+                <li class="filtros">Filtrar por empresa</li>
                 <li class="labelli" v-for="item in list" :key="item[keyValue]" v-bind:value="item[keyValue]"><label :class="item.Disable ? 'disable' : ''" v-on:click="activate(item[keyValue])" :id="item[keyValue]" class="label btn btn-xs btn-round btn-success">{{item[keyLabel]}}</label></li>
             </ul>
         </div>
@@ -101,7 +102,7 @@
 <style scoped>
     .labelli{
         padding: 4px 0;
-        margin: 0 4px 4px 0;
+        margin: 10px 4px -10px 0;
         display: inline-block;
         color: #ffffff;
     }
@@ -114,9 +115,19 @@
     .labeltags{
         vertical-align: top;
         padding: 0;
+        border: 1px solid black;
+        border-radius: 8px;
+        min-height: 44.8px;
     }
     .label{    
         top:-6px!important;
+    }
+    .filtros{
+        width: 167px;
+        margin-top: -10px;
+        position: absolute;
+        right: 5px;
+        background: #f4f3ef;
     }
     .disable{
         background-color: #6c757d;

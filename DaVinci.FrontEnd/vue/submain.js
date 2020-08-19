@@ -174,7 +174,7 @@ Vue.mixin({
       var varCodeProject = projectName + "_CODE";
 
       var code = JSON.parse(sessionStorage.getItem(varCodeProject));
-      //console.log(code);
+      console.log(code);
       if (code == null) {
         await this.axios.get(`/davinci/${projectName}/code`).then(rs => {
           code = rs.data;
@@ -253,9 +253,13 @@ Vue.mixin({
     //trae los inv en contexto del proeycto
     async getAllInventions() {
       var invents = [];
+      console.log("Go to back")
       var projectCode = await this.getCodeProject();
+      console.log(`/davinci/invention/${projectCode}/all/`)
       await this.axios.get(`/davinci/invention/${projectCode}/all/`).then(rs => {
         invents = rs.data;
+        console.log("getAll submain",invents)
+        console.log("rs",rs)
       });
       return invents;
     },

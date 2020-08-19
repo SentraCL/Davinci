@@ -87,6 +87,7 @@
             this.urlLogo = `/api/project/avatar/${this.projectName}.png`;
             await this.axios.get(isOnline).then(rs => {
                 var status = rs.data.replace(/\n|\r/g, "");
+                console.log("rs",rs)
                 if (status == "OK") {
                     this.$router.push('home');
                 }
@@ -109,7 +110,6 @@
 
 
         methods: {
-
             doLogin: function () {
                 var me = this
                 this.axios
@@ -117,15 +117,19 @@
                         "user": this.login.alias,
                         "pass": this.login.password
                     }).then(rs => {
-
+                    console.log("login",rs)
                         if (rs.data.Online) {
                             this.isOnline = true;
                             this.$router.push('main');
+                            sessionStorage.setItem("subHash",rs.data.DavinciCode)
+                            sessionStorage.setItem("subUsuario",rs.data.User)
                         } else {
                             me.login = {
                                 alias: "",
                                 password: ""
                             }
+                            sessionStorage.setItem("subHash","")
+                            sessionStorage.setItem("subUsuario","")
                             me.dijo = true
                             me.frase = "<strong>Credenciales no válidas..</strong>"
                             setTimeout(() => {

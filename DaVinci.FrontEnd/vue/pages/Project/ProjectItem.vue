@@ -15,8 +15,8 @@
                 </h4>
             </div>
 
-            <div class="col-lg-12">
-                <slot name="description">
+            <div class="col-lg-12" :class="isPortafolio?'specialDescription':''">
+                <slot name="description" >
 
                 </slot>
                 </p>
@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <a href="#" style="color:black" title="Genera reporte de Epicos, Actividades e Historias de Usuario">
+                        <a v-if="1!=1" href="#" style="color:black" title="Genera reporte de Epicos, Actividades e Historias de Usuario">
                             <small>
                                 <i class="fa fa-file-excel-o"></i> Reporte
                             </small>
@@ -84,11 +84,11 @@
                 <div class="row">
                     <span class="col-md-8">
                         <div class="row">
-                            <span class="col-md-2">
+                            <span class="col-md-3">
                                 <img v-if="avatar" class="avatar border-white" @click="avatarClick()" :src="avatar" alt="...">
                                 <img v-if="!avatar" class="avatar border-white" @click="avatarClick()" src="@/assets/img/davinci-logo.png" alt="...">
                             </span>
-                            <span class="col-md-6">
+                            <span class="col-md-9">
                                 <h3><i class="fa fa-copy"></i> Copiar Proyecto {{project.name}}</h3>
 
                             </span>
@@ -205,7 +205,8 @@
         props: {
             project: {},
             resume: String,
-            hiddenTools:Boolean
+            hiddenTools:Boolean,
+            isPortafolio:false
         },
 
         data() {
@@ -339,5 +340,8 @@
     };
 </script>
 <style>
-
+.specialDescription{
+    overflow: auto;
+    height: 125px;
+}
 </style>

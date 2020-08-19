@@ -42,7 +42,8 @@ export default {
         methods:{
             avatarClick(enterprise){
                 this.$emit("selectedEnterprise",enterprise);
-            }
+            },
+            
         }
 }
 </script>

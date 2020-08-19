@@ -8,7 +8,7 @@
         <!-- WIZARD Asistente de Datos -->
         <form-wizard title="Asistente de Carga de Datos" subtitle="">
           <tab-content title="Elegir formato">
-            <card>
+            <card >
               <div class="row">
                     <div class="col-md-12">
                         <h6>Seleccione el tipo de Archivo</h6>
@@ -32,7 +32,7 @@
                             <center>TXT</center>
                         </button>
                     </div>
-                    <div class="col-lg-3 col-sm-6 ">
+                    <div class="col-lg-3 col-sm-6 " v-if="1!=1">
                         <button class="btn btn-success" :class="accept.includes('xml')?'select':''" @click="loadFile('xml')">
                             <img class="img" width="70px" :class="accept.includes('xml')?'select':''" src="@/assets/img/SubDomain/DataExcel.png" alt="">
                             <center>XML</center>
@@ -42,13 +42,13 @@
             </card>
           </tab-content>
           <tab-content title="Subir archivo">
-            <card>
+            <card class="over">
                 
           <div class="row">
                 <div class="col-md-12">
                     <h6>Seleccione el tipo de dato</h6>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12 card supercard">
                     <div class="row">
                         <div class="col-md-3">
                             <combo-simple label="Tipo de Datos" v-on:update="setDataType()" :value.sync="dataTypeId" class="input-item"
@@ -57,12 +57,22 @@
                         <div class="col-md-3">
                             <h5>Atributo unico es : {{dataType.principalKey}}</h5>
                         </div>
-                        <div class="col-md-3"></div>
+                        <div class="col-md-3">
+                            <div class="col-md-12" v-if="dataHeader">
+                                <combo-simple v-if="dataHeader.length>0" label="Cabecera" :value.sync="dataKey" v-on:change="changeDataFile(artifacts)" class="input-item"
+                                :list="dataHeader" keyValue="name" keyLabel="name"></combo-simple>
+                            </div>
+                        </div>
                         <div class="col-md-3"></div>
                     </div>
                 </div>
                 <hr>
+                
                 <div class="col-md-12">
+                    <h6>Seleccione el invento</h6>
+                </div>
+
+                <div class="col-md-12 card supercard">
                     <div class="row">
                     <div class="col-md-3">
                     <combo-simple label="Invento" v-on:update="setInvent()" :value.sync="inventionId" class="input-item"
@@ -74,7 +84,7 @@
                             <input-text disabled :label="artifact.name" v-model="artifact.name">{{artifact.name}}</input-text>
                         </div>
                         <div class="col-md-12" v-if="dataHeader">
-                            <combo-simple v-if="dataHeader.length>0" label="Cabecera" :value.sync="artifact.header" v-on:change="changeDataFile(artifact)" class="input-item"
+                            <combo-simple v-if="dataHeader.length>0" label="Cabecera" :value.sync="artifact.header" v-on:change="changeDataFile(artifacts)" class="input-item"
                             :list="dataHeader" keyValue="name" keyLabel="name"></combo-simple>
                         </div>
                     </div>
@@ -87,12 +97,10 @@
                 <input class="form-control-file" :accept="accept"  type="file" id="DavinciFile" name="DavinciFile" ref="fileProject"
                     v-on:input="handleFileUpload()" />
                 </div>
-                <div class="col-md-12">
-                    <davinci-table :key="dataFileKey" v-if="dataFile.length>0&&isRenderTable" :data="dataFile"></davinci-table>
+                <div class="col-md-12 tabla supercard" v-if="loadTable">
+                    <davinci-table :Inactive="true" :pagination="page" :data.sync="dataList" v-if="dataList&&dataList.length>0"></davinci-table>
                 </div>
           </div>
-
-
             </card>
           </tab-content>
           <tab-content title="Validar datos">
@@ -133,8 +141,8 @@
                 dataTypeList: {},
                 dataHeader:{},
                 dataFile:[],
-                dataFileKey:0,
                 dataType: {},
+                dataKey:"",
                 dataTypeId: "",
                 invention:{},
                 inventionId:"",
@@ -143,25 +151,51 @@
                 accept:"",
                 cantidad:0,
                 artifacts:[],
-                dataList:{},
+                allData:[],
+                dataList:[],
                 projectName:"",
                 projectOK: false,
                 file: "",
                 doContinue: false,
                 nextBool:true,
-                isRenderTable:true
+                isRenderTable:true,
+                loadTable:false,
+                page: {
+                itemsPerPage: 4
+                }
             }
         },
         async mounted() {
             this.projectName = this.getProjectDomain();
         },
         methods: {
-            changeDataFile(artifact){
-                this.dataFileKey++;
-                this.isRenderTable=false;
-                this.$nextTick(() => {
-                    this.isRenderTable=true; 
+            changeDataFile(artifacts){
+                this.loadTable=false;
+                let tempData={}
+                let submitData={}
+                this.dataList=[]
+                this.dataFile=[]
+
+                this.allData.forEach( data=> {
+                    submitData={}
+                    tempData={}
+                        if(this.dataKey!=""){
+                            tempData[this.dataType.principalKey+"("+this.dataKey+")"]=data[this.dataKey];
+                            submitData[this.dataType.principalKey]=data[this.dataKey];
+                        }
+                        artifacts.forEach(artifact=>{
+                        if (artifact.header&&artifact.header!=""){
+
+                            tempData[artifact.name+"("+artifact.header+")"]=data[artifact.header];
+                            submitData[artifact.name]=data[artifact.header];
+                        } 
+                    });
+                    this.dataFile.push(JSON.stringify(submitData))
+                    this.dataList.push(tempData);
                 });
+                console.log("datalist",this.dataList)
+                this.cantidad=this.dataList.length
+                this.loadTable=true;
             },
             getHeader(sheet) {
             const XLSX = xlsx;
@@ -202,7 +236,7 @@
                     this.dataList={}
                     this.dataTypeList= {}
                     this.dataTypeId= ""
-                    this.inventions= {}
+                    this.inventions= []
                     this.accept=""
                     this.file=""
                     document.getElementById('DavinciFile').value="";
@@ -333,48 +367,32 @@
                     const data= ev.target.result;
                     let row=data.split("\r\n")
                     let column=[]
-                    let position=0;
-                    let encontrado=false;
-                    this.dataList={}
-                    this.cantidad=0
+                    let allData=[]
                     let index=0
-                    let temp={};
+                    let columnJson={}
                     row.forEach(value=>{
                         column=value.split("\t")
-                        if(encontrado&&column[position] && column[position].trim()!=""){
-                            temp={}
-                            this.artifacts.forEach(artifact=>{
-                                if(artifact.value!=""&&artifact.position!=""){
-                                    temp[artifact.name]=column[artifact.position]
-                                }
-                            });
-                            if(!this.dataList||!this.dataList[column[position]]){
-                                this.dataList[column[position]]=[];
-                            }
-                            this.dataList[column[position]].push({
-                                type:temp
+                        this.dataFile=[]
+                        if(index!=0){
+                            columnJson = {}
+                            this.dataHeader.forEach(field=>{
+                                columnJson[field.name]=column[field.position]
                             })
-                            this.cantidad++;
+                            allData.push(columnJson);
                         }
                         if(index==0){
                             let artifacts=this.artifacts
-                            column.forEach(function(key,cont){
-                                if(key.toLowerCase()==dataKey.toLowerCase()){
-                                    position=cont;
-                                    encontrado=true;
-                                }
-                                for (var i=0;i<artifacts.length;i++){
-                                    if(artifacts[i].value!=""
-                                    &&artifacts[i].value.toLowerCase()===key.toLowerCase()
-                                    &&artifacts[i].position==""){
-                                        artifacts[i].position=cont;
-                                    }
-                                }
+                            let headers=[]
+                            column.forEach(function(key,index){
+                                headers.push({"name":key,"position":index})
                             });
+                            this.dataHeader=headers
                             this.artifacts=artifacts
+                            index++;
                         }
-                        index++;
                     });
+                    this.allData=allData;
+                    console.log("allData",allData)
                     } catch (e) {
                         console.log(e)
                     return alert("Error de lectura");;
@@ -391,62 +409,32 @@
                     const data= ev.target.result;
                     let row=data.split("\r\n")
                     let column=[]
-                    let position=0;
-                    let encontrado=false;
-                    this.dataList={}
-                    this.cantidad=0
+                    let allData=[]
                     let index=0
-                    let type=this.dataType.name
-                    let temp={};
-                    let dataTemp={}
+                    let columnJson={}
                     row.forEach(value=>{
                         column=value.split(",")
                         this.dataFile=[]
-                        if(encontrado){
-                            temp={}
-                            dataTemp={}
-                            this.artifacts.forEach(artifact=>{
-                                if(artifact.value!=""&&artifact.position!=""){
-                                    temp[artifact.name]=column[artifact.position]
-                                    if(artifact.header&&artifact.header!=""){
-                                        dataTemp[artifact.header]=column[artifact.position]
-                                    }
-                                }
-                            });
-                            this.dataFile.push(dataTemp);
-                            console.log("push datafile",this.dataFile)
-                            if(!this.dataList||!this.dataList[column[position]]){
-                                this.dataList[column[position]]=[];
-                            }
-                            this.dataList[column[position]].push({
-                                type:temp
+                        if(index!=0){
+                            columnJson = {}
+                            this.dataHeader.forEach(field=>{
+                                columnJson[field.name]=column[field.position];
                             })
-                            this.cantidad++;
+                            allData.push(columnJson);
                         }
                         if(index==0){
                             let artifacts=this.artifacts
                             let headers=[]
-                            column.forEach(function(key,cont){
-                                headers.push({"name":key})
-                                console.log(key)
-                                if(key.toLowerCase()==dataKey.toLowerCase()){
-                                    position=cont;
-                                    encontrado=true;
-                                }
-                                for (var i=0;i<artifacts.length;i++){
-                                    if(artifacts[i].value!=""
-                                    &&artifacts[i].value.toLowerCase()===key.toLowerCase()
-                                    &&artifacts[i].position==""){
-                                        artifacts[i].position=cont;
-                                    }
-                                }
+                            column.forEach(function(key,index){
+                                headers.push({"name":key,"position":index})
                             });
-                            console.log(headers)
-                            this.dataHeader=headers
-                            this.artifacts=artifacts
+                            this.dataHeader=headers;
+                            console.log("header",this.dataHeader)
+                            this.artifacts=artifacts;
+                            index++;
                         }
-                        index++;
                     });
+                    this.allData=allData;
                     } catch (e) {
                         console.log(e)
                     return alert("Error de lectura");;
@@ -471,36 +459,25 @@
                     const wsname = workbook.SheetNames[0];
                     const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); 
                     const excellist = []; 
+                    console.log("wsname",wsname)
+                    console.log("ws",ws)
+                    let max=0;
                     for (var i = 0; i < ws.length; i++) {
+                        if(ws[i].length>max){
+                            max=i;
+                        }
                         excellist.push(ws[i]);
                     }
-                    for (var i=0;i<this.artifacts.length;i++){
-                        if(this.artifacts[i].value!=""&&this.dupCheck(excellist[0],this.artifacts[i].value)){
-                            let key=this.getKeyCase(excellist[0],this.artifacts[i].value);
-                            this.artifacts[i].position=key;
-                        }
-                    }
-                    if(this.dupCheck(excellist[0],this.dataType.principalKey)){
-                        let key=this.getKeyCase(excellist[0],this.dataType.principalKey);
-                        this.dataList=[]
-                        this.cantidad=0
-                        let type=this.dataType.name
-                        excellist.forEach(value=>{
-                            let temp={};
-                            this.artifacts.forEach(artifact=>{
-                                if(artifact.value!=""&&artifact.position!=""){
-                                    temp[artifact.name]=value[artifact.position]
-                                }
-                            });
-                            if(!this.dataList||!this.dataList[value[key]]){
-                                this.dataList[value[key]]=[];
-                            }
-                            this.dataList[value[key]].push({
-                                type:temp
-                            })
-                            this.cantidad++;
-                        });
-                    }
+                    let cont=0;
+                    let tempHeader=[];
+                    Object.keys(ws[max]).forEach(value=>{
+                        tempHeader.push({"name":value,"position":cont});
+                        cont++;
+                    });
+                    this.dataHeader=tempHeader;
+                    console.log("header",this.dataHeader)
+                    console.log("excel",excellist)
+                    this.allData=excellist
                     
                     } catch (e) {
                         console.log(e)
@@ -570,7 +547,7 @@
             async save(){
                 var me = this;
                 var json = {
-                    atributes: this.dataList,
+                    atributes: this.dataFile,
                     id:this.dataType.id,
                     dataType:this.dataType,
                     artifacts:this.artifacts
@@ -617,6 +594,14 @@
     }
     .disable{
         pointer-events:none
+    }
+    .supercard{
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+    .over{
+        max-height: 350px;
+        overflow: auto;
     }
     /*.img{
         width:  100px;

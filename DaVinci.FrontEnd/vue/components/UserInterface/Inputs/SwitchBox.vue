@@ -1,9 +1,9 @@
 <template>
 	<span class="input_check">
 		<span class="label">{{label}}</span>
-		<input type="radio" @click="setValue(1)" :id="idY" :name="label" value="1" :checked="value==1">
+		<input :disabled="isInactive" type="radio" @click="setValue(1)" :id="idY" :name="label" value="1" :checked="value==1">
 		<label :for="idY" @click="setValue(1)">Si</label>
-		<input type="radio" @click="setValue(0)" :id="idN" :name="label" value="0" :checked="value==0">
+		<input :disabled="isInactive" type="radio" @click="setValue(0)" :id="idN" :name="label" value="0" :checked="value==0">
 		<label :for="idN" @click="setValue(0)">No</label>
 	</span>
 </template>
@@ -12,7 +12,8 @@
 		name: "switch-box",
 		props: {
 			label: String,
-			value: {}
+			value: {},
+			isInactive:false
 		},
 		data: function () {
 			var _id = this.makeId(8);

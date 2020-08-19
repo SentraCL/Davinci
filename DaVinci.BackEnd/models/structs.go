@@ -373,7 +373,7 @@ type DataType struct {
 type TestData struct {
 	ID        string            `json:"id" bson:"_id"`
 	DataType  DataType          `json:"dataType" bson:"dataType"`
-	Atributes []string `json:"atributes" bson:"atributes"`
+	Atributes []string		`json:"atributes" bson:"atributes"`
 	Date      time.Time         `json:"date" bson:"date"`
 	Owner     string            `json:"owner" bson:"owner"`
 }

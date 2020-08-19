@@ -99,7 +99,10 @@ func (h *Handler) DoLogin(responseW http.ResponseWriter, request *http.Request) 
 	doLogin,isDesign := projectCtrl.LoginUser(project,login.User,login.Pass)
 	if !doLogin && isDesign {
 		 doLogin=sesionCtrl.SubDoLogin(login.User,login.Pass)
+		 fmt.Println("subdo")
 	}
+	fmt.Println("isDesign",isDesign)
+	fmt.Println("doLogin",doLogin)
 	if doLogin {
 		dcode := util.DavinciCode{}
 		cookieProjectName := dcode.Encript(project)
@@ -108,7 +111,9 @@ func (h *Handler) DoLogin(responseW http.ResponseWriter, request *http.Request) 
 		projectCookie := project + cookieProjectName
 		session, _ := subStore.Get(request, projectCookie)
 		login.Online = true
+		fmt.Println("login",login)
 		session.Values["authenticated"] = login.Online
+		fmt.Println("session",session)
 		session.Save(request, responseW)
 	}
 
@@ -380,6 +385,9 @@ func (h *Handler) SaveRepositoryData(responseW http.ResponseWriter, request *htt
 	params := mux.Vars(request)
 	projectName := params["project"]
 	dataType := models.TestData{}
+	fmt.Println("dataType")
+	fmt.Println(dataType)
+	fmt.Println("")
 	decoder := json.NewDecoder(request.Body)
 	decoder.Decode(&dataType)
 	salida := projectCtrl.SaveRepositoryData(projectName, dataType)
@@ -398,7 +406,9 @@ func (h *Handler) GetIconDataTypeByID(w http.ResponseWriter, r *http.Request) {
 		h.ResponseError = "EOF"
 		image64 := dataType.Icon
 		if len(image64) > 0 {
-			//log.Println(image64)
+			log.Println("")
+			log.Println(image64)
+			log.Println("")
 			format := strings.Split(image64, ";")[0]
 			format = strings.Split(format, ":")[1]
 
@@ -419,4 +429,22 @@ func (h *Handler) GetIconDataTypeByID(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	
+}
+//IsValidSubHash : Valida Hash de un subdominio
+func (h *Handler) IsValidSubHash(responseW http.ResponseWriter, request *http.Request) {
+	//log.Println("login.go >>  func (h *Handler) IsValidHash(responseW http.ResponseWriter, request *http.Request) {")
+	decoder := json.NewDecoder(request.Body)
+	params := mux.Vars(request)
+	projectName := params["projectCode"]
+	fmt.Println(projectName)
+	var hash struct {
+		LoginHash string
+	}
+	decoder.Decode(&hash)
+	user := h.GetUserAlias(request, DavinciCookieName)
+	validHash := sesionCtrl.CheckHashOnline(user, hash.LoginHash)
+	session, _ := store.Get(request, "cookie-name")
+	session.Values["authenticated"] = validHash
+	session.Save(request, responseW)
+	h.ResponseJSON(responseW, validHash)
 }

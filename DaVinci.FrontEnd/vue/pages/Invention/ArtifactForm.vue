@@ -10,12 +10,12 @@
                     </textarea>
                 </div>
 
-                <input-text v-if="input.isText" :label="input.name" v-model="form[input.name]"></input-text>
-                <input-text v-if="input.isNumeric" type="number" :label="input.name" v-model="form[input.name]" numeric></input-text>
-                <input-text v-if="input.isDate" type="datetime-local" :label="input.name" v-model="form[input.name]"></input-text>
+                <input-text :isInactive="isDisabled" v-if="input.isText" :label="input.name" v-model="form[input.name]"></input-text>
+                <input-text :isInactive="isDisabled" v-if="input.isNumeric" type="number" :label="input.name" v-model="form[input.name]" numeric></input-text>
+                <input-text :isInactive="isDisabled" v-if="input.isDate" type="datetime-local" :label="input.name" v-model="form[input.name]"></input-text>
                 <!-- <combo-simple v-if="input.isBool" :label="input.name" :list="input.list" keyValue="id" keyLabel="name" :value.sync="form[input.name]"></combo-simple>-->
-                <switch-box v-if="input.isBool" :label="input.name" :value.sync="form[input.name]"></switch-box>
-                <combo-simple v-if="input.isJson" :label="input.name" :list="input.list" keyValue="id" keyLabel="name" :value.sync="form[input.name]"></combo-simple>
+                <switch-box :isInactive="isDisabled" v-if="input.isBool" :label="input.name" :value.sync="form[input.name]"></switch-box>
+                <combo-simple :inactive="isDisabled" v-if="input.isJson" :label="input.name" :list="input.list" keyValue="id" keyLabel="name" :value.sync="form[input.name]"></combo-simple>
             </div>
         </form>
 
@@ -55,7 +55,8 @@
         props: {
             inputs: {},
             values: {},
-            title: String
+            title: String,
+            isDisabled:false
         },
         data() {
             var _form = {}

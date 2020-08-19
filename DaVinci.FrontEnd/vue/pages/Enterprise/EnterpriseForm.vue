@@ -138,19 +138,54 @@ export default {
         async mounted() {
         },
         methods: {
+            validarRut(rut){
+                var valor = rut.replace('.','');
+                valor = valor.replace('-','');
+                var cuerpo = valor.slice(0,-1);
+                var dv = valor.slice(-1).toUpperCase();
+                rut = cuerpo + '-'+ dv
+                if(cuerpo.length < 2) { 
+                    return false;
+                }
+                var suma = 0;
+                var multiplo = 2;
+                for(var i=1;i<=cuerpo.length;i++) {
+                    var index = multiplo * valor.charAt(cuerpo.length - i);
+                    suma = suma + index;
+                    if(multiplo < 7) { 
+                        multiplo = multiplo + 1; 
+                    } else { 
+                        multiplo = 2; 
+                    }
+                }
+                var dvEsperado = 11 - (suma % 11);
+                dv = (dv == 'K')?10:dv;
+                dv = (dv == 0)?11:dv;
+                if(dvEsperado != dv) { 
+                    return false; 
+                    }
+                return true;
+            },
             async updateEnterprise() {
                 var status = false;
                 if(this.enterpriseForm.Name==""){
-                    this.alertError("El nombre de la empresa no debe estar vacio.");
-                }else{
+                   return this.alertError("El nombre de la empresa no debe estar vacio.");
+                }
+                if(this.enterpriseForm.Rut.trim()!=""){
+                    if(!this.validarRut(this.enterpriseForm.Rut)){
+                        return this.alertError("El rut no tiene un formato valido")
+                    }
+                }
+                if(this.enterpriseForm.Rut.trim()==""){
+                    this.enterpriseForm.Rut="";
+                }
 
-                    await this.axios.post("/api/enterprise/save/", this.enterpriseForm).then(rs => {
-                        status = rs.data;
-                });
+                await this.axios.post("/api/enterprise/save/", this.enterpriseForm).then(rs => {
+                    status = rs.data;
                 this.$emit("getAll");
                 this.alertSuccess(`Empresa ${this.enterpriseForm.Name} , Guardada.`);
                 this.$emit("back");
-                }
+                })
             },
 
             back() {
@@ -174,6 +209,7 @@ export default {
             },
             async recoveryEnterprise() {
                 var status = false;
+                console.log("this.enterpriseForm",this.enterpriseForm)
                 await this.axios.post("/api/enterprise/recovery/", this.enterpriseForm).then(rs => {
                     status = rs.data;
                 });

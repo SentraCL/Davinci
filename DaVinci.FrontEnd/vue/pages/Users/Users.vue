@@ -1,7 +1,7 @@
 <template>
     <span>
     <h6 >
-      <input-text v-if="!isEdit" v-on:input="filterUser()" label="<span class='ti-home'></span> Crear Usuario" v-model="userName" :value.sync="userName" autocomplete="off"></input-text>
+      <input-text v-on:input="filterUser()" label="<span class='ti-home'></span> Crear Usuario" v-model="userName" :value.sync="userName" autocomplete="off"></input-text>
     </h6>
     <div class="card-group">
       <div class="col-xl-12 col-lg-12 col-md-12" v-if="isWorkingInAnUser">
@@ -105,10 +105,6 @@
   </span>
 </template>
 <script>
-
-import UserShow from "./UserShow.vue";
-import UserForm from "./UserForm.vue";
-
 export default {
     name:"users",
     props:{
@@ -138,6 +134,11 @@ export default {
             cambioPass:false
         }
     },
+    mounted(){
+      if(!this.isEdit){
+        this.cambioPass=true;
+      }
+    },
     methods:{
         filterUser(){
           if(this.userName!=""){
@@ -151,8 +152,12 @@ export default {
               this.selectedUser=Object.assign({}, tempList[0])
               this.isWorkingInAnUser=true;
               this.isNew=false
+              this.cambioPass=false
+              this.password="";
+              this.isEdit=true;
             }else if(tempList.length==0){
               this.reloadForm=true;
+              this.cambioPass=true;
               this.isEdit=false;
               this.isNew=true;
               this.isWorkingInAnUser=true;
@@ -163,6 +168,7 @@ export default {
                 LastTime:"",
                 Enterprises:[]
               }
+              this.password="";
               this.selectedUser=Object.assign({}, user);
               this.reloadForm=false;
             }else{
@@ -198,6 +204,9 @@ export default {
                 }
                 userList.push(userTemp)
               })
+              console.log("this.enterprises",this.enterprises)
+              console.log("userList",userList)
+              console.log("this.ultima",this.ultima)
               this.ultima=userList.length/this.limit;
               this.users=userList;
               this.usersList=userList.slice(0,this.limit);
@@ -263,15 +272,20 @@ export default {
           this.isEdit=true;
         },
         back(){
+          this.cambioPass=false;
+          this.isNew=false;
           this.userName="";
           this.isWorkingInAnUser=false;
           //this.filterUser();
           this.isEdit=false;
-          this.getAllUser();
           this.cambioPass=false;
+          this.password="";
+          this.getAllUser();
         },
         formatEnterprise(){
           let enterprises=""
+          console.log("this.selectedUser",this.selectedUser)
+          console.log("this.enterprises",this.enterprises)
           this.selectedUser.showEnterprises.forEach((enterprise,index)=>{
             this.enterprises.forEach(ent=>{
               if(ent.Name==enterprise){
@@ -304,8 +318,11 @@ export default {
               this.selectedUser.Password="";
             }
             this.formatEnterprise();
+            console.log("this.selectedUser",this.selectedUser)
             await this.axios.post("/api/user/edit", this.selectedUser).then(rs => {
               status = rs.data;
+              console.log("rs",rs)
+              console.log("status",status)
               this.edit=false;
               if(status){
                 this.back();

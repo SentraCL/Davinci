@@ -1,5 +1,22 @@
 <template>
 <span>
+    <m-dialog id="deleteDialog" :title="titleRecovery()" :show.sync="getAlert.show" :isClose.sync="getAlert.close">
+            <span slot="dialog">
+                <div>
+                    Mientras la empresa <strong>{{selectedEnterprise.Name}}</strong> se encuentre inhabilitada, no podra ver todos los proyectos enlazados a esta.<br /> ¿Desea recuperar la empresa?
+                </div>
+            </span>
+            <span slot="actions">
+                <span class="btn-group">
+                    <d-button type="success" class="btn btn-xs" round @click.native.prevent="closeDialog">
+                        No , Cancelar
+                    </d-button>
+                    <d-button type="danger" class="btn btn-xs" round @click.native.prevent="recoveryEnterprise">
+                        Si, Recuperar
+                    </d-button>
+                </span>
+            </span>
+        </m-dialog>
     <h6 >
       <input-text v-on:input="filterEnterprise()" label="<span class='ti-home'></span> Crear Empresa" v-model="enterpriseName" :value.sync="enterpriseName" autocomplete="off"></input-text>
     </h6>
@@ -29,22 +46,16 @@
             </div>
           </div>
           <hr>
-          <div class="text-center">
+          <div class="text-center fixpadding">
           <div class="col-lg-12">
             <div class="row">
             </div>
             <div class="row">
               <div class="col-md-6">
-                <a href="#" title="Exportar proyecto para enviar a otro sistema Davinci" style="color: black;">
-                  <small>
-                    <i class="fa fa-briefcase"></i> Exportar
-                  </small>
-                  </a>
+                
                 </div>
                 <div class="col-md-6">
-                  <a href="#" title="Genera reporte de Epicos, Actividades e Historias de Usuario" style="color: black;">
-                    <small><i class="fa fa-file-excel-o"></i> Reporte</small>
-                  </a>
+                  
                 </div>
               </div>
             </div>
@@ -82,14 +93,18 @@ export default {
         EnterpriseItem,
         EnterpriseForm
     },
-    computed: {
-
+    computed: { 
     },
     props: {
     },
     data() {
         this.getAllEnterprise()
         return{
+            getAlert: {
+                    mensaje: "",
+                    tiempo: 10,
+                    show: false
+                },
             isWorkingInAEnterprise:false,
             enterprises: {},
             enterprisesList: {},
@@ -107,6 +122,15 @@ export default {
       }
     },
     methods:{
+        titleRecovery(){
+          let salida="";
+          if (this.selectedEnterprise){
+            salida=`<span class="fa fa-question-circle-o"></span> Confirmar restauración de la Empresa <strong>${this.selectedEnterprise.Name}</strong>`
+          }else{
+            salida="Confirmar la restauración de la Empresa"
+          }
+          return salida;
+        },
         async getAllEnterprise(){
               await this.axios
          .get("/api/enterprise/getAll" )
@@ -124,14 +148,36 @@ export default {
       onChildClick(value){
         this.selectedEnterprise=value;
         this.enterpriseName=value.Name
-        this.isWorkingInAEnterprise=true;
-        this.isNew=false;
+        if(this.selectedEnterprise.Status==1){
+          this.isWorkingInAEnterprise=true;
+          this.isNew=false;
+          this.getAlert.show = false;
+        }else{
+          this.isWorkingInAEnterprise=false;
+          this.isNew=false;
+          this.getAlert.show = true;
+          this.getAlert.close = true;
+        }
       },
       reload(){
         this.isWorkingInAEnterprise=false
         this.enterpriseName=""
         this.enterprisesList=this.enterprises
+        this.getAlert.show = false;
       },
+      
+      closeDialog() {
+          this.getAlert.show = false;
+      },
+      async recoveryEnterprise() {
+          var status = false;
+          await this.axios.post("/api/enterprise/recovery/", this.selectedEnterprise).then(rs => {
+              status = rs.data;
+              this.getAllEnterprise();
+              this.reload();
+          });
+      },
+
       filterEnterprise(){
         if(this.enterpriseName!=""){
           let tempEnterprises=[]
@@ -166,5 +212,7 @@ export default {
 }
 </script>
 <style scoped>
-
+  .fixpadding{
+    padding-bottom: 25px;
+  }
 </style>
