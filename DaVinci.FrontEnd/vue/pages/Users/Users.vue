@@ -217,9 +217,8 @@ export default {
               await this.axios
          .get("/api/enterprise/getAll" )
          .then(rs => {
-              console.log("rs",rs)
-              console.log("enterprises",rs.data)
               this.enterprises=rs.data;
+              this.formatEnterprise()
               })
             },
         reload(){
@@ -286,8 +285,6 @@ export default {
         },
         formatEnterprise(){
           let enterprises=""
-          console.log("this.selectedUser",this.selectedUser)
-          console.log("this.enterprises",this.enterprises)
           this.selectedUser.showEnterprises.forEach((enterprise,index)=>{
             this.enterprises.forEach(ent=>{
               if(ent.Name==enterprise){
